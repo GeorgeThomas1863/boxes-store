@@ -1,0 +1,27 @@
+{
+  "name": "boxes-store",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeorgeThomas1863/boxes-store.git"
+  },
+  "author": "George H. Thomas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GeorgeThomas1863/boxes-store/issues"
+  },
+  "homepage": "https://github.com/GeorgeThomas1863/boxes-store#readme",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongodb": "^7.1.0",
+    "nodemon": "^3.1.14"
+  }
+}
