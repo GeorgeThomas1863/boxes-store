@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env" });
-dotenv.config({ path: ".env.local" });
 
 import express from "express";
 import session from "express-session";
