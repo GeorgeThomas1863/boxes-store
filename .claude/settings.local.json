@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for plugin:*)",
+      "Bash(do)",
+      "Bash(echo \"=== $plugin ===\")",
+      "Read(//c/Users/computer/.claude/plugins/cache/claude-plugins-official/**)",
+      "Bash(done)"
+    ]
+  }
+}

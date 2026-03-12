@@ -11,6 +11,8 @@ config/
 .env.local
 .env.*
 
+.claude/pics/
+
 # logs
 logs
 *.log
