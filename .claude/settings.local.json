@@ -5,7 +5,9 @@
       "Bash(do)",
       "Bash(echo \"=== $plugin ===\")",
       "Read(//c/Users/computer/.claude/plugins/cache/claude-plugins-official/**)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(wc:*)",
+      "Bash(find /c/Users/computer/Desktop/ALL2/PROJECTS/CODING_PROJECTS/R_Project/boxes-store/public -type f \\\\\\(-name *.js -o -name *.css \\\\\\))"
     ]
   }
 }
