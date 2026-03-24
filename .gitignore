@@ -13,6 +13,9 @@ config/
 
 .claude/pics/
 
+.claude/EXAMPLES/
+.claude/EXAMPLES/*
+
 # logs
 logs
 *.log

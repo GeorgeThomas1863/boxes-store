@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with code in this repository.
 
 Important: You are the orchestrator. subagents execute. you should NOT build, verify, or code inline (if possible). your job is to plan, prioritize & coordinate the acitons of your subagents
 
@@ -11,6 +11,8 @@ Put all pictures / screenshots you take with the mcp plugin in the "pics" subfol
 Do NOT commit anything to GitHub. The user will control all commits to GitHub. Do NOT edit or in any way change the user's Git history or interact with GitHub.
 
 If you make a mistake or the user points out something is wrong or corrects you, please make note of it here, so you can avoid that mistake in the future.
+
+When building / implementing a new feature use the code found in the .claude/EXAMPLES directory to understand how the user prefers to build / design. Note the patterns shown in the .claude/EXAMPLES folder and try to emulate them in your solution. The EXAMPLES directory I'm talking about is in the .claude folder for this project (the .claude folder in THIS root directory).
 
 # boxes-store
 
