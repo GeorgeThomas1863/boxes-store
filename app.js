@@ -7,6 +7,7 @@ import session from "express-session";
 import routes from "./routes/router.js";
 
 import { buildSessionConfig } from "./middleware/session-config.js";
+import { dbConnect } from "./middleware/db-config.js";
 
 const app = express();
 
@@ -21,4 +22,5 @@ app.use(express.json());
 //routes
 app.use(routes);
 
+await dbConnect();
 app.listen(process.env.PORT);

@@ -166,25 +166,37 @@ export const buildNavBar = async () => {
 
 export const buildCard = async (type) => {
   const configs = {
-    girl: { src: "/images/girl-card.png", label: "Just a Girl" },
-    fabulous: { src: "/images/misspelled-card.png", label: "Fabulous" },
+    girl: { src: "/images/girl-card.png", label: "Just a Girl", productId: "girl-001", price: 25.00 },
+    fabulous: { src: "/images/misspelled-card.png", label: "Fabulous", productId: "fabulous-001", price: 30.00 },
   };
   const config = configs[type];
   if (!config) return null;
 
   const card = document.createElement("div");
   card.classList.add("product-card");
+  card.setAttribute("data-product-id", config.productId);
 
   const img = document.createElement("img");
   img.src = config.src;
   img.alt = config.label;
   img.loading = "lazy";
+  img.className = "product-image";
 
   const label = document.createElement("div");
-  label.classList.add("card-label");
+  label.classList.add("card-label", "product-name");
   label.textContent = config.label;
 
-  card.append(img, label);
+  const priceSpan = document.createElement("span");
+  priceSpan.className = "product-price";
+  priceSpan.textContent = `$${config.price.toFixed(2)}`;
+
+  const addToCartBtn = document.createElement("button");
+  addToCartBtn.className = "add-to-cart-btn";
+  addToCartBtn.setAttribute("data-label", "add-to-cart");
+  addToCartBtn.textContent = "Add to Cart";
+  addToCartBtn.productId = config.productId;
+
+  card.append(img, label, priceSpan, addToCartBtn);
   return card;
 };
 
