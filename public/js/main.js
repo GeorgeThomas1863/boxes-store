@@ -1,9 +1,11 @@
 import { buildMainForm, buildNavBar } from "./forms/main-form.js";
 import { buildCartForm } from "./forms/cart-form.js";
 import { populateCart, updateNavbarCart } from "./run/cart-run.js";
+import { buildAuthDisplay } from "./auth.js";
 
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
+const authElement = document.getElementById("auth-element");
 
 export const buildMainDisplay = async () => {
   if (!displayElement) return null;
@@ -44,3 +46,4 @@ export const buildCartDisplay = async () => {
 
 if (displayElement) buildMainDisplay();
 if (cartElement) buildCartDisplay();
+if (authElement) buildAuthDisplay();

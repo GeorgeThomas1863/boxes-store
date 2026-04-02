@@ -5,8 +5,11 @@ import { authRateLimit } from "../middleware/rate-limit.js";
 
 import { displayMain, displayAdmin, displayCart, display404, display500 } from "../controllers/display-controller.js";
 import { getCartDataControl, getCartStatsControl, addToCartControl, updateCartItemControl, removeFromCartControl, clearCartControl } from "../controllers/data-controller.js";
+import { authController } from "../controllers/auth-controller.js";
 
 const router = express.Router();
+
+router.post("/site-auth-route", authRateLimit, authController);
 
 router.get("/admin", requireAuth, displayAdmin);
 

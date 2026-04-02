@@ -1,8 +1,10 @@
 import { runAddToCart, runIncreaseQuantity, runDecreaseQuantity, runRemoveFromCart } from "./run/cart-run.js";
 import { closePopup } from "./util/popup.js";
+import { runAuthSubmit } from "./auth.js";
 
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
+const authElement = document.getElementById("auth-element");
 
 export const clickHandler = (e) => {
   const clickedElement = e.target;
@@ -25,7 +27,9 @@ export const clickHandler = (e) => {
   if (clickType === "decrease-quantity") runDecreaseQuantity(clickedElement);
   if (clickType === "remove-from-cart") runRemoveFromCart(clickedElement);
   if (clickType === "popup-close") closePopup();
+  if (clickType === "auth-submit") runAuthSubmit();
 };
 
 if (displayElement) displayElement.addEventListener("click", clickHandler);
 if (cartElement) cartElement.addEventListener("click", clickHandler);
+if (authElement) authElement.addEventListener("click", clickHandler);
