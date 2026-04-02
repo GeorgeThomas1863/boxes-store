@@ -1,0 +1,272 @@
+/* ================================================ */
+/* NEWSLETTER PAGE                                   */
+/* ================================================ */
+
+.newsletter-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.newsletter-page-header {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.newsletter-page-title {
+  font-size: 3rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #000000;
+  margin: 0;
+  font-weight: bold;
+}
+
+/* ---- Controls (dropdown) ---- */
+
+.newsletter-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.newsletter-select-label {
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #555;
+  white-space: nowrap;
+}
+
+.newsletter-select {
+  flex: 1;
+  min-width: 220px;
+  background: #fff;
+  color: #111;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23555' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+}
+
+.newsletter-select:hover {
+  border-color: #999;
+}
+
+.newsletter-select:focus {
+  border-color: #555;
+}
+
+/* ---- Newsletter card ---- */
+
+.newsletter-display-area {
+  min-height: 200px;
+}
+
+.newsletter-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.newsletter-card .collapse-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.newsletter-card .newsletter-card-header.collapse-title {
+  padding: 0;
+  flex: 1;
+  border-bottom: none;
+  text-transform: none;
+}
+
+.newsletter-card-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.newsletter-card-subject {
+  font-size: 1.9rem;
+  color: #111;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.newsletter-card-date {
+  font-size: 1rem;
+  color: #111;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.newsletter-card-body {
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: #111;
+  line-height: 1.8;
+  max-height: 550px;
+  overflow-y: auto;
+}
+
+.newsletter-card .collapse-content {
+  padding: 0;
+}
+
+.newsletter-card-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem 0;
+}
+
+.newsletter-card-body p {
+  margin: 0 0 1rem 0;
+}
+
+.newsletter-card-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- Signup section ---- */
+
+.newsletter-signup-section {
+  background: rgb(220, 240, 200);
+  border-radius: 8px;
+  padding: 2rem;
+  margin-top: 2.5rem;
+  border: 2px dashed rgb(150, 200, 100);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.newsletter-signup-title {
+  font-size: 1.8rem;
+  color: #000000;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.newsletter-signup-description {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.newsletter-signup-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.newsletter-signup-checkbox-wrapper input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  margin-right: 12px;
+  cursor: pointer;
+  accent-color: rgb(150, 200, 100);
+}
+
+.newsletter-signup-checkbox-wrapper label {
+  font-size: 1.3rem;
+  color: #000000;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.newsletter-signup-email-wrapper {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.newsletter-signup-email-wrapper.hidden {
+  display: none;
+}
+
+.newsletter-signup-email-input {
+  font-family: "Georgia", serif;
+  flex: 1;
+  max-width: 350px;
+  padding: 0.9rem 1.2rem;
+  font-size: 1rem;
+  border: 2px solid rgb(150, 200, 100);
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.newsletter-signup-email-input:focus {
+  border-color: rgb(100, 150, 50);
+}
+
+.newsletter-signup-email-input::placeholder {
+  font-family: "Indie Flower", cursive;
+  color: #999;
+}
+
+.newsletter-signup-submit-btn {
+  padding: 0.9rem 2rem;
+  font-size: 1rem;
+  font-family: "Indie Flower", cursive;
+  font-weight: bold;
+  background-color: rgb(150, 200, 100);
+  color: #000;
+  border: 2px solid rgb(150, 200, 100);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.newsletter-signup-submit-btn:hover {
+  background-color: rgb(130, 180, 80);
+  border-color: rgb(130, 180, 80);
+}
+
+.newsletter-signup-submit-btn:active {
+  background-color: rgb(110, 160, 60);
+  transform: translateY(1px);
+}
+
+/* ---- Empty state ---- */
+
+.newsletter-empty-state {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.newsletter-empty-message {
+  color: #888;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  margin: 0;
+}

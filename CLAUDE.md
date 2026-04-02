@@ -6,13 +6,13 @@ Important: You are the orchestrator. subagents execute. you should NOT build, ve
 
 Keep your replies extremely concise and focus on providing necessary information.
 
+When building or implementing a new feature use the code found in the .EXAMPLES/ directory to understand how the user prefers to build / design. Note the patterns shown in the .EXAMPLES/ folder and try to emulate them in your solution. The EXAMPLES directory I'm talking about is in the root directory of this project.
+
 Put all pictures / screenshots you take with the mcp plugin in the "pics" subfolder, under the .claude folder in THIS project.
 
 Do NOT commit anything to GitHub. The user will control all commits to GitHub. Do NOT edit or in any way change the user's Git history or interact with GitHub.
 
 If you make a mistake or the user points out something is wrong or corrects you, please make note of it here, so you can avoid that mistake in the future.
-
-When building / implementing a new feature use the code found in the .claude/EXAMPLES directory to understand how the user prefers to build / design. Note the patterns shown in the .claude/EXAMPLES folder and try to emulate them in your solution. The EXAMPLES directory I'm talking about is in the .claude folder for this project (the .claude folder in THIS root directory).
 
 # boxes-store
 

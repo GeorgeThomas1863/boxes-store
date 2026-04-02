@@ -13,8 +13,10 @@ config/
 
 .claude/pics/
 
-.claude/EXAMPLES/
-.claude/EXAMPLES/*
+# .EXAMPLES/
+# .EXAMPLES/*
+
+.playwright-mcp/
 
 # logs
 logs

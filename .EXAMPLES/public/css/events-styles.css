@@ -1,0 +1,227 @@
+.events-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.events-page-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.events-page-title {
+  font-size: 3rem;
+  font-weight: bold;
+  letter-spacing: 3px;
+  color: #000000;
+  text-transform: uppercase;
+}
+
+/* Events Grid */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  align-items: start;
+}
+
+.event-card {
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #e0e0e0;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* !!!change object fit to cover if needed */
+.event-image {
+  width: 100%;
+  height: 250px;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  border-bottom: 1px solid #e0e0e0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.event-content {
+  padding: 0;
+}
+
+.event-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e74c3c;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  font-size: 1.35rem;
+  padding: 1.5rem 2rem 0 2rem;
+}
+
+.event-title {
+  font-size: 1.8rem;
+  color: #000000;
+  /* margin-bottom: 1rem; */
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.event-location {
+  margin-top: 1.5rem;
+  color: #7f8c8d;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.event-location-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.event-location-link:hover {
+  text-decoration: underline;
+}
+
+.event-description {
+  color: #555;
+  line-height: 1.6;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.events-newsletter-section {
+  background: rgb(220, 240, 200);
+  border-radius: 8px;
+  padding: 2rem;
+  margin-top: 3rem;
+  border: 2px dashed rgb(150, 200, 100);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.events-newsletter-title {
+  font-size: 1.8rem;
+  color: #000000;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.events-newsletter-description {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.events-newsletter-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.events-newsletter-checkbox-wrapper input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  margin-right: 12px;
+  cursor: pointer;
+  accent-color: rgb(150, 200, 100);
+}
+
+.events-newsletter-checkbox-wrapper label {
+  font-size: 1.3rem;
+  color: #000000;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.events-newsletter-email-wrapper {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.events-newsletter-email-wrapper.hidden {
+  display: none;
+}
+
+.events-newsletter-email-input {
+  font-family: "Georgia", serif;
+  flex: 1;
+  max-width: 350px;
+  padding: 0.9rem 1.2rem;
+  font-size: 1rem;
+  border: 2px solid rgb(150, 200, 100);
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.events-newsletter-email-input:focus {
+  border-color: rgb(100, 150, 50);
+}
+
+.events-newsletter-email-input::placeholder {
+  font-family: "Indie Flower", cursive;
+  color: #999;
+}
+
+.events-newsletter-submit-btn {
+  padding: 0.9rem 2rem;
+  font-size: 1rem;
+  font-family: "Indie Flower", cursive;
+  font-weight: bold;
+  background-color: rgb(150, 200, 100);
+  color: #000;
+  border: 2px solid rgb(150, 200, 100);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.events-newsletter-submit-btn:hover {
+  background-color: rgb(130, 180, 80);
+  border-color: rgb(130, 180, 80);
+}
+
+.events-newsletter-submit-btn:active {
+  background-color: rgb(110, 160, 60);
+  transform: translateY(1px);
+}
+
+/* Collapse overrides for event cards */
+.event-collapse {
+  border-radius: 0 0 8px 8px;
+}
+
+.event-card .collapse-content.hidden {
+  padding: 0;
+}
+
+.event-title.collapse-title {
+  text-transform: none;
+}

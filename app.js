@@ -1,3 +1,7 @@
+//build the admin capability / display (build admin auth first)
+
+//remove examples directory later
+
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env" });

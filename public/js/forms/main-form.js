@@ -41,7 +41,6 @@ export const buildNavBar = async () => {
   ul.className = "nav-links";
 
   const navItems = [
-    // { text: "Welcome", href: "/" }, //not needed
     { text: "How it works", href: "/how-it-works" },
     { text: "About", href: "/about" },
     { text: "Contact", href: "/contact" },
@@ -164,10 +163,12 @@ export const buildNavBar = async () => {
   return nav;
 };
 
+//-------------------------------------------
+
 export const buildCard = async (type) => {
   const configs = {
-    girl: { src: "/images/girl-card.png", label: "Just a Girl", productId: "girl-001", price: 25.00 },
-    fabulous: { src: "/images/misspelled-card.png", label: "Fabulous", productId: "fabulous-001", price: 30.00 },
+    girl: { src: "/images/girl-card.png", label: "Just a Girl", productId: "girl-001", price: 25.0 },
+    fabulous: { src: "/images/misspelled-card.png", label: "Fabulous", productId: "fabulous-001", price: 30.0 },
   };
   const config = configs[type];
   if (!config) return null;

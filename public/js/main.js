@@ -17,6 +17,17 @@ export const buildMainDisplay = async () => {
   return true;
 };
 
+export const buildAdminDisplay = async () => {
+  if (!adminElement) return null;
+
+  const adminFormData = await buildAdminForm();
+  adminElement.append(adminFormData);
+
+  await updateAdminStats();
+
+  return true;
+};
+
 export const buildCartDisplay = async () => {
   if (!cartElement) return null;
 

@@ -1,0 +1,7 @@
+@media (max-width: 480px) {
+  .popup-notification {
+    min-width: 0;
+    max-width: calc(100vw - 2rem);
+    width: calc(100vw - 2rem);
+  }
+}

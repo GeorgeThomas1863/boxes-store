@@ -8,6 +8,10 @@ export const displayMain = async (req, res) => {
   res.sendFile(path.join(__dirname, "../html/index.html"));
 };
 
+export const displayAdmin = async (req, res) => {
+  res.sendFile(path.join(__dirname, "../html/admin.html"));
+};
+
 export const displayCart = async (req, res) => {
   res.sendFile(path.join(__dirname, "../html/cart.html"));
 };
