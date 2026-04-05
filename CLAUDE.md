@@ -6,12 +6,18 @@ Important: You are the orchestrator. subagents execute. you should NOT build, ve
 
 Keep your replies extremely concise and focus on providing necessary information.
 
-When building or implementing a new feature use the code found in the .EXAMPLES/ directory to understand how the user prefers to build / design. Note the patterns shown in the .EXAMPLES/ folder and try to emulate them in your solution. The EXAMPLES directory I'm talking about is in the root directory of this project.
+When building or implementing a new feature use the code found in the .EXAMPLE-CODE/ directory to understand how the user prefers to build / design. Note the patterns shown in the .EXAMPLE-CODE/ folder and try to emulate them in your solution. The .EXAMPLE-CODE directory I'm talking about is in the root directory of this project.
 
 Put all pictures / screenshots you take with the mcp plugin in the "pics" subfolder, under the .claude folder in THIS project.
 
+# User preferences
+
+**Playwright usage**: Do NOT use Playwright for small CSS changes (a few property tweaks, minor adjustments). Reserve Playwright only for large UI changes where visual verification is worth the time and token cost. The user verifies small CSS changes themselves.
+
+**GitHub Rules**
 Do NOT commit anything to GitHub. The user will control all commits to GitHub. Do NOT edit or in any way change the user's Git history or interact with GitHub.
 
+**Continuously LEARN and improve**
 If you make a mistake or the user points out something is wrong or corrects you, please make note of it here, so you can avoid that mistake in the future.
 
 # boxes-store

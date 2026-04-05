@@ -13,8 +13,7 @@ config/
 
 .claude/pics/
 
-# .EXAMPLES/
-# .EXAMPLES/*
+.EXAMPLE-CODE/*
 
 .playwright-mcp/
 
