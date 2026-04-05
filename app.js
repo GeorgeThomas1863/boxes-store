@@ -2,7 +2,7 @@
 
 //make auth button work
 
-//remove examples directory later
+//remove examples directory 
 
 import dotenv from "dotenv";
 
