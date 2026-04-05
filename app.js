@@ -1,5 +1,7 @@
 //build the admin capability / display (build admin auth first)
 
+//make auth button work
+
 //remove examples directory later
 
 import dotenv from "dotenv";
