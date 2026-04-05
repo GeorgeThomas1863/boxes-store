@@ -3,7 +3,7 @@ import { buildCartForm } from "./forms/cart-form.js";
 import { buildAdminForm } from "./forms/admin-form.js";
 import { populateCart, updateNavbarCart } from "./run/cart-run.js";
 import { buildAuthDisplay } from "./auth.js";
-import { updateAdminStats } from "./helpers/admin-run.js";
+import { updateAdminStats } from "./run/admin-run.js";
 
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
