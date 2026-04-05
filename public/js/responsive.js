@@ -1,6 +1,7 @@
 import { runAddToCart, runIncreaseQuantity, runDecreaseQuantity, runRemoveFromCart } from "./run/cart-run.js";
-import { closePopup } from "./util/popup.js";
+import { closePopup } from "./run/popup.js";
 import { runAuthSubmit } from "./auth.js";
+import { runPwToggle } from "./run/collapse.js";
 
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
@@ -21,6 +22,10 @@ export const clickHandler = (e) => {
     const menu = document.querySelector(".nav-links");
     menu.classList.toggle("open");
   }
+
+  if (clickType === "pwToggle") runPwToggle();
+
+  if (clickType === "auth-submit") runAuthSubmit();
 
   if (clickType === "add-to-cart") runAddToCart(clickedElement);
   if (clickType === "increase-quantity") runIncreaseQuantity(clickedElement);
