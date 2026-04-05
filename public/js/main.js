@@ -1,11 +1,14 @@
 import { buildMainForm, buildNavBar } from "./forms/main-form.js";
 import { buildCartForm } from "./forms/cart-form.js";
+import { buildAdminForm } from "./forms/admin-form.js";
 import { populateCart, updateNavbarCart } from "./run/cart-run.js";
 import { buildAuthDisplay } from "./auth.js";
+import { updateAdminStats } from "./helpers/admin-run.js";
 
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
 const authElement = document.getElementById("auth-element");
+const adminElement = document.getElementById("admin-element");
 
 export const buildMainDisplay = async () => {
   if (!displayElement) return null;
@@ -45,5 +48,6 @@ export const buildCartDisplay = async () => {
 };
 
 if (displayElement) buildMainDisplay();
+if (adminElement) buildAdminDisplay();
 if (cartElement) buildCartDisplay();
 if (authElement) buildAuthDisplay();

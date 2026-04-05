@@ -1,10 +1,11 @@
+const adminElement = document.getElementById("admin-element");
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
 
 export const getTargetElement = async () => {
+  if (adminElement) return adminElement;
   if (displayElement) return displayElement;
   if (cartElement) return cartElement;
-
   return null;
 };
 

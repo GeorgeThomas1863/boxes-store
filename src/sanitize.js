@@ -16,3 +16,15 @@ export const validatePositiveInt = (val) => {
   if (isNaN(parsed) || parsed <= 0) return null;
   return parsed;
 };
+
+// Return new object with only allowed keys (prevents mass assignment)
+export const whitelistFields = (obj, allowedFields) => {
+  if (!obj || typeof obj !== "object") return {};
+  const result = {};
+  for (const field of allowedFields) {
+    if (obj.hasOwnProperty(field)) {
+      result[field] = obj[field];
+    }
+  }
+  return result;
+};
