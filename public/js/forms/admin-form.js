@@ -193,10 +193,8 @@ export const buildModalBody = async (mode, entityType) => {
   }
 
   const detailsSection = await buildProductDetailsSection(mode);
-  const statusSection = await buildProductStatusSection(mode);
-  const shippingSection = await buildProductShippingSection(mode);
 
-  body.append(detailsSection, statusSection, shippingSection);
+  body.append(detailsSection);
 
   return body;
 };
@@ -253,7 +251,7 @@ export const buildProductDetailsSection = async (mode) => {
   icon.className = "section-icon";
   icon.textContent = "📦";
 
-  const title = document.createElement("h4");
+  const title = document.createElement("h3");
   title.className = "section-title";
   title.textContent = "Product Details";
 
@@ -268,94 +266,14 @@ export const buildProductDetailsSection = async (mode) => {
 
   const slugRow = await buildInfoRow(mode, "url-name", "URL Ending");
 
-  const typeRow = await buildInfoRowSelect(mode, "product-type", "Type", [
-    { value: "acorns", text: "Acorns", selected: true },
-    { value: "mountainTreasureBaskets", text: "Mountain Treasure Baskets" },
-    { value: "animals", text: "Animals" },
-    { value: "geodes", text: "Geodes" },
-    { value: "gnomeHouses", text: "Gnome Houses" },
-    { value: "wallPieces", text: "Wall Pieces" },
-    { value: "other", text: "Other" },
-  ]);
-
   const priceRow = await buildInfoRowPrice(mode, "price", "Price");
   const descRow = await buildInfoRowTextarea(mode, "description", "Description");
 
-  section.append(header, itemIdRow, nameRow, typeRow, priceRow, descRow, slugRow);
+  section.append(header, itemIdRow, nameRow, priceRow, descRow, slugRow);
 
   return section;
 };
 
-export const buildProductStatusSection = async (mode) => {
-  const section = document.createElement("div");
-  section.className = "product-section";
-
-  const header = document.createElement("div");
-  header.className = "section-header";
-
-  const icon = document.createElement("span");
-  icon.className = "section-icon";
-  icon.textContent = "⚙️";
-
-  const title = document.createElement("h4");
-  title.className = "section-title";
-  title.textContent = "Product Status";
-
-  header.append(icon, title);
-
-  const statusGrid = document.createElement("div");
-  statusGrid.className = "status-grid";
-
-  const displayCard = await buildStatusCard(mode, "display", "Show on Site", "display-card");
-  const soldCard = await buildStatusCard(mode, "sold", "Sold?", "sold-card");
-  const canShipCard = await buildStatusCard(mode, "can-ship", "Can Ship", "can-ship-card");
-
-  statusGrid.append(soldCard, displayCard, canShipCard);
-  section.append(header, statusGrid);
-
-  return section;
-};
-
-export const buildProductShippingSection = async (mode) => {
-  const section = document.createElement("div");
-  section.className = "product-section product-section-last";
-  section.id = mode === "add" ? "add-shipping-section" : "edit-shipping-section";
-
-  const header = document.createElement("div");
-  header.className = "section-header";
-
-  const icon = document.createElement("span");
-  icon.className = "section-icon";
-  icon.textContent = "📏";
-
-  const title = document.createElement("h4");
-  title.className = "section-title";
-  title.textContent = "Shipping Information";
-
-  header.append(icon, title);
-
-  const shippingLayout = document.createElement("div");
-  shippingLayout.className = "shipping-layout";
-
-  const col1 = document.createElement("div");
-  col1.className = "shipping-col";
-
-  const col2 = document.createElement("div");
-  col2.className = "shipping-col";
-
-  const lengthItem = await buildShippingItem(mode, "length", "Length", 8);
-  const widthItem = await buildShippingItem(mode, "width", "Width", 6);
-  const heightItem = await buildShippingItem(mode, "height", "Height", 6);
-  const weightItem = await buildShippingItem(mode, "weight", "Weight", 2);
-
-  col1.append(lengthItem, widthItem, heightItem);
-  col2.append(weightItem);
-
-  shippingLayout.append(col1, col2);
-  section.append(header, shippingLayout);
-
-  return section;
-};
 
 // =============================
 // PRODUCT SELECTOR
@@ -506,78 +424,4 @@ export const buildInfoRowTextarea = async (mode, fieldName, labelText) => {
   return row;
 };
 
-export const buildStatusCard = async (mode, fieldName, labelText, dataLabel = null) => {
-  const card = document.createElement("div");
-  card.className = "status-card";
 
-  const label = document.createElement("div");
-  label.className = "status-label";
-  label.textContent = labelText;
-
-  const select = document.createElement("select");
-  select.className = "status-select";
-  select.id = mode === "add" ? fieldName : `edit-${fieldName}`;
-  select.name = mode === "add" ? fieldName : `edit-${fieldName}`;
-  if (dataLabel) {
-    select.setAttribute("data-label", dataLabel);
-  }
-
-  if (mode === "edit") {
-    select.disabled = true;
-  }
-
-  const yesOption = document.createElement("option");
-  yesOption.value = "yes";
-  yesOption.textContent = "Yes";
-  if (fieldName === "display" || fieldName === "can-ship") {
-    yesOption.selected = true;
-  }
-
-  const noOption = document.createElement("option");
-  noOption.value = "no";
-  noOption.textContent = "No";
-  if (fieldName === "sold") {
-    noOption.selected = true;
-  }
-
-  select.append(yesOption, noOption);
-
-  const initialValue = fieldName === "sold" ? "no" : "yes";
-  select.classList.add(`status-${initialValue}`);
-
-  card.append(label, select);
-
-  return card;
-};
-
-export const buildShippingItem = async (mode, fieldName, labelText, defaultValue = null) => {
-  const item = document.createElement("div");
-  item.className = "shipping-item";
-
-  const label = document.createElement("span");
-  label.className = "shipping-label";
-  label.textContent = labelText;
-
-  const inputWrapper = document.createElement("div");
-  inputWrapper.className = "shipping-value-wrapper";
-
-  const input = document.createElement("input");
-  input.className = "shipping-value shipping-input";
-  input.type = "text";
-  input.id = mode === "add" ? fieldName : `edit-${fieldName}`;
-  input.name = mode === "add" ? fieldName : `edit-${fieldName}`;
-  input.placeholder = defaultValue !== null ? String(defaultValue) : "0";
-
-  if (mode === "edit") {
-    input.disabled = true;
-  }
-
-  const unit = document.createElement("span");
-  unit.className = "shipping-unit";
-  unit.textContent = fieldName === "weight" ? "lbs" : "in";
-
-  inputWrapper.append(input, unit);
-  item.append(label, inputWrapper);
-
-  return item;
-};

@@ -3,7 +3,7 @@ import { closePopup, closeConfirmDialog } from "./util/popup.js";
 import { runPwToggle } from "./util/collapse.js";
 
 import { runAddToCart, runIncreaseQuantity, runDecreaseQuantity, runRemoveFromCart } from "./run/cart-run.js";
-import { runModalTrigger, runModalClose, runChangeStatusCard, updateAdminStats } from "./run/admin-run.js";
+import { runModalTrigger, runModalClose, updateAdminStats } from "./run/admin-run.js";
 import { runAddNewProduct, runEditProduct, runDeleteProduct, changeAdminProductSelector } from "./run/admin-products.js";
 
 const displayElement = document.getElementById("display-element");
@@ -59,10 +59,6 @@ export const changeHandler = async (e) => {
   const changeType = changeElement.getAttribute("data-label");
 
   if (changeId === "product-selector") await changeAdminProductSelector(changeElement);
-
-  if (changeType === "display-card" || changeType === "sold-card" || changeType === "can-ship-card") {
-    await runChangeStatusCard(changeElement);
-  }
 };
 
 export const inputHandler = async (e) => {

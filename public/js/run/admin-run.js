@@ -42,32 +42,6 @@ export const runModalClose = async (clickElement) => {
   return true;
 };
 
-export const runChangeStatusCard = async (changeElement) => {
-  if (!changeElement) return null;
-
-  const changeId = changeElement.id;
-
-  changeElement.classList.remove("status-yes", "status-no");
-  changeElement.classList.add(`status-${changeElement.value}`);
-
-  if (changeId !== "can-ship" && changeId !== "edit-can-ship") return null;
-
-  const prefix = changeId.includes("edit") ? "edit-" : "";
-  const shippingIds = [`${prefix}length`, `${prefix}width`, `${prefix}height`, `${prefix}weight`];
-
-  for (const id of shippingIds) {
-    const input = document.getElementById(id);
-    if (!input) continue;
-    if (changeElement.value === "no") {
-      input.value = "N/A";
-      input.disabled = true;
-    } else {
-      input.value = !input.value || input.value === "N/A" || input.value === "0" ? "5" : input.value;
-      input.disabled = false;
-    }
-  }
-};
-
 // =============================
 // FIELD ENABLE/DISABLE
 // =============================
@@ -77,16 +51,8 @@ export const enableAdminEditFields = async () => {
     "edit-item-id",
     "edit-name",
     "edit-url-name",
-    "edit-product-type",
     "edit-price",
     "edit-description",
-    "edit-display",
-    "edit-sold",
-    "edit-can-ship",
-    "edit-length",
-    "edit-width",
-    "edit-height",
-    "edit-weight",
     "edit-submit-button",
   ];
   for (let i = 0; i < enableFieldsArray.length; i++) {
@@ -101,16 +67,8 @@ export const disableAdminEditFields = async () => {
     "edit-item-id",
     "edit-name",
     "edit-url-name",
-    "edit-product-type",
     "edit-price",
     "edit-description",
-    "edit-display",
-    "edit-sold",
-    "edit-can-ship",
-    "edit-length",
-    "edit-width",
-    "edit-height",
-    "edit-weight",
     "edit-submit-button",
   ];
   for (let i = 0; i < disableFieldsArray.length; i++) {

@@ -195,49 +195,20 @@ export const populateAdminProductSelector = async (inputArray) => {
 export const populateEditFormProducts = async (inputObj) => {
   if (!inputObj) return null;
 
-  const { itemId, name, urlName, productType, price, description, display, sold, canShip, length, width, height, weight } = inputObj;
+  const { itemId, name, urlName, price, description } = inputObj;
 
   const adminEditMapArray = [
     { id: "edit-item-id", value: itemId },
     { id: "edit-name", value: name },
     { id: "edit-url-name", value: urlName },
-    { id: "edit-product-type", value: productType },
     { id: "edit-price", value: price },
-    { id: "edit-can-ship", value: canShip || "yes" },
-    { id: "edit-length", value: length || 5 },
-    { id: "edit-width", value: width || 5 },
-    { id: "edit-height", value: height || 5 },
-    { id: "edit-weight", value: weight || 5 },
     { id: "edit-description", value: description },
-    { id: "edit-display", value: display },
-    { id: "edit-sold", value: sold },
   ];
 
   for (let i = 0; i < adminEditMapArray.length; i++) {
     const field = document.getElementById(adminEditMapArray[i].id);
     if (field) {
       field.value = adminEditMapArray[i].value || "";
-    }
-  }
-
-  const statusIds = ["edit-display", "edit-sold", "edit-can-ship"];
-  for (const id of statusIds) {
-    const el = document.getElementById(id);
-    if (el) {
-      el.classList.remove("status-yes", "status-no");
-      el.classList.add(`status-${el.value}`);
-    }
-  }
-
-  const canShipEl = document.getElementById("edit-can-ship");
-  if (canShipEl?.value === "no") {
-    const shippingIds = ["edit-length", "edit-width", "edit-height", "edit-weight"];
-    for (const id of shippingIds) {
-      const input = document.getElementById(id);
-      if (input) {
-        input.value = "N/A";
-        input.disabled = true;
-      }
     }
   }
 
