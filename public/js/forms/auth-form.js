@@ -1,35 +1,63 @@
+import { EYE_CLOSED_SVG } from "../util/define-things.js";
+
 export const buildAuthForm = async () => {
-  const wrapper = document.createElement("div");
-  wrapper.id = "auth-form-wrapper";
+  const authFormWrapper = document.createElement("ul");
+  authFormWrapper.id = "auth-form-wrapper";
 
-  const heading = document.createElement("h2");
-  heading.id = "auth-heading";
-  heading.textContent = "Admin Login";
+  //build FORM list items
+  const authPwListItem = await buildAuthPwListItem();
+  const authButtonListItem = await buildAuthButtonListItem();
 
-  const ul = document.createElement("ul");
+  authFormWrapper.append(authPwListItem, authButtonListItem);
 
-  const pwItem = document.createElement("li");
-  pwItem.id = "auth-pw-list-item";
+  return authFormWrapper;
+};
 
-  const label = document.createElement("label");
-  label.id = "auth-label";
-  label.htmlFor = "auth-pw-input";
-  label.textContent = "Password";
+export const buildAuthPwListItem = async () => {
+  const authPwListItem = document.createElement("li");
+  authPwListItem.id = "auth-pw-list-item";
 
-  const input = document.createElement("input");
-  input.id = "auth-pw-input";
-  input.type = "password";
-  input.placeholder = "Enter password";
-  input.autocomplete = "current-password";
+  const authPwLabel = document.createElement("label");
+  authPwLabel.id = "auth-label";
+  authPwLabel.setAttribute("for", "auth-pw-input");
+  authPwLabel.textContent = "Enter Your Special Little Password";
 
-  pwItem.append(label, input);
-  ul.appendChild(pwItem);
+  const authPwWrapper = document.createElement("div");
+  authPwWrapper.className = "password-input-wrapper";
 
-  const submitBtn = document.createElement("button");
-  submitBtn.setAttribute("data-label", "auth-submit");
-  submitBtn.textContent = "Login";
+  const authPwInput = document.createElement("input");
+  authPwInput.type = "password";
+  authPwInput.name = "auth-pw-input";
+  authPwInput.id = "auth-pw-input";
+  authPwInput.className = "password-input";
 
-  wrapper.append(heading, ul, submitBtn);
+  authPwInput.placeholder = "Password here";
 
-  return wrapper;
+  const toggleAuthPwButton = document.createElement("button");
+  toggleAuthPwButton.type = "button";
+  toggleAuthPwButton.id = "toggle-auth-pw-button";
+  toggleAuthPwButton.className = "password-toggle-btn";
+  toggleAuthPwButton.setAttribute("data-label", "pwToggle");
+
+  toggleAuthPwButton.innerHTML = EYE_CLOSED_SVG;
+
+  authPwWrapper.append(authPwInput, toggleAuthPwButton);
+  authPwListItem.append(authPwLabel, authPwWrapper);
+
+  return authPwListItem;
+};
+
+export const buildAuthButtonListItem = async () => {
+  const authButtonListItem = document.createElement("li");
+  authButtonListItem.id = "auth-button-list-item";
+
+  const authButton = document.createElement("button");
+  authButton.id = "auth-button";
+  authButton.className = "btn-submit";
+  authButton.textContent = "SUBMIT";
+  authButton.setAttribute("data-label", "auth-submit");
+
+  authButtonListItem.append(authButton);
+
+  return authButtonListItem;
 };

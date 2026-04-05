@@ -1,11 +1,21 @@
 * {
-  font-family: "Roboto Condensed", sans-serif;
+  /* font-family: "Roboto Condensed", sans-serif; */
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-
+#background-pic {
+  top: 0;
+  left: 0;
+  position: fixed;
+  object-fit: cover;
+  object-position: center 20%; /* CONTROLS x y display  */
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  opacity: 0.8;
+}
 
 h1,
 h2,
@@ -34,9 +44,8 @@ h4 {
 }
 
 .hidden {
-    display: none !important;
-  }
-
+  display: none !important;
+}
 
 /* ── POPUP NOTIFICATION ── */
 
@@ -115,3 +124,4 @@ h4 {
 .popup-close:hover {
   color: #333;
 }
+
