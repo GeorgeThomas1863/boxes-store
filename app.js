@@ -1,4 +1,4 @@
-//build the admin capability / display (build admin auth first)
+//build the admin capability / display (build admin auth first) pic uplaod
 
 //make auth button work
 
