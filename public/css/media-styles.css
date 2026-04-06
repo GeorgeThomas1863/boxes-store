@@ -1,3 +1,65 @@
+@media (min-width: 540px) {
+  #auth-form-wrapper {
+    margin: 1.5rem auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .action-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .action-card {
+    padding: 4rem;
+  }
+
+  .action-icon {
+    font-size: 3.5rem;
+  }
+
+  .dashboard-title {
+    font-size: 2rem;
+  }
+
+  .info-row {
+    grid-template-columns: 180px 1fr;
+    gap: 1.5rem;
+  }
+
+  .info-label {
+    padding-top: 0.7rem;
+  }
+
+  .modal-overlay {
+    padding: 2rem;
+  }
+
+  .modal-wrapper {
+    max-width: 800px;
+    max-height: calc(100dvh - 4rem);
+  }
+
+  .modal-header {
+    padding: 1.5rem 2rem;
+  }
+
+  .modal-body {
+    padding: 2rem;
+  }
+
+  .modal-actions {
+    padding: 1.5rem 2rem;
+  }
+
+  .category-section {
+    padding: 1.5rem 2rem;
+  }
+
+  .image-editor-canvas-area {
+    height: 500px;
+  }
+}
+
 @media (max-width: 480px) {
   .popup-notification {
     min-width: 0;

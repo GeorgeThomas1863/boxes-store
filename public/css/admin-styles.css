@@ -10,6 +10,7 @@
   margin: 0 auto;
   max-width: 1200px;
   width: 100%;
+  padding: 0 1rem;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -52,7 +53,7 @@
 }
 
 .dashboard-title {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
   letter-spacing: 3px;
 }
@@ -67,7 +68,7 @@
 .category-section {
   background: #ffffff;
   border-radius: 8px;
-  padding: 1.5rem 2rem;
+  padding: 1rem;
   margin-bottom: 2rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border: 1px solid #e0e0e0;
@@ -109,7 +110,7 @@
 /* Action Cards */
 .action-cards {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 1.5rem;
 }
 
@@ -117,7 +118,7 @@
   background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
   border: 2px solid #e0e0e0;
   border-radius: 8px;
-  padding: 4rem;
+  padding: 2rem;
   cursor: pointer;
   transition: all 0.3s;
   text-align: center;
@@ -144,7 +145,7 @@
 }
 
 .action-icon {
-  font-size: 3.5rem;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
 }
 
@@ -362,7 +363,7 @@
   justify-content: center;
   align-items: flex-start;
   z-index: 1000;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .modal-overlay.visible {
@@ -370,9 +371,9 @@
 }
 
 .modal-wrapper {
-  max-width: 800px;
+  max-width: 100%;
   width: 100%;
-  max-height: calc(100vh - 4rem);
+  max-height: calc(100dvh - 2rem);
   overflow: hidden;
   border-radius: 8px;
   display: flex;
@@ -406,7 +407,7 @@
 .modal-header {
   background: rgba(0, 0, 0, 0.95);
   color: #ffffff;
-  padding: 1.5rem 2rem;
+  padding: 1rem 1.25rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -444,7 +445,7 @@
 
 /* Modal Body */
 .modal-body {
-  padding: 2rem;
+  padding: 1.25rem;
 }
 
 /* ================================ */
@@ -486,8 +487,8 @@
 /* Info Rows (for Product/Event Details) */
 .info-row {
   display: grid;
-  grid-template-columns: 180px 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 0.4rem;
   margin-bottom: 1.2rem;
   align-items: start;
 }
@@ -502,7 +503,6 @@
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #555;
-  padding-top: 0.7rem;
 }
 
 .info-content-wrapper {
@@ -931,7 +931,7 @@
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
-  padding: 1.5rem 2rem;
+  padding: 1rem 1.25rem;
   border-top: 1px solid #e0e0e0;
   background: #fafafa;
   border-radius: 0 0 8px 8px;
@@ -1188,7 +1188,7 @@
 
 .image-editor-canvas-area {
   width: 100%;
-  height: 500px;
+  height: 300px;
   background: #1a1a1a;
   overflow: hidden;
   position: relative;

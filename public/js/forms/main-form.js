@@ -8,8 +8,8 @@ export const buildMainForm = async () => {
   const navBar = await buildNavBar();
 
   const topImage = document.createElement("img");
-  topImage.src = "/images/company_label.png";
-  topImage.alt = "Bingo & Bows Co.";
+  topImage.src = "/images/PRN_logo.jpg";
+  topImage.alt = "PRN & Pretty Things";
   topImage.classList.add("top-banner-img");
 
   const cardsGrid = document.createElement("div");
