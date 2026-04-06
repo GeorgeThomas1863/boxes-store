@@ -57,9 +57,11 @@ export const runSlotUploadPic = async (fileInput) => {
   data.originalFilename = data.filename;
   uploadBtn.uploadData = data;
 
-  // Delete the old file after a successful replacement — fire-and-forget, UI is already updated
   if (previousFilename && previousFilename !== data.filename) {
-    sendToBack({ route: "/delete-pic-route", filename: previousFilename, entityType });
+    const deleteResult = await sendToBack({ route: "/delete-pic-route", filename: previousFilename, entityType });
+    if (!deleteResult || deleteResult === "FAIL") {
+      await displayPopup("Previous file could not be removed from server", "error");
+    }
   }
 
   if (currentImage && data.filename) {

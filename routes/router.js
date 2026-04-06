@@ -16,7 +16,7 @@ router.post("/site-auth-route", authRateLimit, authController);
 
 router.get("/admin", requireAuth, displayAdmin);
 
-router.get("/get-product-data-route", requireAuth, getProductDataControl);
+router.get("/get-product-data-route", getProductDataControl);
 router.post("/add-new-product-route", requireAuth, addNewProductControl);
 router.post("/edit-product-route", requireAuth, editProductControl);
 router.post("/delete-product-route", requireAuth, deleteProductControl);

@@ -1,4 +1,5 @@
 import { FACEBOOK_ICON_SVG, INSTAGRAM_ICON_SVG, TIKTOK_ICON_SVG } from "../util/define-things.js";
+import { sendToBack } from "../util/api-front.js";
 
 export const buildMainForm = async () => {
   const container = document.createElement("div");
@@ -14,9 +15,21 @@ export const buildMainForm = async () => {
   const cardsGrid = document.createElement("div");
   cardsGrid.classList.add("cards-grid");
 
-  const girlCard = await buildCard("girl");
-  const fabulousCard = await buildCard("fabulous");
-  cardsGrid.append(girlCard, fabulousCard);
+  const productData = await sendToBack({ route: "/get-product-data-route" }, "GET");
+  if (!productData || productData === "FAIL") {
+    const msg = document.createElement("p");
+    msg.className = "no-products-msg";
+    msg.textContent = "Unable to load products — please refresh the page.";
+    cardsGrid.append(msg);
+  } else {
+    const products = productData
+      .filter((p) => p.display !== "no" && p.sold !== "yes")
+      .sort((a, b) => new Date(b.dateCreated || 0) - new Date(a.dateCreated || 0));
+    for (let i = 0; i < products.length; i++) {
+      const card = buildCard(products[i]);
+      if (card) cardsGrid.append(card);
+    }
+  }
 
   const bottomText = await buildBottomText();
 
@@ -165,39 +178,39 @@ export const buildNavBar = async () => {
 
 //-------------------------------------------
 
-export const buildCard = async (type) => {
-  const configs = {
-    girl: { src: "/images/girl-card.png", label: "Just a Girl", productId: "girl-001", price: 25.0 },
-    fabulous: { src: "/images/misspelled-card.png", label: "Fabulous", productId: "fabulous-001", price: 30.0 },
-  };
-  const config = configs[type];
-  if (!config) return null;
+export const buildCard = (productData) => {
+  if (!productData) return null;
+
+  const { productId, name, price, picData } = productData;
 
   const card = document.createElement("div");
   card.classList.add("product-card");
-  card.setAttribute("data-product-id", config.productId);
+  card.setAttribute("data-product-id", productId);
 
-  const img = document.createElement("img");
-  img.src = config.src;
-  img.alt = config.label;
-  img.loading = "lazy";
-  img.className = "product-image";
+  if (picData && picData.length > 0) {
+    const img = document.createElement("img");
+    img.src = picData[0].path;
+    img.alt = name;
+    img.loading = "lazy";
+    img.className = "product-image";
+    card.append(img);
+  }
 
   const label = document.createElement("div");
   label.classList.add("card-label", "product-name");
-  label.textContent = config.label;
+  label.textContent = name;
 
   const priceSpan = document.createElement("span");
   priceSpan.className = "product-price";
-  priceSpan.textContent = `$${config.price.toFixed(2)}`;
+  priceSpan.textContent = `$${parseFloat(price || 0).toFixed(2)}`;
 
   const addToCartBtn = document.createElement("button");
   addToCartBtn.className = "add-to-cart-btn";
   addToCartBtn.setAttribute("data-label", "add-to-cart");
   addToCartBtn.textContent = "Add to Cart";
-  addToCartBtn.productId = config.productId;
+  addToCartBtn.productId = productId;
 
-  card.append(img, label, priceSpan, addToCartBtn);
+  card.append(label, priceSpan, addToCartBtn);
   return card;
 };
 
