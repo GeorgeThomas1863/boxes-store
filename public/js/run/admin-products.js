@@ -2,6 +2,7 @@ import { clearAdminEditFields, disableAdminEditFields, enableAdminEditFields, up
 import { sendToBack } from "../util/api-front.js";
 import { buildNewProductParams, getEditProductParams } from "../util/params.js";
 import { displayPopup, displayConfirmDialog } from "../util/popup.js";
+import { buildPicSlot } from "../forms/admin-form.js";
 
 // =============================
 // ADD PRODUCT
@@ -128,6 +129,20 @@ export const changeAdminProductSelector = async (changeElement) => {
 
   await clearAdminEditFields();
 
+  // Reset pic slots to a single empty disabled slot
+  const container = document.querySelector(".pic-slots-container");
+  if (container) {
+    container.innerHTML = "";
+    const emptySlot = buildPicSlot(0);
+    const slotUploadBtn = emptySlot.querySelector(".upload-btn");
+    const slotFileInput = emptySlot.querySelector(".pic-file-input");
+    if (slotUploadBtn) slotUploadBtn.disabled = true;
+    if (slotFileInput) slotFileInput.disabled = true;
+    container.append(emptySlot);
+  }
+  const addBtn = document.querySelector("[data-label='add-pic-slot']");
+  if (addBtn) addBtn.disabled = true;
+
   const selectedOption = changeElement.options[changeElement.selectedIndex];
   if (!selectedOption.value) {
     await disableAdminEditFields();
@@ -214,6 +229,49 @@ export const populateEditFormProducts = async (inputObj) => {
 
   const deleteButton = document.getElementById("delete-product-button");
   if (deleteButton) deleteButton.disabled = false;
+
+  // Rebuild image slots from picData
+  const pics = inputObj.picData ? (Array.isArray(inputObj.picData) ? inputObj.picData : [inputObj.picData]) : [];
+  const slotsContainer = document.querySelector(".pic-slots-container");
+  if (slotsContainer) {
+    slotsContainer.innerHTML = "";
+    for (let i = 0; i < pics.length; i++) {
+      const slot = buildPicSlot(i);
+      const slotUploadBtn = slot.querySelector(".upload-btn");
+      const slotCurrentImage = slot.querySelector(".current-image");
+      const slotCurrentVideo = slot.querySelector(".current-video");
+      const slotPlaceholder = slot.querySelector(".image-placeholder");
+      const slotDeleteBtn = slot.querySelector(".delete-image-btn");
+
+      if (slotUploadBtn) {
+        slotUploadBtn.uploadData = pics[i];
+        slotUploadBtn.textContent = "Change File";
+      }
+      if (pics[i].mediaType === "video") {
+        if (slotCurrentVideo) {
+          slotCurrentVideo.src = `/images/products/${pics[i].filename}`;
+          slotCurrentVideo.classList.remove("hidden");
+        }
+        if (slotCurrentImage) slotCurrentImage.classList.add("hidden");
+      } else {
+        if (slotCurrentImage) {
+          slotCurrentImage.src = `/images/products/${pics[i].filename}`;
+          slotCurrentImage.classList.remove("hidden");
+        }
+        if (slotCurrentVideo) slotCurrentVideo.classList.add("hidden");
+      }
+      if (slotPlaceholder) slotPlaceholder.classList.add("hidden");
+      if (slotDeleteBtn) slotDeleteBtn.classList.remove("hidden");
+
+      slotsContainer.append(slot);
+    }
+    if (pics.length === 0) {
+      slotsContainer.append(buildPicSlot(0));
+    }
+  }
+
+  const addBtn = document.querySelector("[data-label='add-pic-slot']");
+  if (addBtn) addBtn.disabled = false;
 
   return true;
 };

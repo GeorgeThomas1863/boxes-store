@@ -34,7 +34,7 @@ export const sendToBackFile = async (inputParams) => {
       body: formData,
     });
 
-    if (res.error) {
+    if (!res.ok) {
       return "FAIL";
     }
 

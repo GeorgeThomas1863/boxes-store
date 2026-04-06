@@ -12,6 +12,7 @@ config/
 .env.*
 
 .claude/pics/
+.claude/settings.local.json
 
 .EXAMPLE-CODE/*
 

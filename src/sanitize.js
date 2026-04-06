@@ -28,3 +28,15 @@ export const whitelistFields = (obj, allowedFields) => {
   }
   return result;
 };
+
+// Strip path separators and traversal sequences, return basename only
+export const sanitizeFilename = (filename) => {
+  if (typeof filename !== "string") return "";
+  // Remove any path traversal sequences
+  let clean = filename.replace(/\.\./g, "");
+  // Extract basename (remove directory components)
+  clean = clean.replace(/^.*[\\\/]/, "");
+  // Remove any remaining null bytes
+  clean = clean.replace(/\0/g, "");
+  return clean;
+};

@@ -18,7 +18,8 @@
       "Bash(node:*)",
       "Bash(cmd.exe:*)",
       "mcp__plugin_playwright_playwright__browser_fill_form",
-      "mcp__plugin_playwright_playwright__browser_evaluate"
+      "mcp__plugin_playwright_playwright__browser_evaluate",
+      "Bash(grep -E \"\\\\.\\(js|html|ejs\\)$\")"
     ]
   }
 }

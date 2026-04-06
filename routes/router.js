@@ -6,7 +6,9 @@ import { authRateLimit } from "../middleware/rate-limit.js";
 import { displayMain, displayAdmin, displayCart, display404, display500 } from "../controllers/display-controller.js";
 import { getCartDataControl, getCartStatsControl, addToCartControl, updateCartItemControl, removeFromCartControl, clearCartControl } from "../controllers/data-controller.js";
 import { authController } from "../controllers/auth-controller.js";
-import { getProductDataControl, addNewProductControl, editProductControl, deleteProductControl } from "../controllers/admin-controller.js";
+import { getProductDataControl, addNewProductControl, editProductControl, deleteProductControl, uploadPicControl, deletePicControl } from "../controllers/admin-controller.js";
+import { upload } from "../src/upload-back.js";
+import { uploadErrorHandler } from "../middleware/upload-error.js";
 
 const router = express.Router();
 
@@ -18,6 +20,8 @@ router.get("/get-product-data-route", requireAuth, getProductDataControl);
 router.post("/add-new-product-route", requireAuth, addNewProductControl);
 router.post("/edit-product-route", requireAuth, editProductControl);
 router.post("/delete-product-route", requireAuth, deleteProductControl);
+router.post("/upload-product-pic-route", requireAuth, upload.single("image"), uploadErrorHandler, uploadPicControl);
+router.post("/delete-pic-route", requireAuth, deletePicControl);
 
 router.get("/cart", displayCart);
 

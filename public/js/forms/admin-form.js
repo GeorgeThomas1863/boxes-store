@@ -193,8 +193,9 @@ export const buildModalBody = async (mode, entityType) => {
   }
 
   const detailsSection = await buildProductDetailsSection(mode);
+  const imagesSection = await buildProductImagesSection(mode);
 
-  body.append(detailsSection);
+  body.append(detailsSection, imagesSection);
 
   return body;
 };
@@ -239,6 +240,107 @@ export const buildModalActions = async (mode, entityType) => {
 // =============================
 // PRODUCT FORM SECTIONS
 // =============================
+
+export const buildPicSlot = (index, entityType = "products") => {
+  const slot = document.createElement("div");
+  slot.className = "pic-slot";
+  slot.setAttribute("data-slot-index", String(index));
+
+  const imageDisplay = document.createElement("div");
+  imageDisplay.className = "image-display";
+
+  const imagePlaceholder = document.createElement("div");
+  imagePlaceholder.className = "image-placeholder";
+  imagePlaceholder.textContent = "🖼️";
+
+  const currentImage = document.createElement("img");
+  currentImage.className = "current-image hidden";
+  currentImage.alt = "Product image";
+
+  const currentVideo = document.createElement("video");
+  currentVideo.className = "current-video hidden";
+  currentVideo.controls = true;
+
+  const deleteImageBtn = document.createElement("button");
+  deleteImageBtn.type = "button";
+  deleteImageBtn.className = "delete-image-btn hidden";
+  deleteImageBtn.innerHTML = "×";
+  deleteImageBtn.title = "Delete file";
+  deleteImageBtn.setAttribute("data-label", "delete-slot-image");
+
+  imageDisplay.append(imagePlaceholder, currentImage, currentVideo, deleteImageBtn);
+
+  const picInput = document.createElement("input");
+  picInput.type = "file";
+  picInput.className = "pic-file-input hidden";
+  picInput.accept = ".jpg,.jpeg,.png,.gif,.webp";
+
+  const uploadBtn = document.createElement("button");
+  uploadBtn.type = "button";
+  uploadBtn.className = "upload-btn";
+  uploadBtn.textContent = "Choose File";
+  uploadBtn.setAttribute("data-label", "slot-upload-click");
+  uploadBtn.entityType = entityType;
+
+  const uploadStatus = document.createElement("span");
+  uploadStatus.className = "upload-status hidden";
+
+  const removeSlotBtn = document.createElement("button");
+  removeSlotBtn.type = "button";
+  removeSlotBtn.className = "remove-slot-btn";
+  removeSlotBtn.textContent = "Remove slot";
+  removeSlotBtn.setAttribute("data-label", "remove-pic-slot");
+  if (index === 0) removeSlotBtn.classList.add("hidden");
+
+  const actionsRow = document.createElement("div");
+  actionsRow.className = "slot-image-actions";
+  actionsRow.append(uploadBtn);
+
+  slot.append(imageDisplay, picInput, actionsRow, uploadStatus, removeSlotBtn);
+
+  return slot;
+};
+
+export const buildProductImagesSection = async (mode) => {
+  const section = document.createElement("div");
+  section.className = "product-section";
+
+  const header = document.createElement("div");
+  header.className = "section-header";
+
+  const icon = document.createElement("span");
+  icon.className = "section-icon";
+  icon.textContent = "📷";
+
+  const title = document.createElement("h3");
+  title.className = "section-title";
+  title.textContent = "Product Images";
+
+  header.append(icon, title);
+
+  const slotsContainer = document.createElement("div");
+  slotsContainer.className = "pic-slots-container";
+
+  const initialSlot = buildPicSlot(0);
+  if (mode === "edit") {
+    const slotUploadBtn = initialSlot.querySelector(".upload-btn");
+    const slotFileInput = initialSlot.querySelector(".pic-file-input");
+    if (slotUploadBtn) slotUploadBtn.disabled = true;
+    if (slotFileInput) slotFileInput.disabled = true;
+  }
+  slotsContainer.append(initialSlot);
+
+  const addBtn = document.createElement("button");
+  addBtn.type = "button";
+  addBtn.className = "btn-add-image";
+  addBtn.textContent = "+ Add Image";
+  addBtn.setAttribute("data-label", "add-pic-slot");
+  if (mode === "edit") addBtn.disabled = true;
+
+  section.append(header, slotsContainer, addBtn);
+
+  return section;
+};
 
 export const buildProductDetailsSection = async (mode) => {
   const section = document.createElement("div");

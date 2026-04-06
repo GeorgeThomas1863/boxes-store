@@ -5,6 +5,7 @@ import { runPwToggle } from "./util/collapse.js";
 import { runAddToCart, runIncreaseQuantity, runDecreaseQuantity, runRemoveFromCart } from "./run/cart-run.js";
 import { runModalTrigger, runModalClose, updateAdminStats } from "./run/admin-run.js";
 import { runAddNewProduct, runEditProduct, runDeleteProduct, changeAdminProductSelector } from "./run/admin-products.js";
+import { runSlotUploadPic, runSlotUploadClick, runDeleteSlotImage, runAddPicSlot, runRemovePicSlot } from "./run/upload-pic.js";
 
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
@@ -51,12 +52,22 @@ export const clickHandler = async (e) => {
   if (clickType === "delete-product-submit") await runDeleteProduct();
 
   if (clickType === "refresh-admin-stats") await updateAdminStats();
+
+  if (clickType === "slot-upload-click") await runSlotUploadClick(clickedElement);
+  if (clickType === "delete-slot-image") await runDeleteSlotImage(clickedElement);
+  if (clickType === "add-pic-slot") await runAddPicSlot();
+  if (clickType === "remove-pic-slot") await runRemovePicSlot(clickedElement);
 };
 
 export const changeHandler = async (e) => {
   const changeElement = e.target;
   const changeId = changeElement.id;
   const changeType = changeElement.getAttribute("data-label");
+
+  if (changeElement.classList.contains("pic-file-input")) {
+    if (e.target.files[0]) await runSlotUploadPic(changeElement);
+    return;
+  }
 
   if (changeId === "product-selector") await changeAdminProductSelector(changeElement);
 };
