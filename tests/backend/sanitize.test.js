@@ -7,7 +7,8 @@ describe("sanitizeFilename", () => {
   });
 
   it("strips unix-style path traversal sequences (../)", () => {
-    expect(sanitizeFilename("../../etc/passwd")).toBe("etcpasswd");
+    // `..` sequences removed → `//etc/passwd`, then basename extracted → `passwd`
+    expect(sanitizeFilename("../../etc/passwd")).toBe("passwd");
   });
 
   it("strips windows-style path traversal sequences (..\\)", () => {

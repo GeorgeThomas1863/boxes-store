@@ -7,26 +7,26 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // Mock all external dependencies before importing the module under test
 // ---------------------------------------------------------------------------
 
-vi.mock("../../../public/js/util/api-front.js", () => ({
+vi.mock("../../public/js/util/api-front.js", () => ({
   sendToBack: vi.fn(),
   sendToBackFile: vi.fn(),
 }));
 
-vi.mock("../../../public/js/util/popup.js", () => ({
+vi.mock("../../public/js/util/popup.js", () => ({
   displayPopup: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock("../../../public/js/forms/admin-form.js", () => ({
+vi.mock("../../public/js/forms/admin-form.js", () => ({
   buildPicSlot: vi.fn((index, entityType) => buildRealSlot(entityType)),
 }));
 
-import { sendToBack, sendToBackFile } from "../../../public/js/util/api-front.js";
-import { displayPopup } from "../../../public/js/util/popup.js";
+import { sendToBack, sendToBackFile } from "../../public/js/util/api-front.js";
+import { displayPopup } from "../../public/js/util/popup.js";
 import {
   runSlotUploadPic,
   runDeleteSlotImage,
   runRemovePicSlot,
-} from "../../../public/js/run/upload-pic.js";
+} from "../../public/js/run/upload-pic.js";
 
 // ---------------------------------------------------------------------------
 // DOM helper — mirrors buildPicSlot from admin-form.js exactly
