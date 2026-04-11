@@ -20,7 +20,8 @@
       "mcp__plugin_playwright_playwright__browser_fill_form",
       "mcp__plugin_playwright_playwright__browser_evaluate",
       "Bash(grep -E \"\\\\.\\(js|html|ejs\\)$\")",
-      "Bash(grep -E \"\\\\.\\(html|ejs\\)$\")"
+      "Bash(grep -E \"\\\\.\\(html|ejs\\)$\")",
+      "Bash(npm test:*)"
     ]
   }
 }

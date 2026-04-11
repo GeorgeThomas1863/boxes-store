@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 });
 
 // File filter — images only
-const fileFilter = (req, file, cb) => {
+export const fileFilter = (req, file, cb) => {
   const ext = path.extname(file.originalname).toLowerCase();
   const mime = file.mimetype;
 
