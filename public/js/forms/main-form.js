@@ -181,7 +181,7 @@ export const buildNavBar = async () => {
 export const buildCard = (productData) => {
   if (!productData) return null;
 
-  const { productId, name, price, picData } = productData;
+  const { productId, name, price, picData, description } = productData;
 
   const card = document.createElement("div");
   card.classList.add("product-card");
@@ -210,7 +210,17 @@ export const buildCard = (productData) => {
   addToCartBtn.textContent = "Add to Cart";
   addToCartBtn.productId = productId;
 
-  card.append(label, priceSpan, addToCartBtn);
+  const toAppend = [label, priceSpan];
+
+  if (description) {
+    const desc = document.createElement("p");
+    desc.className = "product-description";
+    desc.textContent = description;
+    toAppend.push(desc);
+  }
+
+  toAppend.push(addToCartBtn);
+  card.append(...toAppend);
   return card;
 };
 

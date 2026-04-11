@@ -940,6 +940,12 @@
 }
 
 /* Button Styles */
+a.btn {
+  display: inline-block;
+  text-decoration: none;
+  color: #333;
+}
+
 .btn {
   font-family: "Georgia", serif;
   font-size: 1.1rem;

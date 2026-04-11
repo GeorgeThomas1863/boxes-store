@@ -41,7 +41,16 @@ export const buildDashboardHeader = async () => {
   subtitle.className = "dashboard-subtitle";
   subtitle.textContent = "Manage your products";
 
-  header.append(title, subtitle);
+  const headerActions = document.createElement("div");
+  headerActions.className = "header-actions";
+
+  const homeLink = document.createElement("a");
+  homeLink.className = "btn";
+  homeLink.href = "/";
+  homeLink.textContent = "← Back to Store";
+
+  headerActions.append(homeLink);
+  header.append(title, subtitle, headerActions);
 
   return header;
 };
@@ -127,9 +136,7 @@ export const buildActionCard = async (mode, entityType) => {
 
   const description = document.createElement("div");
   description.className = "action-description";
-  const descText = mode === "add"
-    ? "Create a new product listing with details"
-    : "Modify or delete existing products";
+  const descText = mode === "add" ? "Create a new product listing with details" : "Modify or delete existing products";
   description.textContent = descText;
   description.setAttribute("data-label", `open-modal-${mode}-${entityType}`);
 
@@ -376,7 +383,6 @@ export const buildProductDetailsSection = async (mode) => {
   return section;
 };
 
-
 // =============================
 // PRODUCT SELECTOR
 // =============================
@@ -525,5 +531,3 @@ export const buildInfoRowTextarea = async (mode, fieldName, labelText) => {
 
   return row;
 };
-
-
