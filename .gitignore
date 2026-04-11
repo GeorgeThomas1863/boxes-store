@@ -19,7 +19,7 @@ config/
 .playwright-mcp/
 
 #pics
-public/images/products/
+public/images/products/*
 
 # logs
 logs
