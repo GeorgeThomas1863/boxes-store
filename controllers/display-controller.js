@@ -16,6 +16,10 @@ export const displayCart = async (req, res) => {
   res.sendFile(path.join(__dirname, "../html/cart.html"));
 };
 
+export const displayCheckout = async (req, res) => {
+  res.sendFile(path.join(__dirname, "../html/checkout.html"));
+};
+
 export const display401 = (req, res) => {
   res.status(401).sendFile(path.join(__dirname, "../html/401.html"));
 };

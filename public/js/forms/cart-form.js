@@ -73,7 +73,7 @@ export const buildCartSummarySection = async () => {
 
   const itemCountRow = await buildSummaryRow("Items:", "0", "cart-summary-item-count");
   const subtotalRow = await buildSummaryRow("Subtotal:", "$0.00", "cart-summary-subtotal");
-  const shippingRow = await buildSummaryRow("Shipping:", "[Calculated at checkout]", "cart-summary-shipping");
+  const shippingRow = await buildSummaryRow("Shipping:", "FREE", "cart-summary-shipping");
 
   const totalRow = document.createElement("div");
   totalRow.className = "cart-summary-row cart-summary-total";

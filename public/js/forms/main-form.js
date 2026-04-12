@@ -47,7 +47,7 @@ export const buildNavBar = async () => {
 
   const logo = document.createElement("a");
   logo.className = "logo";
-  logo.textContent = "Bingo & Bows";
+  logo.textContent = "PRN & Pretty Things";
   logo.href = "/";
 
   const ul = document.createElement("ul");

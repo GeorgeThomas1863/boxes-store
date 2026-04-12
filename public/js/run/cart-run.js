@@ -234,7 +234,7 @@ export const displayCart = async (cartItems) => {
 };
 
 // Update cart summary (totals, item count)
-export const updateCartSummary = async (shippingCost = 0) => {
+export const updateCartSummary = async () => {
   const itemCountElement = document.getElementById("cart-summary-item-count");
   const subtotalElement = document.getElementById("cart-summary-subtotal");
   const shippingElement = document.getElementById("cart-summary-shipping");
@@ -253,15 +253,8 @@ export const updateCartSummary = async (shippingCost = 0) => {
 
   itemCountElement.textContent = itemCount;
   subtotalElement.textContent = `$${total.toFixed(2)}`;
-
-  if (shippingCost > 0) {
-    shippingElement.textContent = `$${shippingCost.toFixed(2)}`;
-  } else {
-    shippingElement.textContent = "FREE!";
-  }
-
-  const finalTotal = total + shippingCost;
-  totalElement.textContent = `$${finalTotal.toFixed(2)}`;
+  shippingElement.textContent = "FREE";
+  totalElement.textContent = `$${total.toFixed(2)}`;
 
   return true;
 };
