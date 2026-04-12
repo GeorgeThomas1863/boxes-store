@@ -99,6 +99,41 @@ describe("buildCard", () => {
     const btn = card.querySelector("[data-label='add-to-cart']");
     expect(btn.productId).toBe("p9");
   });
+
+  it("stores productData on the card element", () => {
+    const productData = { productId: "p10", name: "Box", price: 5 };
+    const card = buildCard(productData);
+    expect(card.productData).toBe(productData);
+  });
+
+  it("img has data-label='product-card-click' when picData exists", () => {
+    const card = buildCard({
+      productId: "p11",
+      name: "Box",
+      price: 5,
+      picData: [{ path: "/images/test.jpg" }],
+    });
+    const img = card.querySelector("img");
+    expect(img.getAttribute("data-label")).toBe("product-card-click");
+  });
+
+  it("product-name element has data-label='product-card-click'", () => {
+    const card = buildCard({ productId: "p12", name: "Box", price: 5 });
+    const nameEl = card.querySelector(".product-name");
+    expect(nameEl.getAttribute("data-label")).toBe("product-card-click");
+  });
+
+  it("product-price element has data-label='product-card-click'", () => {
+    const card = buildCard({ productId: "p13", name: "Box", price: 5 });
+    const priceEl = card.querySelector(".product-price");
+    expect(priceEl.getAttribute("data-label")).toBe("product-card-click");
+  });
+
+  it("product-description has data-label='product-card-click' when description present", () => {
+    const card = buildCard({ productId: "p14", name: "Box", price: 5, description: "Nice" });
+    const descEl = card.querySelector(".product-description");
+    expect(descEl.getAttribute("data-label")).toBe("product-card-click");
+  });
 });
 
 // ---------------------------------------------------------------------------

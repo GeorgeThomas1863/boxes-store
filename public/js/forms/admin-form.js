@@ -531,3 +531,82 @@ export const buildInfoRowTextarea = async (mode, fieldName, labelText) => {
 
   return row;
 };
+
+// =============================
+// PRODUCT DETAIL MODAL (main page)
+// =============================
+
+export const buildProductDetailModal = async (productData) => {
+  const { productId, name, price, picData, description } = productData;
+
+  const overlay = document.createElement("div");
+  overlay.className = "product-detail-overlay";
+  overlay.setAttribute("data-label", "close-product-modal");
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "product-detail-wrapper";
+
+  // Header (close button only)
+  const header = document.createElement("div");
+  header.className = "product-detail-header";
+
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "product-detail-close";
+  closeBtn.type = "button";
+  closeBtn.setAttribute("data-label", "close-product-modal");
+  closeBtn.textContent = "\u00d7";
+
+  header.append(closeBtn);
+  wrapper.append(header);
+
+  // Image section (skip if no picData)
+  const pics = picData ? (Array.isArray(picData) ? picData : [picData]) : [];
+  if (pics.length > 0 && pics[0]?.path) {
+    const imageWrap = document.createElement("div");
+    imageWrap.className = "product-detail-image-wrap";
+
+    const img = document.createElement("img");
+    img.className = "product-detail-image";
+    img.src = pics[0].path;
+    img.alt = name || "";
+    img.loading = "lazy";
+
+    imageWrap.append(img);
+    wrapper.append(imageWrap);
+  }
+
+  // Body
+  const body = document.createElement("div");
+  body.className = "product-detail-body";
+
+  const nameEl = document.createElement("h2");
+  nameEl.className = "product-detail-name";
+  nameEl.textContent = name;
+
+  const priceEl = document.createElement("span");
+  priceEl.className = "product-detail-price";
+  priceEl.textContent = `$${parseFloat(price || 0).toFixed(2)}`;
+
+  const addToCartBtn = document.createElement("button");
+  addToCartBtn.className = "add-to-cart-btn product-detail-cart-btn";
+  addToCartBtn.type = "button";
+  addToCartBtn.setAttribute("data-label", "add-to-cart");
+  addToCartBtn.productId = productId;
+  addToCartBtn.textContent = "Add to Cart";
+
+  const toAppend = [nameEl, priceEl];
+
+  if (description) {
+    const descEl = document.createElement("p");
+    descEl.className = "product-detail-description";
+    descEl.textContent = description;
+    toAppend.push(descEl);
+  }
+
+  toAppend.push(addToCartBtn);
+  body.append(...toAppend);
+  wrapper.append(body);
+  overlay.append(wrapper);
+
+  return overlay;
+};

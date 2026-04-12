@@ -6,6 +6,7 @@ import { runAddToCart, runIncreaseQuantity, runDecreaseQuantity, runRemoveFromCa
 import { runModalTrigger, runModalClose, updateAdminStats } from "./run/admin-run.js";
 import { runAddNewProduct, runEditProduct, runDeleteProduct, changeAdminProductSelector } from "./run/admin-products.js";
 import { runSlotUploadPic, runSlotUploadClick, runDeleteSlotImage, runAddPicSlot, runRemovePicSlot } from "./run/upload-pic.js";
+import { buildProductDetailModal } from "./forms/admin-form.js";
 
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
@@ -22,6 +23,28 @@ const generateSlug = (name) => {
     .replace(/^-|-$/g, "");
 };
 
+const runOpenProductModal = async (clickElement) => {
+  const card = clickElement.closest(".product-card");
+  if (!card || !card.productData) return;
+
+  const existing = document.getElementById("product-detail-modal");
+  if (existing) existing.remove();
+
+  const modal = await buildProductDetailModal(card.productData);
+  modal.id = "product-detail-modal";
+  if (!displayElement) return;
+  displayElement.append(modal);
+
+  requestAnimationFrame(() => {
+    modal.classList.add("visible");
+  });
+};
+
+const runCloseProductModal = () => {
+  const modal = document.getElementById("product-detail-modal");
+  if (modal) modal.remove();
+};
+
 export const clickHandler = async (e) => {
   const clickedElement = e.target;
   const clickId = clickedElement.id;
@@ -35,7 +58,10 @@ export const clickHandler = async (e) => {
   if (clickType === "pwToggle") await runPwToggle();
   if (clickType === "auth-submit") await runAuthSubmit();
 
-  if (clickType === "add-to-cart") await runAddToCart(clickedElement);
+  if (clickType === "add-to-cart") {
+    await runAddToCart(clickedElement);
+    if (clickedElement.closest(".product-detail-overlay")) runCloseProductModal();
+  }
   if (clickType === "increase-quantity") await runIncreaseQuantity(clickedElement);
   if (clickType === "decrease-quantity") await runDecreaseQuantity(clickedElement);
   if (clickType === "remove-from-cart") await runRemoveFromCart(clickedElement);
@@ -46,6 +72,8 @@ export const clickHandler = async (e) => {
 
   if (clickType?.includes("open-modal-")) await runModalTrigger(clickedElement);
   if (clickType?.includes("close-modal-")) await runModalClose(clickedElement);
+  if (clickType === "product-card-click") await runOpenProductModal(clickedElement);
+  if (clickType === "close-product-modal") runCloseProductModal();
 
   if (clickType === "new-product-submit") await runAddNewProduct();
   if (clickType === "edit-product-submit") await runEditProduct();

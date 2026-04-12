@@ -49,7 +49,7 @@ body {
   gap: 7px;
   justify-content: center;
   align-items: center;
-  margin-left: auto;
+  margin-left: 0.75rem;
   margin-right: 0.1rem;
 }
 
@@ -113,6 +113,11 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-left: auto;
+}
+
+.cart-icon {
+  font-size: 1.6rem;
 }
 
 .social-icons {
@@ -249,4 +254,115 @@ body {
   font-size: 0.9rem;
   color: #555;
   line-height: 1.6;
+}
+
+/* ── PRODUCT DETAIL MODAL ── */
+
+.product-detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: none;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 1000;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.product-detail-overlay.visible {
+  display: flex;
+}
+
+.product-detail-wrapper {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 480px;
+  margin: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-detail-header {
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+}
+
+.product-detail-close {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 2rem;
+  line-height: 1;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.product-detail-close:hover {
+  color: #cccccc;
+}
+
+.product-detail-image-wrap {
+  width: 100%;
+  background: #f0f0f0;
+}
+
+.product-detail-image {
+  width: 100%;
+  display: block;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+.product-detail-body {
+  padding: 1rem 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.product-detail-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.product-detail-price {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #1a1a1a;
+}
+
+.product-detail-description {
+  font-size: 0.9rem;
+  color: #555555;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.product-detail-cart-btn {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0 0;
 }

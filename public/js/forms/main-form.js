@@ -168,7 +168,7 @@ export const buildNavBar = async () => {
     hamburgerBtn.appendChild(line);
   }
 
-  navContainer.append(logo, hamburgerBtn, ul, rightContainer);
+  navContainer.append(logo, ul, rightContainer, hamburgerBtn);
   nav.appendChild(navContainer);
 
   // initMobileMenu(nav);
@@ -186,6 +186,7 @@ export const buildCard = (productData) => {
   const card = document.createElement("div");
   card.classList.add("product-card");
   card.setAttribute("data-product-id", productId);
+  card.productData = productData;
 
   if (picData && picData.length > 0) {
     const img = document.createElement("img");
@@ -193,15 +194,18 @@ export const buildCard = (productData) => {
     img.alt = name;
     img.loading = "lazy";
     img.className = "product-image";
+    img.setAttribute("data-label", "product-card-click");
     card.append(img);
   }
 
   const label = document.createElement("div");
   label.classList.add("card-label", "product-name");
+  label.setAttribute("data-label", "product-card-click");
   label.textContent = name;
 
   const priceSpan = document.createElement("span");
   priceSpan.className = "product-price";
+  priceSpan.setAttribute("data-label", "product-card-click");
   priceSpan.textContent = `$${parseFloat(price || 0).toFixed(2)}`;
 
   const addToCartBtn = document.createElement("button");
@@ -215,6 +219,7 @@ export const buildCard = (productData) => {
   if (description) {
     const desc = document.createElement("p");
     desc.className = "product-description";
+    desc.setAttribute("data-label", "product-card-click");
     desc.textContent = description;
     toAppend.push(desc);
   }
