@@ -242,7 +242,7 @@ describe("updateCartSummary", () => {
 
     await updateCartSummary(0);
 
-    expect(els["cart-summary-shipping"].textContent).toBe("[Estimate below]");
+    expect(els["cart-summary-shipping"].textContent).toBe("FREE!");
   });
 
   it("shows $X.XX in #cart-summary-shipping when shippingCost > 0", async () => {

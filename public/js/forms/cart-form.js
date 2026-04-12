@@ -34,11 +34,12 @@ export const buildCartContent = async () => {
 
   const cartItemsSection = await buildCartItemsSection();
   const cartSummarySection = await buildCartSummarySection();
-  const shippingSection = await buildShippingSection();
 
-  rightColumnWrapper.append(cartSummarySection, shippingSection);
 
-  cartContent.append(cartItemsSection, rightColumnWrapper);
+  // rightColumnWrapper.append(cartSummarySection);
+
+  // cartContent.append(cartItemsSection, rightColumnWrapper);
+  cartContent.append(cartItemsSection, cartSummarySection);
 
   return cartContent;
 };
@@ -272,102 +273,4 @@ export const buildEmptyCart = async () => {
   emptyContainer.append(emptyIcon, emptyMessage, shopLink);
 
   return emptyContainer;
-};
-
-//-------------------
-
-export const buildShippingSection = async () => {
-  const shippingSection = document.createElement("div");
-  shippingSection.className = "shipping-calculator-card";
-
-  const shippingTitle = document.createElement("h2");
-  shippingTitle.className = "shipping-calculator-title";
-  shippingTitle.textContent = "View Shipping Cost";
-
-  const shippingForm = document.createElement("div");
-  shippingForm.className = "shipping-calculator-form";
-
-  const zipInput = document.createElement("input");
-  zipInput.type = "text";
-  zipInput.className = "shipping-calculator-input";
-  zipInput.id = "cart-shipping-zip-input";
-  zipInput.placeholder = "Enter ZIP Code";
-  zipInput.maxLength = "5";
-
-  const shippingHelper = document.createElement("span");
-  shippingHelper.className = "shipping-calculator-helper";
-  shippingHelper.textContent =
-    "Shipping rates update automatically based on ZIP code";
-
-  shippingForm.append(zipInput, shippingHelper);
-
-  const resultContainer = document.createElement("div");
-  resultContainer.id = "shipping-calculator-result";
-  resultContainer.className = "shipping-calculator-result hidden";
-
-  shippingSection.append(shippingTitle, shippingForm, resultContainer);
-
-  return shippingSection;
-};
-
-export const buildShippingOption = async (rateData) => {
-  const optionDiv = document.createElement("div");
-  optionDiv.className = "shipping-option";
-  optionDiv.setAttribute("data-rate", JSON.stringify(rateData));
-  optionDiv.setAttribute("data-label", "shipping-option-select");
-
-  const radioInput = document.createElement("input");
-  radioInput.type = "radio";
-  radioInput.name = "shipping-option";
-  radioInput.id = `shipping-${rateData.rateId}`;
-  radioInput.className = "shipping-option-radio";
-  radioInput.value = rateData.shipping_amount.amount;
-
-  const contentDiv = document.createElement("div");
-  contentDiv.className = "shipping-option-content";
-  contentDiv.setAttribute("data-label", "shipping-option-select");
-
-  const headerDiv = document.createElement("div");
-  headerDiv.className = "shipping-option-header";
-  headerDiv.setAttribute("data-label", "shipping-option-select");
-
-  const nameSpan = document.createElement("span");
-  nameSpan.className = "shipping-option-name";
-  let label = `${rateData.carrier_friendly_name} - ${rateData.service_type}`;
-  if (rateData.package_type && rateData.package_type !== "package") {
-    label += ` (${rateData.package_type.replace(/_/g, " ")})`;
-  }
-  nameSpan.textContent = label;
-  nameSpan.setAttribute("data-label", "shipping-option-select");
-
-  const priceSpan = document.createElement("span");
-  priceSpan.className = "shipping-option-price";
-  priceSpan.textContent = `$${rateData.shipping_amount.amount.toFixed(2)}`;
-  priceSpan.setAttribute("data-label", "shipping-option-select");
-
-  headerDiv.append(nameSpan, priceSpan);
-
-  const detailsDiv = document.createElement("div");
-  detailsDiv.className = "shipping-option-details";
-  detailsDiv.setAttribute("data-label", "shipping-option-select");
-
-  if (rateData.delivery_days) {
-    const deliverySpan = document.createElement("span");
-    deliverySpan.textContent = `${rateData.delivery_days} business days`;
-    deliverySpan.setAttribute("data-label", "shipping-option-select");
-    detailsDiv.appendChild(deliverySpan);
-  }
-
-  if (rateData.estimated_delivery_date) {
-    const dateSpan = document.createElement("span");
-    const deliveryDate = new Date(rateData.estimated_delivery_date);
-    dateSpan.textContent = `Est. delivery: ${deliveryDate.toLocaleDateString()}`;
-    dateSpan.setAttribute("data-label", "shipping-option-select");
-    detailsDiv.appendChild(dateSpan);
-  }
-
-  contentDiv.append(headerDiv, detailsDiv);
-  optionDiv.append(radioInput, contentDiv);
-
-  return optionDiv;
 };
