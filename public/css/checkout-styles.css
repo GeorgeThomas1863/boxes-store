@@ -2,7 +2,7 @@
 .checkout-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   font-family: "Georgia", serif;
 }
 
@@ -14,17 +14,17 @@
 }
 
 .checkout-page-title {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   font-weight: 300;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   color: #000000;
   text-transform: uppercase;
 }
 
 .checkout-content {
   display: grid;
-  grid-template-columns: 1fr 400px;
-  gap: 3rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
   align-items: start;
 }
 
@@ -84,8 +84,8 @@
 
 .checkout-form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
 .checkout-form-row-location .checkout-form-input {
@@ -94,7 +94,7 @@
 }
 
 .checkout-form-row-location {
-  grid-template-columns: 3fr 1fr 0.75fr;
+  grid-template-columns: 1fr;
 }
 
 .checkout-form-field {
@@ -171,7 +171,7 @@
 
 /* Checkout Summary Section */
 .checkout-summary-section {
-  position: sticky;
+  position: static;
   top: 100px;
 }
 

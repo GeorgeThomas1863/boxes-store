@@ -60,6 +60,76 @@
   }
 }
 
+/* ======================== */
+/* Cart Page */
+/* ======================== */
+
+@media (min-width: 540px) {
+  .cart-item-image-container {
+    flex: 0 0 130px;
+  }
+}
+
+@media (min-width: 768px) {
+  .cart-container {
+    padding: 2rem;
+  }
+
+  .cart-page-title {
+    font-size: 2.5rem;
+    letter-spacing: 3px;
+  }
+
+  .cart-content {
+    grid-template-columns: 1fr 400px;
+    gap: 3rem;
+  }
+
+  .cart-item-image-container {
+    flex: 0 0 250px;
+    margin-right: 2rem;
+  }
+
+  .cart-right-column {
+    position: sticky;
+    top: 100px;
+  }
+}
+
+/* ======================== */
+/* Checkout Page */
+/* ======================== */
+
+@media (min-width: 768px) {
+  .checkout-container {
+    padding: 2rem;
+  }
+
+  .checkout-page-title {
+    font-size: 2.5rem;
+    letter-spacing: 3px;
+  }
+
+  .checkout-content {
+    grid-template-columns: 1fr 400px;
+    gap: 3rem;
+  }
+
+  .checkout-form-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .checkout-form-row-location {
+    grid-template-columns: 3fr 1fr 0.75fr;
+  }
+
+  .checkout-summary-section {
+    position: sticky;
+    top: 100px;
+  }
+}
+
 @media (max-width: 480px) {
   .popup-notification {
     min-width: 0;
