@@ -125,10 +125,10 @@ export const buildPaymentCard = async () => {
   paymentContainer.className = "checkout-payment-container";
   paymentContainer.id = "payment-container";
 
-  // Create container for Square's card input
+  // Create container for Stripe's card input
   const cardInputContainer = document.createElement("div");
   cardInputContainer.id = "card-container";
-  cardInputContainer.className = "square-card-container";
+  cardInputContainer.className = "stripe-card-container";
 
   // Create container for error messages
   const errorContainer = document.createElement("div");
@@ -165,6 +165,7 @@ export const buildCheckoutSummarySection = async () => {
   summaryDetails.className = "checkout-summary-details";
 
   const subtotalRow = await buildSummaryRow("Subtotal:", "$0.00", "checkout-subtotal");
+  const taxRow = await buildSummaryRow("Tax:", "$0.00", "checkout-tax");
   const shippingRow = await buildSummaryRow("Shipping:", "FREE", "checkout-shipping");
 
   const totalRow = document.createElement("div");
@@ -181,7 +182,7 @@ export const buildCheckoutSummarySection = async () => {
 
   totalRow.append(totalLabel, totalValue);
 
-  summaryDetails.append(subtotalRow, shippingRow, totalRow);
+  summaryDetails.append(subtotalRow, taxRow, shippingRow, totalRow);
 
   // Place order button
   const placeOrderBtn = document.createElement("button");

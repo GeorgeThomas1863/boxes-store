@@ -1,4 +1,5 @@
 import { runAuthSubmit } from "./auth.js";
+import { runPlaceOrder } from "./run/checkout-run.js";
 import { closePopup, closeConfirmDialog } from "./util/popup.js";
 import { runPwToggle } from "./util/collapse.js";
 
@@ -11,6 +12,7 @@ import { buildProductDetailModal } from "./forms/admin-form.js";
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
 const checkoutElement = document.getElementById("checkout-element");
+const confirmElement = document.getElementById("confirm-element");
 const authElement = document.getElementById("auth-element");
 const adminElement = document.getElementById("admin-element");
 
@@ -67,6 +69,7 @@ export const clickHandler = async (e) => {
   if (clickType === "decrease-quantity") await runDecreaseQuantity(clickedElement);
   if (clickType === "remove-from-cart") await runRemoveFromCart(clickedElement);
   if (clickType === "checkout-btn") window.location.href = "/checkout";
+  if (clickType === "place-order") await runPlaceOrder();
 
   if (clickType === "popup-close") await closePopup();
   if (clickType === "confirm-yes") await closeConfirmDialog(true);
@@ -126,3 +129,4 @@ if (checkoutElement) {
   checkoutElement.addEventListener("click", clickHandler);
   checkoutElement.addEventListener("input", inputHandler);
 }
+if (confirmElement) confirmElement.addEventListener("click", clickHandler);

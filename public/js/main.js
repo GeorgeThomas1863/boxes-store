@@ -6,10 +6,12 @@ import { populateCart, updateNavbarCart } from "./run/cart-run.js";
 import { populateCheckout } from "./run/checkout-run.js";
 import { buildAuthDisplay } from "./auth.js";
 import { updateAdminStats } from "./run/admin-run.js";
+import { buildConfirmOrderForm, populateConfirmOrder } from "./forms/confirm-form.js";
 
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
 const checkoutElement = document.getElementById("checkout-element");
+const confirmElement = document.getElementById("confirm-element");
 const authElement = document.getElementById("auth-element");
 const adminElement = document.getElementById("admin-element");
 
@@ -63,8 +65,21 @@ export const buildCheckoutDisplay = async () => {
   return true;
 };
 
+export const buildConfirmDisplay = async () => {
+  if (!confirmElement) return null;
+
+  const navBar = await buildNavBar();
+  const confirmForm = await buildConfirmOrderForm();
+  confirmElement.append(navBar, confirmForm);
+
+  populateConfirmOrder();
+
+  return true;
+};
+
 if (displayElement) buildMainDisplay();
 if (adminElement) buildAdminDisplay();
 if (cartElement) buildCartDisplay();
 if (checkoutElement) buildCheckoutDisplay();
 if (authElement) buildAuthDisplay();
+if (confirmElement) buildConfirmDisplay();

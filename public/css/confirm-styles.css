@@ -1,0 +1,236 @@
+.confirm-order-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: "Georgia", serif;
+}
+
+.confirm-header {
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+}
+
+.confirm-success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.confirm-title {
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #000000;
+  margin-bottom: 0.5rem;
+}
+
+.confirm-subtitle {
+  font-size: 1rem;
+  color: #666;
+  letter-spacing: 1px;
+}
+
+.confirm-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.confirm-card {
+  background: #ffffff;
+  border-radius: 4px;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e0e0e0;
+}
+
+.confirm-card-title {
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #000000;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.confirm-subsection-title {
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #666;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.confirm-details-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.confirm-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.confirm-detail-label {
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.confirm-detail-value {
+  font-weight: 400;
+  color: #000000;
+  text-align: right;
+}
+
+.confirm-address {
+  font-size: 0.95rem;
+  color: #000000;
+  line-height: 1.7;
+}
+
+.confirm-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.confirm-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.confirm-item-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.confirm-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.confirm-item-name {
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  color: #000000;
+}
+
+.confirm-item-quantity {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.confirm-item-price {
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #000000;
+}
+
+.confirm-summary-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.confirm-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.confirm-summary-label {
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #666;
+}
+
+.confirm-summary-value {
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #000000;
+}
+
+.confirm-summary-total {
+  padding-top: 1rem;
+  margin-top: 0.25rem;
+  border-top: 2px solid #333;
+  font-size: 1.2rem;
+}
+
+.confirm-summary-total .confirm-summary-label,
+.confirm-summary-total .confirm-summary-value {
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: #000000;
+}
+
+#confirm-shipping {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.confirm-actions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.confirm-action-btn {
+  display: block;
+  text-align: center;
+  font-family: "Georgia", serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  transition: all 0.3s;
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
+}
+
+.confirm-action-btn:hover {
+  background-color: #333;
+  border-color: #333;
+}

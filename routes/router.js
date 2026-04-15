@@ -3,8 +3,8 @@ import express from "express";
 import requireAuth from "../middleware/auth-config.js";
 import { authRateLimit } from "../middleware/rate-limit.js";
 
-import { displayMain, displayAdmin, displayCart, displayCheckout, display404, display500 } from "../controllers/display-controller.js";
-import { getCartDataControl, getCartStatsControl, addToCartControl, updateCartItemControl, removeFromCartControl, clearCartControl } from "../controllers/data-controller.js";
+import { displayMain, displayAdmin, displayCart, displayCheckout, displayConfirmOrder, display404, display500 } from "../controllers/display-controller.js";
+import { getCartDataControl, getCartStatsControl, addToCartControl, updateCartItemControl, removeFromCartControl, clearCartControl, getStripeConfigControl, createPaymentIntentControl, placeOrderControl } from "../controllers/data-controller.js";
 import { authController } from "../controllers/auth-controller.js";
 import { getProductDataControl, addNewProductControl, editProductControl, deleteProductControl, uploadPicControl, deletePicControl } from "../controllers/admin-controller.js";
 import { upload } from "../src/upload-back.js";
@@ -32,6 +32,11 @@ router.post("/cart/add", addToCartControl);
 router.post("/cart/update", updateCartItemControl);
 router.post("/cart/remove", removeFromCartControl);
 router.post("/cart/clear", clearCartControl);
+
+router.get("/confirm-order", displayConfirmOrder);
+router.get("/config/stripe", getStripeConfigControl);
+router.post("/checkout/create-payment-intent", createPaymentIntentControl);
+router.post("/checkout/place-order", placeOrderControl);
 
 router.get("/", displayMain);
 

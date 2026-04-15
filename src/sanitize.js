@@ -40,3 +40,37 @@ export const sanitizeFilename = (filename) => {
   clean = clean.replace(/\0/g, "");
   return clean;
 };
+
+export const validateEmail = (val) => {
+  if (typeof val !== "string") return null;
+  const trimmed = val.trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(trimmed)) return null;
+  return trimmed;
+};
+
+export const validateZip = (val) => {
+  if (typeof val !== "string") return null;
+  const trimmed = val.trim();
+  const zipRegex = /^\d{5}(-\d{4})?$/;
+  if (!zipRegex.test(trimmed)) return null;
+  return trimmed;
+};
+
+export const validateString = (val, maxLength = 500) => {
+  if (typeof val !== "string") return null;
+  const trimmed = val.trim();
+  if (trimmed.length === 0) return null;
+  if (trimmed.length > maxLength) return null;
+  return trimmed;
+};
+
+export const escapeHtml = (str) => {
+  if (typeof str !== "string") return "";
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+};
