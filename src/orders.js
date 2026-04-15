@@ -1,4 +1,5 @@
 import dbModel from "../models/db-model.js";
+import { dbGet } from "../middleware/db-config.js";
 import { getCartStats } from "./cart.js";
 import { verifyPaymentIntent } from "./payments.js";
 import { storeCustomerData } from "./customer.js";
@@ -84,8 +85,10 @@ export const storeOrderData = async (orderObj) => {
 };
 
 export const getOrderNumber = async () => {
-  const dataModel = new dbModel({ keyToLookup: "orderNumber" }, process.env.ORDERS_COLLECTION);
-  const maxId = await dataModel.getMaxId();
-  if (!maxId) return 1001;
-  return maxId + 1;
+  const result = await dbGet().collection("counters").findOneAndUpdate(
+    { _id: "orderNumber" },
+    [{ $set: { seq: { $ifNull: [{ $add: ["$seq", 1] }, 1001] } } }],
+    { upsert: true, returnDocument: "after" }
+  );
+  return result?.seq || null;
 };

@@ -15,7 +15,17 @@ export const populateCheckout = async () => {
 
   await displayCheckoutItems(cartData.cart);
   await updateCheckoutSummary(config?.taxRate || 0);
-  await initStripePayment(config?.publishableKey);
+
+  if (!config?.publishableKey) {
+    const errorContainer = document.getElementById("payment-error");
+    if (errorContainer) {
+      errorContainer.textContent = "Payment is currently unavailable. Please try again later or contact support.";
+      errorContainer.style.display = "block";
+    }
+    return null;
+  }
+
+  await initStripePayment(config.publishableKey);
 
   return true;
 };

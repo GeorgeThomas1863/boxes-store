@@ -189,7 +189,17 @@ export const populateConfirmOrder = () => {
     return null;
   }
 
-  const orderData = JSON.parse(orderDataStr);
+  let orderData;
+  try {
+    orderData = JSON.parse(orderDataStr);
+  } catch (e) {
+    console.error("Failed to parse order data:", e);
+    const container = document.getElementById("confirm-items-container");
+    if (container) {
+      container.textContent = "Your order was placed successfully. Please check your email for confirmation, or contact support if you need order details.";
+    }
+    return null;
+  }
   sessionStorage.removeItem("orderData");
 
   populateOrderDetails(orderData.data);

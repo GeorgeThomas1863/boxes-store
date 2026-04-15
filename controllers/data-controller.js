@@ -106,17 +106,31 @@ export const placeOrderControl = async (req, res) => {
     return res.status(400).json({ error: "Invalid payment intent" });
   }
 
-  const { firstName, lastName, email, phone, address, city, state, zip } = req.body;
+  const firstName = validateString(req.body.firstName, 100);
+  const lastName  = validateString(req.body.lastName, 100);
+  const email     = validateEmail(req.body.email);
+  const phone     = validateString(req.body.phone, 30);
+  const address   = validateString(req.body.address, 200);
+  const city      = validateString(req.body.city, 100);
+  const state     = validateString(req.body.state, 50);
+  const zip       = validateZip(req.body.zip);
 
-  if (!validateString(firstName, 100) || !validateString(lastName, 100)) {
-    return res.status(400).json({ error: "Invalid name" });
-  }
-  if (!validateEmail(email)) return res.status(400).json({ error: "Invalid email" });
-  if (!validateString(phone, 30)) return res.status(400).json({ error: "Invalid phone" });
-  if (!validateString(address, 200)) return res.status(400).json({ error: "Invalid address" });
-  if (!validateString(city, 100)) return res.status(400).json({ error: "Invalid city" });
-  if (!validateString(state, 50)) return res.status(400).json({ error: "Invalid state" });
-  if (!validateZip(zip)) return res.status(400).json({ error: "Invalid ZIP code" });
+  if (!firstName || !lastName) return res.status(400).json({ error: "Invalid name" });
+  if (!email)    return res.status(400).json({ error: "Invalid email" });
+  if (!phone)    return res.status(400).json({ error: "Invalid phone" });
+  if (!address)  return res.status(400).json({ error: "Invalid address" });
+  if (!city)     return res.status(400).json({ error: "Invalid city" });
+  if (!state)    return res.status(400).json({ error: "Invalid state" });
+  if (!zip)      return res.status(400).json({ error: "Invalid ZIP code" });
+
+  req.body.firstName = firstName;
+  req.body.lastName  = lastName;
+  req.body.email     = email;
+  req.body.phone     = phone;
+  req.body.address   = address;
+  req.body.city      = city;
+  req.body.state     = state;
+  req.body.zip       = zip;
 
   // Clear pending intent from session before order attempt (prevents replay)
   req.session.pendingPaymentIntentId = null;
