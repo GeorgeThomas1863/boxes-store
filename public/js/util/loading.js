@@ -1,26 +1,27 @@
-const displayElement = document.getElementById("display-element");
-
 // Build the loading overlay (replaces buildLoadStatusMessage)
 export const buildLoadingOverlay = async () => {
   const loadingOverlay = document.createElement("div");
   loadingOverlay.id = "loading-overlay";
   loadingOverlay.className = "loading-overlay";
 
+  const loadingContent = document.createElement("div");
+  loadingContent.className = "loading-content";
+
   const spinner = document.createElement("div");
   spinner.className = "spinner";
 
   const loadingText = document.createElement("div");
   loadingText.className = "loading-text";
-  loadingText.textContent = "Processing your order, should take 5-10 seconds";
+  loadingText.textContent = "Processing Your Order!";
 
-  loadingOverlay.append(spinner, loadingText);
+  loadingContent.append(spinner, loadingText);
+  loadingOverlay.append(loadingContent);
 
   return loadingOverlay;
 };
 
 // Show loading overlay
 export const showLoadStatus = async () => {
-  if (!displayElement) return null;
   console.log("SHOWING LOAD STATUS");
 
   let loadingOverlay = document.getElementById("loading-overlay");

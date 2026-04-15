@@ -546,3 +546,56 @@
 #card-container.StripeElement--invalid {
   border-color: #dc2626;
 }
+
+/* LOADING OVERLAY */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  gap: 1.25rem;
+}
+
+.loading-overlay.active {
+  display: flex;
+}
+
+.spinner {
+  width: 90px;
+  height: 90px;
+  border: 10px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 8px;
+  padding: 2.5rem 3rem;
+}
+
+.loading-text {
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  text-align: center;
+}

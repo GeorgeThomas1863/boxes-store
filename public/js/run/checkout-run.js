@@ -1,6 +1,7 @@
 import { sendToBack } from "../util/api-front.js";
 import { buildCheckoutItem } from "../forms/checkout-form.js";
 import { initStripePayment, confirmStripePayment } from "../util/stripe-payment.js";
+import { showLoadStatus, hideLoadStatus } from "../util/loading.js";
 
 export const populateCheckout = async () => {
   const [cartData, config] = await Promise.all([
@@ -103,10 +104,13 @@ export const runPlaceOrder = async () => {
     errorContainer.style.display = "none";
   }
 
+  await showLoadStatus();
+
   try {
     const intentData = await sendToBack({ route: "/checkout/create-payment-intent" });
 
     if (!intentData || !intentData.clientSecret) {
+      await hideLoadStatus();
       showPaymentError(errorContainer, "Failed to initialize payment. Please try again.");
       resetPlaceOrderBtn(placeOrderBtn);
       return null;
@@ -130,6 +134,7 @@ export const runPlaceOrder = async () => {
     const confirmResult = await confirmStripePayment(intentData.clientSecret, billingDetails);
 
     if (!confirmResult || !confirmResult.success) {
+      await hideLoadStatus();
       showPaymentError(errorContainer, confirmResult?.message || "Payment failed. Please check your card details.");
       resetPlaceOrderBtn(placeOrderBtn);
       return null;
@@ -144,6 +149,7 @@ export const runPlaceOrder = async () => {
     const orderData = await sendToBack(orderPayload);
 
     if (!orderData || !orderData.success) {
+      await hideLoadStatus();
       showPaymentError(errorContainer, orderData?.message || "Order processing failed. Please contact support.");
       resetPlaceOrderBtn(placeOrderBtn);
       return null;
@@ -153,6 +159,7 @@ export const runPlaceOrder = async () => {
     window.location.href = "/confirm-order";
   } catch (e) {
     console.error("Error processing order:", e);
+    await hideLoadStatus();
     showPaymentError(errorContainer, "An unexpected error occurred. Please try again.");
     resetPlaceOrderBtn(placeOrderBtn);
     return null;
