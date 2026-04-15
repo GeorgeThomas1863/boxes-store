@@ -2,6 +2,7 @@ import { sendToBack } from "../util/api-front.js";
 import { buildCheckoutItem } from "../forms/checkout-form.js";
 import { initStripePayment, confirmStripePayment } from "../util/stripe-payment.js";
 import { showLoadStatus, hideLoadStatus } from "../util/loading.js";
+import { displayPopup } from "../util/popup.js";
 
 export const populateCheckout = async () => {
   const [cartData, config] = await Promise.all([
@@ -87,8 +88,25 @@ const getCustomerParams = () => ({
 
 export const runPlaceOrder = async () => {
   const customerForm = document.getElementById("customer-info-form");
-  if (!customerForm || !customerForm.checkValidity()) {
-    if (customerForm) customerForm.reportValidity();
+  if (!customerForm) return null;
+
+  const fieldMap = [
+    { id: "first-name", label: "First Name" },
+    { id: "last-name", label: "Last Name" },
+    { id: "email", label: "Email" },
+    { id: "phone", label: "Phone" },
+    { id: "address", label: "Street Address" },
+    { id: "city", label: "City" },
+    { id: "state", label: "State" },
+    { id: "zip", label: "ZIP Code" },
+  ];
+
+  const missing = fieldMap
+    .filter(({ id }) => !document.getElementById(id)?.value?.trim())
+    .map(({ label }) => label);
+
+  if (missing.length > 0) {
+    await displayPopup(`Please fill in the following: ${missing.join(", ")}`, "error");
     return null;
   }
 
@@ -156,6 +174,9 @@ export const runPlaceOrder = async () => {
     }
 
     sessionStorage.setItem("orderData", JSON.stringify(orderData));
+    await hideLoadStatus();
+    await displayPopup("Order placed successfully!", "success");
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     window.location.href = "/confirm-order";
   } catch (e) {
     console.error("Error processing order:", e);
