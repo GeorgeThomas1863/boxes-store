@@ -171,6 +171,12 @@
   color: #000000;
 }
 
+.cart-item-discount-note {
+  font-size: 0.75rem;
+  color: #c0392b;
+  font-style: italic;
+}
+
 .cart-remove-btn {
   font-size: 0.6rem;
   font-weight: 200;

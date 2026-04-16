@@ -181,7 +181,7 @@ export const buildNavBar = async () => {
 export const buildCard = (productData) => {
   if (!productData) return null;
 
-  const { productId, name, price, picData, description } = productData;
+  const { productId, name, price, picData, description, discount } = productData;
 
   const card = document.createElement("div");
   card.classList.add("product-card");
@@ -203,10 +203,34 @@ export const buildCard = (productData) => {
   label.setAttribute("data-label", "product-card-click");
   label.textContent = name;
 
-  const priceSpan = document.createElement("span");
-  priceSpan.className = "product-price";
-  priceSpan.setAttribute("data-label", "product-card-click");
-  priceSpan.textContent = `$${parseFloat(price || 0).toFixed(2)}`;
+  let priceSpan;
+  if (discount > 0) {
+    priceSpan = document.createElement("div");
+    priceSpan.className = "price-block";
+    priceSpan.setAttribute("data-label", "product-card-click");
+
+    const originalEl = document.createElement("del");
+    originalEl.className = "product-price-original";
+    originalEl.setAttribute("data-label", "product-card-click");
+    originalEl.textContent = `$${parseFloat(price || 0).toFixed(2)}`;
+
+    const discountedEl = document.createElement("span");
+    discountedEl.className = "product-price product-price-discounted";
+    discountedEl.setAttribute("data-label", "product-card-click");
+    discountedEl.textContent = `$${(parseFloat(price || 0) * (1 - discount / 100)).toFixed(2)}`;
+
+    const badgeEl = document.createElement("span");
+    badgeEl.className = "discount-badge";
+    badgeEl.setAttribute("data-label", "product-card-click");
+    badgeEl.textContent = `${discount}% OFF`;
+
+    priceSpan.append(originalEl, discountedEl, badgeEl);
+  } else {
+    priceSpan = document.createElement("span");
+    priceSpan.className = "product-price";
+    priceSpan.setAttribute("data-label", "product-card-click");
+    priceSpan.textContent = `$${parseFloat(price || 0).toFixed(2)}`;
+  }
 
   const addToCartBtn = document.createElement("button");
   addToCartBtn.className = "add-to-cart-btn";

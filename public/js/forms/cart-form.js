@@ -182,6 +182,13 @@ export const buildCartItemDetails = async (itemData) => {
     details.append(badge);
   }
 
+  if (itemData.discount > 0) {
+    const discountNote = document.createElement("span");
+    discountNote.className = "cart-item-discount-note";
+    discountNote.textContent = `${itemData.discount}% discount applied`;
+    details.append(discountNote);
+  }
+
   return details;
 };
 

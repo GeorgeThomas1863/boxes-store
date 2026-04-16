@@ -251,6 +251,12 @@
   color: #000000;
 }
 
+.checkout-item-discount-note {
+  font-size: 0.75rem;
+  color: #c0392b;
+  font-style: italic;
+}
+
 /* +++++++++++++++++++++++ */
 
 /* Checkout Shipping Section */

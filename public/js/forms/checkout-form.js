@@ -339,6 +339,13 @@ export const buildCheckoutItem = async (itemData) => {
 
   itemDetails.append(itemName, itemQuantity);
 
+  if (itemData.discount > 0) {
+    const discountNote = document.createElement("span");
+    discountNote.className = "checkout-item-discount-note";
+    discountNote.textContent = `${itemData.discount}% discount`;
+    itemDetails.append(discountNote);
+  }
+
   if (itemData.canShip === "no") {
     const badge = document.createElement("span");
     badge.className = "pickup-badge";

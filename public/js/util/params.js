@@ -14,6 +14,7 @@ export const buildNewProductParams = async () => {
     description: document.getElementById("description")?.value || "",
     picData: picData,
     dateCreated: new Date().toISOString(),
+    discount: parseFloat(document.getElementById("discount")?.value) || 0,
   };
   return params;
 };
@@ -32,6 +33,7 @@ export const getEditProductParams = async () => {
     price: document.getElementById("edit-price")?.value || "",
     description: document.getElementById("edit-description")?.value || "",
     picData: picData,
+    discount: parseFloat(document.getElementById("edit-discount")?.value) || 0,
   };
   return params;
 };

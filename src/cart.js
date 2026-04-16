@@ -25,6 +25,10 @@ export const addCartItem = async (req) => {
   const productData = await productModel.getUniqueItem();
   if (!productData) return { success: false, message: "Product not found" };
 
+  const discount = productData.discount || 0;
+  const rawPrice = productData.price;
+  const effectivePrice = discount > 0 ? Math.round(rawPrice * (1 - discount / 100) * 100) / 100 : rawPrice;
+
   let existingItem = null;
   for (let i = 0; i < req.session.cart.length; i++) {
     if (req.session.cart[i].productId !== safeProductId) continue;
@@ -41,13 +45,18 @@ export const addCartItem = async (req) => {
   // Update quantity if already exists
   if (existingItem) {
     existingItem.quantity += safeQuantity;
-    existingItem.price = productData.price; // Always use DB price
+    existingItem.price = effectivePrice; // Always use DB price (post-discount)
+    existingItem.originalPrice = rawPrice;
+    existingItem.discount = discount;
   } else {
     // Build cart item from DB data — never trust client-supplied price
     const cartItem = {
       ...productData,
       productId: safeProductId,
       quantity: safeQuantity,
+      price: effectivePrice,
+      originalPrice: rawPrice,
+      discount,
     };
     req.session.cart.push(cartItem);
   }

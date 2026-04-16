@@ -174,6 +174,13 @@ export const buildConfirmItem = (itemData) => {
 
   details.append(name, qty);
 
+  if (itemData.discount > 0) {
+    const discountNote = document.createElement("span");
+    discountNote.className = "confirm-item-discount-note";
+    discountNote.textContent = `${itemData.discount}% discount`;
+    details.append(discountNote);
+  }
+
   const price = document.createElement("div");
   price.className = "confirm-item-price";
   price.textContent = `$${(itemData.price * itemData.quantity).toFixed(2)}`;

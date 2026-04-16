@@ -53,6 +53,7 @@ export const enableAdminEditFields = async () => {
     "edit-url-name",
     "edit-price",
     "edit-description",
+    "edit-discount",
     "edit-submit-button",
   ];
   for (let i = 0; i < enableFieldsArray.length; i++) {
@@ -69,6 +70,7 @@ export const disableAdminEditFields = async () => {
     "edit-url-name",
     "edit-price",
     "edit-description",
+    "edit-discount",
     "edit-submit-button",
   ];
   for (let i = 0; i < disableFieldsArray.length; i++) {
@@ -85,6 +87,7 @@ export const clearAdminEditFields = async () => {
     "edit-url-name",
     "edit-price",
     "edit-description",
+    "edit-discount",
   ];
 
   for (let i = 0; i < clearFieldsArray.length; i++) {

@@ -20,6 +20,7 @@ export const addNewProductControl = async (req, res) => {
     "description",
     "picData",
     "dateCreated",
+    "discount",
   ]);
 
   const data = await storeProduct(safeParams);
@@ -38,6 +39,7 @@ export const editProductControl = async (req, res) => {
     "description",
     "picData",
     "productId",
+    "discount",
   ]);
 
   const data = await updateProduct(safeParams);

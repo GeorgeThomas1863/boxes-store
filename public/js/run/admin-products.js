@@ -210,7 +210,7 @@ export const populateAdminProductSelector = async (inputArray) => {
 export const populateEditFormProducts = async (inputObj) => {
   if (!inputObj) return null;
 
-  const { itemId, name, urlName, price, description } = inputObj;
+  const { itemId, name, urlName, price, description, discount } = inputObj;
 
   const adminEditMapArray = [
     { id: "edit-item-id", value: itemId },
@@ -218,6 +218,7 @@ export const populateEditFormProducts = async (inputObj) => {
     { id: "edit-url-name", value: urlName },
     { id: "edit-price", value: price },
     { id: "edit-description", value: description },
+    { id: "edit-discount", value: discount ?? 0 },
   ];
 
   for (let i = 0; i < adminEditMapArray.length; i++) {

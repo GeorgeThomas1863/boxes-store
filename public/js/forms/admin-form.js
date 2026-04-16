@@ -376,9 +376,10 @@ export const buildProductDetailsSection = async (mode) => {
   const slugRow = await buildInfoRow(mode, "url-name", "URL Ending");
 
   const priceRow = await buildInfoRowPrice(mode, "price", "Price");
+  const discountRow = await buildInfoRowDiscount(mode, "discount", "Discount (%)");
   const descRow = await buildInfoRowTextarea(mode, "description", "Description");
 
-  section.append(header, itemIdRow, nameRow, priceRow, descRow, slugRow);
+  section.append(header, itemIdRow, nameRow, priceRow, discountRow, descRow, slugRow);
 
   return section;
 };
@@ -469,6 +470,37 @@ export const buildInfoRowPrice = async (mode, fieldName, labelText) => {
   return row;
 };
 
+export const buildInfoRowDiscount = async (mode, fieldName, labelText) => {
+  const row = document.createElement("div");
+  row.className = "info-row";
+
+  const label = document.createElement("div");
+  label.className = "info-label";
+  label.textContent = labelText;
+
+  const contentWrapper = document.createElement("div");
+  contentWrapper.className = "info-content-wrapper";
+
+  const input = document.createElement("input");
+  input.className = "info-content info-input";
+  input.type = "number";
+  input.min = "0";
+  input.max = "100";
+  input.step = "1";
+  input.placeholder = "0";
+  input.id = mode === "add" ? fieldName : `edit-${fieldName}`;
+  input.name = mode === "add" ? fieldName : `edit-${fieldName}`;
+
+  if (mode === "edit") {
+    input.disabled = true;
+  }
+
+  contentWrapper.append(input);
+  row.append(label, contentWrapper);
+
+  return row;
+};
+
 export const buildInfoRowSelect = async (mode, fieldName, labelText, options) => {
   const row = document.createElement("div");
   row.className = "info-row";
@@ -537,7 +569,7 @@ export const buildInfoRowTextarea = async (mode, fieldName, labelText) => {
 // =============================
 
 export const buildProductDetailModal = async (productData) => {
-  const { productId, name, price, picData, description } = productData;
+  const { productId, name, price, picData, description, discount } = productData;
 
   const overlay = document.createElement("div");
   overlay.className = "product-detail-overlay";
@@ -583,9 +615,29 @@ export const buildProductDetailModal = async (productData) => {
   nameEl.className = "product-detail-name";
   nameEl.textContent = name;
 
-  const priceEl = document.createElement("span");
-  priceEl.className = "product-detail-price";
-  priceEl.textContent = `$${parseFloat(price || 0).toFixed(2)}`;
+  let priceEl;
+  if (discount > 0) {
+    priceEl = document.createElement("div");
+    priceEl.className = "product-detail-price-block";
+
+    const originalEl = document.createElement("del");
+    originalEl.className = "product-detail-price-original";
+    originalEl.textContent = `$${parseFloat(price || 0).toFixed(2)}`;
+
+    const discountedEl = document.createElement("span");
+    discountedEl.className = "product-detail-price product-detail-price-discounted";
+    discountedEl.textContent = `$${(parseFloat(price || 0) * (1 - discount / 100)).toFixed(2)}`;
+
+    const badgeEl = document.createElement("span");
+    badgeEl.className = "discount-badge";
+    badgeEl.textContent = `${discount}% OFF`;
+
+    priceEl.append(originalEl, discountedEl, badgeEl);
+  } else {
+    priceEl = document.createElement("span");
+    priceEl.className = "product-detail-price";
+    priceEl.textContent = `$${parseFloat(price || 0).toFixed(2)}`;
+  }
 
   const addToCartBtn = document.createElement("button");
   addToCartBtn.className = "add-to-cart-btn product-detail-cart-btn";
