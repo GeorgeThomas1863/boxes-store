@@ -1,4 +1,8 @@
 export const sendMail = async ({ from, to, bcc, subject, html, text, replyTo }) => {
+  if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN) {
+    throw new Error("sendMail: MAILGUN_API_KEY and MAILGUN_DOMAIN must be set");
+  }
+  if (!from) throw new Error("sendMail: 'from' is required");
   if (!to && !bcc) throw new Error("sendMail: at least one of 'to' or 'bcc' is required");
 
   const params = new URLSearchParams();

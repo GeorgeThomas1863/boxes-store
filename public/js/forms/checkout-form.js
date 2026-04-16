@@ -155,7 +155,7 @@ export const buildCheckoutSummarySection = async () => {
   summaryDetails.className = "checkout-summary-details";
 
   const subtotalRow = await buildSummaryRow("Subtotal:", "$0.00", "checkout-subtotal");
-  const taxRow = await buildSummaryRow("Tax:", "$0.00", "checkout-tax");
+  // const taxRow = await buildSummaryRow("Tax:", "$0.00", "checkout-tax"); // TAX DISABLED
   const shippingRow = await buildSummaryRow("Shipping:", "FREE", "checkout-shipping");
 
   const totalRow = document.createElement("div");
@@ -172,7 +172,7 @@ export const buildCheckoutSummarySection = async () => {
 
   totalRow.append(totalLabel, totalValue);
 
-  summaryDetails.append(subtotalRow, taxRow, shippingRow, totalRow);
+  summaryDetails.append(subtotalRow, shippingRow, totalRow); // TAX DISABLED: taxRow removed
 
   // Place order button
   const placeOrderBtn = document.createElement("button");

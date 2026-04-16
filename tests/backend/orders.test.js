@@ -5,6 +5,10 @@ vi.mock("../../models/db-model.js", () => {
   return { default: MockDbModel };
 });
 
+vi.mock("../../middleware/db-config.js", () => ({
+  dbGet: vi.fn(),
+}));
+
 vi.mock("../../src/cart.js", () => ({
   getCartStats: vi.fn(),
   buildCart: vi.fn(),
@@ -23,13 +27,14 @@ vi.mock("../../src/mailer.js", () => ({
 }));
 
 import dbModel from "../../models/db-model.js";
+import { dbGet } from "../../middleware/db-config.js";
 import { getCartStats } from "../../src/cart.js";
 import { verifyPaymentIntent } from "../../src/payments.js";
 import { storeCustomerData } from "../../src/customer.js";
 import { placeNewOrder, storeOrderData, getOrderNumber } from "../../src/orders.js";
 
 process.env.ORDERS_COLLECTION = "orders";
-process.env.TAX_RATE = "0.08";
+// process.env.TAX_RATE = "0.08"; // TAX DISABLED
 
 const makeReq = (cartItems = [], bodyOverride = {}) => ({
   session: { cart: cartItems },
@@ -47,7 +52,15 @@ const makeCartItem = (productId, price, quantity) => ({
   productId, price, quantity, name: `Product ${productId}`,
 });
 
-beforeEach(() => vi.clearAllMocks());
+const mockFindOneAndUpdate = vi.fn();
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  mockFindOneAndUpdate.mockResolvedValue({ seq: 1001 });
+  dbGet.mockReturnValue({
+    collection: vi.fn().mockReturnValue({ findOneAndUpdate: mockFindOneAndUpdate }),
+  });
+});
 
 describe("placeNewOrder — validation", () => {
   it("returns success false when req is null", async () => {
@@ -77,12 +90,11 @@ describe("placeNewOrder — success", () => {
     getCartStats.mockResolvedValue({ success: true, total: 100, itemCount: 2 });
     verifyPaymentIntent.mockResolvedValue({
       success: true,
-      intent: { id: "pi_test123", status: "succeeded", amount: 10800 },
+      intent: { id: "pi_test123", status: "succeeded", amount: 10000 },
     });
     storeCustomerData.mockResolvedValue({ email: "john@example.com" });
     dbModel.mockImplementation(function () {
       this.storeAny = vi.fn().mockResolvedValue({ insertedId: "mock_id" });
-      this.getMaxId = vi.fn().mockResolvedValue(1000);
     });
   });
 
@@ -98,44 +110,37 @@ describe("placeNewOrder — success", () => {
     expect(req.session.cart).toEqual([]);
   });
 
-  it("calls verifyPaymentIntent with correct amount in cents (100 subtotal * 1.08 = 10800)", async () => {
+  // TAX DISABLED: amount no longer includes tax (was 100 subtotal * 1.08 = 10800)
+  it("calls verifyPaymentIntent with correct amount in cents (subtotal only, no tax)", async () => {
     await placeNewOrder(makeReq([makeCartItem("p1", 100, 1)]));
-    expect(verifyPaymentIntent).toHaveBeenCalledWith("pi_test123", 10800);
+    expect(verifyPaymentIntent).toHaveBeenCalledWith("pi_test123", 10000);
   });
 
-  it("returns orderNumber = getMaxId + 1", async () => {
+  it("returns orderNumber from counter sequence", async () => {
     const result = await placeNewOrder(makeReq([makeCartItem("p1", 50, 2)]));
     expect(result.data.orderNumber).toBe(1001);
   });
 });
 
 describe("getOrderNumber", () => {
-  it("returns 1001 when no orders exist", async () => {
-    dbModel.mockImplementation(function () {
-      this.getMaxId = vi.fn().mockResolvedValue(null);
-    });
+  it("returns seq value from counter", async () => {
+    mockFindOneAndUpdate.mockResolvedValue({ seq: 1001 });
     expect(await getOrderNumber()).toBe(1001);
   });
 
-  it("returns maxId + 1 when orders exist", async () => {
-    dbModel.mockImplementation(function () {
-      this.getMaxId = vi.fn().mockResolvedValue(1005);
-    });
-    expect(await getOrderNumber()).toBe(1006);
+  it("returns null when findOneAndUpdate returns null", async () => {
+    mockFindOneAndUpdate.mockResolvedValue(null);
+    expect(await getOrderNumber()).toBeNull();
   });
 });
 
 describe("storeOrderData", () => {
   it("returns null when orderObj is null", async () => {
-    dbModel.mockImplementation(function () {
-      this.getMaxId = vi.fn().mockResolvedValue(null);
-    });
     expect(await storeOrderData(null)).toBeNull();
   });
 
   it("returns null when storeAny has no insertedId", async () => {
     dbModel.mockImplementation(function () {
-      this.getMaxId = vi.fn().mockResolvedValue(1000);
       this.storeAny = vi.fn().mockResolvedValue({});
     });
     expect(await storeOrderData({ firstName: "Test" })).toBeNull();
@@ -143,7 +148,6 @@ describe("storeOrderData", () => {
 
   it("attaches orderId and orderNumber", async () => {
     dbModel.mockImplementation(function () {
-      this.getMaxId = vi.fn().mockResolvedValue(1000);
       this.storeAny = vi.fn().mockResolvedValue({ insertedId: "abc123" });
     });
     const result = await storeOrderData({ items: [] });

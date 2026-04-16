@@ -16,8 +16,9 @@ export const placeNewOrder = async (req) => {
   if (!cartStats || !cartStats.success) return { success: false, message: "Failed to get cart data" };
 
   const subtotal = Math.round(cartStats.total * 100) / 100;
-  const taxRate = parseFloat(process.env.TAX_RATE) || 0;
-  const tax = Math.round(subtotal * taxRate * 100) / 100;
+  // const taxRate = parseFloat(process.env.TAX_RATE) || 0; // TAX DISABLED
+  // const tax = Math.round(subtotal * taxRate * 100) / 100; // TAX DISABLED
+  const tax = 0; // TAX DISABLED
   const shippingCost = 0;
   const totalCost = Math.round((subtotal + tax + shippingCost) * 100) / 100;
   const totalInCents = Math.round(totalCost * 100);
@@ -171,10 +172,11 @@ const buildEmailHtml = (orderData, type) => {
 
   const isAdmin = type === "admin";
 
+  const safeItems = Array.isArray(items) ? items : [];
   let itemRows = "";
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-    const lineTotal = (Number(item.price) * Number(item.quantity)).toFixed(2);
+  for (let i = 0; i < safeItems.length; i++) {
+    const item = safeItems[i];
+    const lineTotal = escapeHtml((Number(item.price) * Number(item.quantity)).toFixed(2));
     itemRows += `<tr>
       ${isAdmin ? `<td style="padding: 8px; border-bottom: 1px solid #eee;">${escapeHtml(item.itemId || "")}</td>` : ""}
       <td style="padding: 8px; border-bottom: 1px solid #eee;">${escapeHtml(item.name)}</td>
@@ -195,14 +197,14 @@ const buildEmailHtml = (orderData, type) => {
        <table style="width: 100%; border-collapse: collapse;">
          <tr><td style="padding: 4px 8px;"><strong>Payment ID:</strong></td><td style="padding: 4px 8px;">${escapeHtml(paymentId || "")}</td></tr>
          <tr><td style="padding: 4px 8px;"><strong>Status:</strong></td><td style="padding: 4px 8px;">${escapeHtml(paymentStatus || "")}</td></tr>
-         <tr><td style="padding: 4px 8px;"><strong>Amount Paid:</strong></td><td style="padding: 4px 8px;">$${Number(amountPaid).toFixed(2)}</td></tr>
+         <tr><td style="padding: 4px 8px;"><strong>Amount Paid:</strong></td><td style="padding: 4px 8px;">$${escapeHtml(Number(amountPaid).toFixed(2))}</td></tr>
        </table>`
     : "";
 
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       ${header}
-      <p><strong>Date:</strong> ${formattedDate}</p>
+      <p><strong>Date:</strong> ${escapeHtml(formattedDate)}</p>
 
       <h2>Items</h2>
       <table style="width: 100%; border-collapse: collapse;">
@@ -218,9 +220,9 @@ const buildEmailHtml = (orderData, type) => {
       </table>
 
       <div style="margin-top: 16px; text-align: right;">
-        <p><strong>Subtotal:</strong> $${Number(subtotal).toFixed(2)}</p>
-        <p><strong>Tax:</strong> $${Number(tax).toFixed(2)}</p>
-        <p style="font-size: 18px;"><strong>Total:</strong> $${Number(totalCost).toFixed(2)}</p>
+        <p><strong>Subtotal:</strong> $${escapeHtml(Number(subtotal).toFixed(2))}</p>
+        <!-- <p><strong>Tax:</strong> $${escapeHtml(Number(tax).toFixed(2))}</p> --> <!-- TAX DISABLED -->
+        <p style="font-size: 18px;"><strong>Total:</strong> $${escapeHtml(Number(totalCost).toFixed(2))}</p>
       </div>
 
       <h2>Shipping Address</h2>

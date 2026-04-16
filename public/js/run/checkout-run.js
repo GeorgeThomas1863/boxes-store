@@ -49,9 +49,9 @@ export const displayCheckoutItems = async (cartItems) => {
   return true;
 };
 
-export const updateCheckoutSummary = async (taxRate = 0) => {
+export const updateCheckoutSummary = async (taxRate = 0) => { // TAX DISABLED: taxRate param kept for future use
   const subtotalElement = document.getElementById("checkout-subtotal");
-  const taxElement = document.getElementById("checkout-tax");
+  // const taxElement = document.getElementById("checkout-tax"); // TAX DISABLED
   const shippingElement = document.getElementById("checkout-shipping");
   const totalElement = document.getElementById("checkout-total");
 
@@ -64,11 +64,12 @@ export const updateCheckoutSummary = async (taxRate = 0) => {
   }
 
   const subtotal = cartData.total;
-  const tax = Math.round(subtotal * parseFloat(taxRate) * 100) / 100;
-  const total = subtotal + tax;
+  // const tax = Math.round(subtotal * parseFloat(taxRate) * 100) / 100; // TAX DISABLED
+  // const total = subtotal + tax; // TAX DISABLED
+  const total = subtotal; // TAX DISABLED
 
   subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
-  if (taxElement) taxElement.textContent = `$${tax.toFixed(2)}`;
+  // if (taxElement) taxElement.textContent = `$${tax.toFixed(2)}`; // TAX DISABLED
   shippingElement.textContent = "FREE";
   totalElement.textContent = `$${total.toFixed(2)}`;
 

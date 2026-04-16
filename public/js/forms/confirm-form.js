@@ -77,7 +77,7 @@ const buildItemsCard = () => {
   summaryDetails.className = "confirm-summary-details";
   summaryDetails.append(
     buildSummaryRow("Subtotal:", "confirm-subtotal"),
-    buildSummaryRow("Tax:", "confirm-tax"),
+    // buildSummaryRow("Tax:", "confirm-tax"), // TAX DISABLED
     buildSummaryRow("Shipping:", "confirm-shipping"),
     buildTotalRow()
   );
@@ -224,7 +224,7 @@ const populateOrderDetails = (data) => {
   }));
   set("confirm-customer-email", email);
   set("confirm-subtotal", `$${Number(subtotal).toFixed(2)}`);
-  set("confirm-tax", `$${Number(tax).toFixed(2)}`);
+  // set("confirm-tax", `$${Number(tax).toFixed(2)}`); // TAX DISABLED
   set("confirm-shipping", "FREE");
   set("confirm-total", `$${Number(totalCost).toFixed(2)}`);
 

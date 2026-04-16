@@ -21,7 +21,8 @@ const mockOrder = {
   ],
   itemCount: 2,
   subtotal: 50.0,
-  tax: 4.5,
+  // tax: 4.5, // TAX DISABLED
+  tax: 0,
   shippingCost: 0,
   totalCost: 54.5,
   amountPaid: 54.5,
@@ -89,6 +90,18 @@ describe("sendOrderConfirmationEmails", () => {
     expect(result.buyerSent).toBe(true);
     expect(result.adminSent).toBe(false);
   });
+
+  it("returns adminSent false when both admin recipient env vars are unset", async () => {
+    delete process.env.EMAIL_RECIPIENT_1;
+    delete process.env.EMAIL_RECIPIENT_2;
+    sendMail
+      .mockResolvedValueOnce({ messageId: "ok" })
+      .mockRejectedValueOnce(new Error("sendMail: at least one of 'to' or 'bcc' is required"));
+
+    const result = await sendOrderConfirmationEmails(mockOrder);
+    expect(result.buyerSent).toBe(true);
+    expect(result.adminSent).toBe(false);
+  });
 });
 
 describe("email HTML content (via sendOrderConfirmationEmails)", () => {
@@ -125,10 +138,10 @@ describe("email HTML content (via sendOrderConfirmationEmails)", () => {
     expect(html).toContain("50.00");
   });
 
-  it("buyer html contains subtotal, tax, and total", async () => {
+  it("buyer html contains subtotal and total", async () => { // TAX DISABLED: removed tax assertion
     const html = await getBuyerHtml();
     expect(html).toContain("50.00");
-    expect(html).toContain("4.50");
+    // expect(html).toContain("4.50"); // TAX DISABLED
     expect(html).toContain("54.50");
   });
 
@@ -170,5 +183,11 @@ describe("email HTML content (via sendOrderConfirmationEmails)", () => {
     const html = await getBuyerHtml(xssOrder);
     expect(html).not.toContain("<img");
     expect(html).toContain("&lt;img");
+  });
+
+  it("handles missing items array without throwing and still sends emails", async () => {
+    const result = await sendOrderConfirmationEmails({ ...mockOrder, items: undefined });
+    expect(result.buyerSent).toBe(true);
+    expect(result.adminSent).toBe(true);
   });
 });

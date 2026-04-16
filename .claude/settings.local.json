@@ -23,7 +23,8 @@
       "Bash(grep -E \"\\\\.\\(html|ejs\\)$\")",
       "Bash(npm test:*)",
       "Bash(cat vitest.config.js)",
-      "Bash(cat vite.config.js)"
+      "Bash(cat vite.config.js)",
+      "Bash(npx vitest *)"
     ]
   }
 }

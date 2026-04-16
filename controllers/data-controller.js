@@ -69,7 +69,7 @@ const markProductsSold = async (cartItems) => {
 export const getStripeConfigControl = (req, res) => {
   return res.json({
     publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
-    taxRate: parseFloat(process.env.TAX_RATE) || 0,
+    // taxRate: parseFloat(process.env.TAX_RATE) || 0, // TAX DISABLED
   });
 };
 
@@ -82,9 +82,10 @@ export const createPaymentIntentControl = async (req, res) => {
   }
 
   const subtotal = Math.round(cartStats.total * 100) / 100;
-  const taxRate = parseFloat(process.env.TAX_RATE) || 0;
-  const tax = Math.round(subtotal * taxRate * 100) / 100;
-  const totalCost = Math.round((subtotal + tax) * 100) / 100;
+  // const taxRate = parseFloat(process.env.TAX_RATE) || 0; // TAX DISABLED
+  // const tax = Math.round(subtotal * taxRate * 100) / 100; // TAX DISABLED
+  // const totalCost = Math.round((subtotal + tax) * 100) / 100; // TAX DISABLED
+  const totalCost = subtotal; // TAX DISABLED
   const totalInCents = Math.round(totalCost * 100);
 
   const result = await createPaymentIntent(totalInCents);

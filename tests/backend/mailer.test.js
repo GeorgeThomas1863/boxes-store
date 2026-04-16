@@ -79,4 +79,24 @@ describe("sendMail", () => {
       sendMail({ from: "store@example.com", subject: "Test", html: "<p>Hi</p>" })
     ).rejects.toThrow("sendMail: at least one of 'to' or 'bcc' is required");
   });
+
+  it("throws when MAILGUN_API_KEY is not set", async () => {
+    delete process.env.MAILGUN_API_KEY;
+    await expect(
+      sendMail({ from: "a@b.com", to: "c@d.com", subject: "X", html: "<p>X</p>" })
+    ).rejects.toThrow("sendMail: MAILGUN_API_KEY and MAILGUN_DOMAIN must be set");
+  });
+
+  it("throws when MAILGUN_DOMAIN is not set", async () => {
+    delete process.env.MAILGUN_DOMAIN;
+    await expect(
+      sendMail({ from: "a@b.com", to: "c@d.com", subject: "X", html: "<p>X</p>" })
+    ).rejects.toThrow("sendMail: MAILGUN_API_KEY and MAILGUN_DOMAIN must be set");
+  });
+
+  it("throws when 'from' is not provided", async () => {
+    await expect(
+      sendMail({ to: "c@d.com", subject: "X", html: "<p>X</p>" })
+    ).rejects.toThrow("sendMail: 'from' is required");
+  });
 });

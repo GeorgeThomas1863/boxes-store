@@ -78,5 +78,5 @@ export const escapeHtml = (str) => {
 // Strip newlines, carriage returns, and tabs from strings used in email headers (prevents header injection)
 export const sanitizeEmailHeader = (str) => {
   if (typeof str !== "string") return "";
-  return str.replace(/[\r\n\t]/g, "");
+  return str.replace(/[\r\n\t\0\v\f]/g, "");
 };
