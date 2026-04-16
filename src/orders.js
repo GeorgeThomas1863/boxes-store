@@ -3,6 +3,8 @@ import { dbGet } from "../middleware/db-config.js";
 import { getCartStats } from "./cart.js";
 import { verifyPaymentIntent } from "./payments.js";
 import { storeCustomerData } from "./customer.js";
+import { sendMail } from "./mailer.js";
+import { escapeHtml, sanitizeEmailHeader } from "./sanitize.js";
 
 export const placeNewOrder = async (req) => {
   if (!req || !req.body) return { success: false, message: "No input parameters" };
@@ -43,6 +45,15 @@ export const placeNewOrder = async (req) => {
     if (!orderData || !orderData.orderId) return { success: false, message: "Failed to store order data" };
 
     await storeCustomerData(orderData);
+
+    try {
+      const emailResult = await sendOrderConfirmationEmails(orderData);
+      if (!emailResult.buyerSent || !emailResult.adminSent) {
+        console.error("EMAIL ISSUE — buyer:", emailResult.buyerSent, "admin:", emailResult.adminSent);
+      }
+    } catch (e) {
+      console.error("EMAIL SEND UNEXPECTED ERROR:", e);
+    }
 
     req.session.cart = [];
 
@@ -91,4 +102,131 @@ export const getOrderNumber = async () => {
     { upsert: true, returnDocument: "after" }
   );
   return result?.seq || null;
+};
+
+//----------
+
+export const sendOrderConfirmationEmails = async (orderData) => {
+  if (!orderData) return { buyerSent: false, adminSent: false };
+
+  const { email, firstName, lastName, orderNumber } = orderData;
+  const safeOrderNumber = escapeHtml(String(orderNumber));
+
+  let buyerSent = false;
+  let adminSent = false;
+
+  const buyerHtml = buildEmailHtml(orderData, "buyer");
+  const adminHtml = buildEmailHtml(orderData, "admin");
+
+  try {
+    await sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: `Order Confirmation — #${safeOrderNumber}`,
+      html: buyerHtml,
+    });
+    buyerSent = true;
+  } catch (error) {
+    console.error("BUYER EMAIL ERROR:", error);
+  }
+
+  try {
+    await sendMail({
+      from: process.env.EMAIL_USER,
+      to: [process.env.EMAIL_RECIPIENT_1, process.env.EMAIL_RECIPIENT_2].filter(Boolean).join(", "),
+      subject: `New Order — #${safeOrderNumber} from ${sanitizeEmailHeader(firstName)} ${sanitizeEmailHeader(lastName)}`,
+      html: adminHtml,
+    });
+    adminSent = true;
+  } catch (error) {
+    console.error("ADMIN EMAIL ERROR:", error);
+  }
+
+  return { buyerSent, adminSent };
+};
+
+//----------
+
+const buildEmailHtml = (orderData, type) => {
+  const {
+    firstName, lastName, email,
+    address, city, state, zip,
+    items, subtotal, tax, totalCost,
+    amountPaid, paymentId, paymentStatus,
+    orderDate, orderNumber,
+  } = orderData;
+
+  const safeOrderNumber = escapeHtml(String(orderNumber));
+  const safeFirstName = escapeHtml(firstName);
+  const safeLastName  = escapeHtml(lastName);
+  const safeEmail     = escapeHtml(email);
+  const safeAddress   = escapeHtml(address);
+  const safeCity      = escapeHtml(city);
+  const safeState     = escapeHtml(state);
+  const safeZip       = escapeHtml(zip);
+
+  const formattedDate = new Date(orderDate).toLocaleDateString("en-US", {
+    year: "numeric", month: "long", day: "numeric",
+  });
+
+  const isAdmin = type === "admin";
+
+  let itemRows = "";
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    const lineTotal = (Number(item.price) * Number(item.quantity)).toFixed(2);
+    itemRows += `<tr>
+      ${isAdmin ? `<td style="padding: 8px; border-bottom: 1px solid #eee;">${escapeHtml(item.itemId || "")}</td>` : ""}
+      <td style="padding: 8px; border-bottom: 1px solid #eee;">${escapeHtml(item.name)}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${escapeHtml(String(item.quantity))}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">$${lineTotal}</td>
+    </tr>`;
+  }
+
+  const header = isAdmin
+    ? `<h2>New Order — #${safeOrderNumber}</h2>
+       <p><strong>Customer:</strong> ${safeFirstName} ${safeLastName} (${safeEmail})</p>`
+    : `<h2>Order Confirmation — #${safeOrderNumber}</h2>
+       <p>Thank you for your order, ${safeFirstName} ${safeLastName}!</p>`;
+
+  const paymentSection = isAdmin
+    ? `<hr style="margin: 24px 0; border: none; border-top: 1px solid #ccc;">
+       <h2>Payment Details</h2>
+       <table style="width: 100%; border-collapse: collapse;">
+         <tr><td style="padding: 4px 8px;"><strong>Payment ID:</strong></td><td style="padding: 4px 8px;">${escapeHtml(paymentId || "")}</td></tr>
+         <tr><td style="padding: 4px 8px;"><strong>Status:</strong></td><td style="padding: 4px 8px;">${escapeHtml(paymentStatus || "")}</td></tr>
+         <tr><td style="padding: 4px 8px;"><strong>Amount Paid:</strong></td><td style="padding: 4px 8px;">$${Number(amountPaid).toFixed(2)}</td></tr>
+       </table>`
+    : "";
+
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      ${header}
+      <p><strong>Date:</strong> ${formattedDate}</p>
+
+      <h2>Items</h2>
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background: #f5f5f5;">
+            ${isAdmin ? `<th style="padding: 8px; text-align: left;">Item ID</th>` : ""}
+            <th style="padding: 8px; text-align: left;">Item</th>
+            <th style="padding: 8px; text-align: center;">Qty</th>
+            <th style="padding: 8px; text-align: right;">Price</th>
+          </tr>
+        </thead>
+        <tbody>${itemRows}</tbody>
+      </table>
+
+      <div style="margin-top: 16px; text-align: right;">
+        <p><strong>Subtotal:</strong> $${Number(subtotal).toFixed(2)}</p>
+        <p><strong>Tax:</strong> $${Number(tax).toFixed(2)}</p>
+        <p style="font-size: 18px;"><strong>Total:</strong> $${Number(totalCost).toFixed(2)}</p>
+      </div>
+
+      <h2>Shipping Address</h2>
+      <p>${safeFirstName} ${safeLastName}<br>${safeAddress}<br>${safeCity}, ${safeState} ${safeZip}</p>
+
+      ${paymentSection}
+    </div>
+  `;
 };

@@ -18,6 +18,10 @@ vi.mock("../../src/customer.js", () => ({
   storeCustomerData: vi.fn(),
 }));
 
+vi.mock("../../src/mailer.js", () => ({
+  sendMail: vi.fn().mockResolvedValue({ messageId: "mock-id" }),
+}));
+
 import dbModel from "../../models/db-model.js";
 import { getCartStats } from "../../src/cart.js";
 import { verifyPaymentIntent } from "../../src/payments.js";

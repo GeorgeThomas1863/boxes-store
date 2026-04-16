@@ -21,7 +21,9 @@
       "mcp__plugin_playwright_playwright__browser_evaluate",
       "Bash(grep -E \"\\\\.\\(js|html|ejs\\)$\")",
       "Bash(grep -E \"\\\\.\\(html|ejs\\)$\")",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "Bash(cat vitest.config.js)",
+      "Bash(cat vite.config.js)"
     ]
   }
 }

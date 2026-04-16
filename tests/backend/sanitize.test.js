@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { sanitizeFilename } from "../../src/sanitize.js";
+import { sanitizeFilename, sanitizeEmailHeader } from "../../src/sanitize.js";
 
 describe("sanitizeFilename", () => {
   it("returns a normal filename unchanged", () => {
@@ -44,5 +44,29 @@ describe("sanitizeFilename", () => {
 
   it("returns empty string for an empty string input", () => {
     expect(sanitizeFilename("")).toBe("");
+  });
+});
+
+describe("sanitizeEmailHeader", () => {
+  it("strips newline characters", () => {
+    expect(sanitizeEmailHeader("John\nDoe")).toBe("JohnDoe");
+  });
+
+  it("strips carriage returns", () => {
+    expect(sanitizeEmailHeader("John\rDoe")).toBe("JohnDoe");
+  });
+
+  it("strips tabs", () => {
+    expect(sanitizeEmailHeader("John\tDoe")).toBe("JohnDoe");
+  });
+
+  it("returns empty string for non-string input", () => {
+    expect(sanitizeEmailHeader(null)).toBe("");
+    expect(sanitizeEmailHeader(undefined)).toBe("");
+    expect(sanitizeEmailHeader(42)).toBe("");
+  });
+
+  it("returns a clean string unchanged", () => {
+    expect(sanitizeEmailHeader("John Doe")).toBe("John Doe");
   });
 });

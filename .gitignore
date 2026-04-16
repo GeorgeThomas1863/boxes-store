@@ -14,6 +14,8 @@ config/
 .claude/pics/
 .claude/settings.local.json
 
+docs/*
+
 .EXAMPLE-CODE/*
 
 .playwright-mcp/
