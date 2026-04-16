@@ -1,4 +1,4 @@
-//build the admin capability / display (build admin auth first) pic uplaod
+//FINISH SETTING UP MAILGUN
 
 //make auth button work
 

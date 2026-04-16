@@ -492,7 +492,7 @@ export const buildInfoRowDiscount = async (mode, fieldName, labelText) => {
   input.name = mode === "add" ? fieldName : `edit-${fieldName}`;
 
   if (mode === "edit") {
-    input.disabled = true;
+    input.readOnly = true;
   }
 
   contentWrapper.append(input);

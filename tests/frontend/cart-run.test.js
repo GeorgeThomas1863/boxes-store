@@ -236,32 +236,6 @@ describe("updateCartSummary", () => {
     expect(els["cart-summary-subtotal"].textContent).toBe("$19.99");
   });
 
-  it("shows '[Estimate below]' in #cart-summary-shipping when shippingCost is 0", async () => {
-    sendToBack.mockResolvedValue({ success: true, itemCount: 1, total: 5.0 });
-    const els = buildSummaryDOM();
-
-    await updateCartSummary(0);
-
-    expect(els["cart-summary-shipping"].textContent).toBe("FREE!");
-  });
-
-  it("shows $X.XX in #cart-summary-shipping when shippingCost > 0", async () => {
-    sendToBack.mockResolvedValue({ success: true, itemCount: 1, total: 5.0 });
-    const els = buildSummaryDOM();
-
-    await updateCartSummary(7.5);
-
-    expect(els["cart-summary-shipping"].textContent).toBe("$7.50");
-  });
-
-  it("sets #cart-summary-total to subtotal + shippingCost formatted as $X.XX", async () => {
-    sendToBack.mockResolvedValue({ success: true, itemCount: 2, total: 10.0 });
-    const els = buildSummaryDOM();
-
-    await updateCartSummary(4.99);
-
-    expect(els["cart-summary-total"].textContent).toBe("$14.99");
-  });
 });
 
 // ---------------------------------------------------------------------------

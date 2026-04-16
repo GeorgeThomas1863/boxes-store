@@ -23,6 +23,14 @@ export const addNewProductControl = async (req, res) => {
     "discount",
   ]);
 
+  if ('discount' in safeParams) {
+    const d = Number(safeParams.discount);
+    if (!Number.isFinite(d) || d < 0 || d > 100) {
+      return res.status(400).json({ error: "Discount must be a number between 0 and 100" });
+    }
+    safeParams.discount = Math.round(d);
+  }
+
   const data = await storeProduct(safeParams);
   return res.json(data);
 };
@@ -41,6 +49,14 @@ export const editProductControl = async (req, res) => {
     "productId",
     "discount",
   ]);
+
+  if ('discount' in safeParams) {
+    const d = Number(safeParams.discount);
+    if (!Number.isFinite(d) || d < 0 || d > 100) {
+      return res.status(400).json({ error: "Discount must be a number between 0 and 100" });
+    }
+    safeParams.discount = Math.round(d);
+  }
 
   const data = await updateProduct(safeParams);
   return res.json(data);

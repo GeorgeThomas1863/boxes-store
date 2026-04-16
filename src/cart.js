@@ -37,11 +37,6 @@ export const addCartItem = async (req) => {
     break;
   }
 
-  let itemCount = 0;
-  for (let i = 0; i < req.session.cart.length; i++) {
-    itemCount += req.session.cart[i].quantity;
-  }
-
   // Update quantity if already exists
   if (existingItem) {
     existingItem.quantity += safeQuantity;
@@ -59,6 +54,11 @@ export const addCartItem = async (req) => {
       discount,
     };
     req.session.cart.push(cartItem);
+  }
+
+  let itemCount = 0;
+  for (let i = 0; i < req.session.cart.length; i++) {
+    itemCount += req.session.cart[i].quantity;
   }
 
   return { success: true, cart: req.session.cart, itemCount: itemCount };

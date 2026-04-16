@@ -15,8 +15,6 @@ export const runAddToCart = async (clickElement) => {
   }
 
   const name = productCard.querySelector(".product-name")?.textContent;
-  const priceText = productCard.querySelector(".product-price")?.textContent;
-  const price = priceText ? parseFloat(priceText.replace("$", "")) : 0;
   const image = productCard.querySelector(".product-image")?.src;
 
   const res = await sendToBack({
@@ -24,7 +22,6 @@ export const runAddToCart = async (clickElement) => {
     data: {
       productId,
       name,
-      price,
       image,
       quantity: 1,
     },
@@ -237,10 +234,9 @@ export const displayCart = async (cartItems) => {
 export const updateCartSummary = async () => {
   const itemCountElement = document.getElementById("cart-summary-item-count");
   const subtotalElement = document.getElementById("cart-summary-subtotal");
-  const shippingElement = document.getElementById("cart-summary-shipping");
   const totalElement = document.getElementById("cart-summary-total");
 
-  if (!itemCountElement || !subtotalElement || !totalElement || !shippingElement) return null;
+  if (!itemCountElement || !subtotalElement || !totalElement) return null;
 
   const cartData = await sendToBack({ route: "/cart/stats" }, "GET");
 
@@ -253,7 +249,6 @@ export const updateCartSummary = async () => {
 
   itemCountElement.textContent = itemCount;
   subtotalElement.textContent = `$${total.toFixed(2)}`;
-  shippingElement.textContent = "FREE";
   totalElement.textContent = `$${total.toFixed(2)}`;
 
   return true;
