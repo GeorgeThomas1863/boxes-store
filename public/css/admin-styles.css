@@ -544,6 +544,75 @@
   cursor: not-allowed;
 }
 
+/* Discount Toggle */
+.discount-toggle-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.discount-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.discount-toggle-checkbox {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.discount-toggle-track {
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  background: #ccc;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.discount-toggle-track::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.discount-toggle-checkbox:checked + .discount-toggle-track {
+  background: #000;
+}
+
+.discount-toggle-checkbox:checked + .discount-toggle-track::after {
+  transform: translateX(18px);
+}
+
+.discount-toggle-checkbox:disabled + .discount-toggle-track {
+  opacity: 0.4;
+}
+
+.discount-toggle-label:has(.discount-toggle-checkbox:disabled) {
+  cursor: not-allowed;
+}
+
+.discount-toggle-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #555;
+}
+
 /* Status Section */
 .status-grid {
   display: grid;

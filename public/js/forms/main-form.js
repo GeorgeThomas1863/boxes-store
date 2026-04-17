@@ -8,7 +8,7 @@ export const buildMainForm = async () => {
   const navBar = await buildNavBar();
 
   const topImage = document.createElement("img");
-  topImage.src = "/images/PRN_logo.jpg";
+  topImage.src = "/images/PRN_logo2.jpg";
   topImage.alt = "PRN & Pretty Things";
   topImage.classList.add("top-banner-img");
 

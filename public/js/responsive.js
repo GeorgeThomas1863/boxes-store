@@ -105,6 +105,21 @@ export const changeHandler = async (e) => {
   if (changeId === "product-selector") await changeAdminProductSelector(changeElement);
 };
 
+export const keyHandler = async (e) => {
+  if (e.key !== "Enter") return null;
+  e.preventDefault();
+
+  const keyElement = e.target;
+  const keyId = keyElement.id;
+
+  // console.log("KEY HANDLER");
+  // console.log(keyId);
+
+  if (keyId === "auth-pw-input") await runAuthSubmit();
+
+  return true;
+};
+
 export const inputHandler = async (e) => {
   const inputElement = e.target;
   const label = inputElement.getAttribute("data-label");
@@ -119,6 +134,7 @@ if (displayElement) displayElement.addEventListener("click", clickHandler);
 if (cartElement) cartElement.addEventListener("click", clickHandler);
 if (authElement) {
   authElement.addEventListener("click", clickHandler);
+  authElement.addEventListener("keypress", keyHandler);
 }
 if (adminElement) {
   adminElement.addEventListener("click", clickHandler);

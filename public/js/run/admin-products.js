@@ -231,6 +231,22 @@ export const populateEditFormProducts = async (inputObj) => {
   const deleteButton = document.getElementById("delete-product-button");
   if (deleteButton) deleteButton.disabled = false;
 
+  const discountToggle = document.getElementById("edit-discount-toggle");
+  const discountInput = document.getElementById("edit-discount");
+  const discountToggleText = document.getElementById("edit-discount-toggle-text");
+  if (discountToggle && discountInput) {
+    const hasDiscount = discount != null && parseFloat(discount) > 0;
+    discountToggle.checked = hasDiscount;
+    if (hasDiscount) {
+      discountInput.classList.remove("hidden");
+      if (discountToggleText) discountToggleText.textContent = "Discount Active";
+    } else {
+      discountInput.classList.add("hidden");
+      discountInput.value = "";
+      if (discountToggleText) discountToggleText.textContent = "No Discount";
+    }
+  }
+
   // Rebuild image slots from picData
   const pics = inputObj.picData ? (Array.isArray(inputObj.picData) ? inputObj.picData : [inputObj.picData]) : [];
   const slotsContainer = document.querySelector(".pic-slots-container");

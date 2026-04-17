@@ -481,8 +481,30 @@ export const buildInfoRowDiscount = async (mode, fieldName, labelText) => {
   const contentWrapper = document.createElement("div");
   contentWrapper.className = "info-content-wrapper";
 
+  const toggleRow = document.createElement("div");
+  toggleRow.className = "discount-toggle-row";
+
+  const toggleLabel = document.createElement("label");
+  toggleLabel.className = "discount-toggle-label";
+
+  const toggleCheckbox = document.createElement("input");
+  toggleCheckbox.type = "checkbox";
+  toggleCheckbox.className = "discount-toggle-checkbox";
+  toggleCheckbox.id = mode === "add" ? "discount-toggle" : "edit-discount-toggle";
+
+  const toggleTrack = document.createElement("span");
+  toggleTrack.className = "discount-toggle-track";
+
+  const toggleText = document.createElement("span");
+  toggleText.className = "discount-toggle-text";
+  toggleText.id = mode === "add" ? "discount-toggle-text" : "edit-discount-toggle-text";
+  toggleText.textContent = "No Discount";
+
+  toggleLabel.append(toggleCheckbox, toggleTrack, toggleText);
+  toggleRow.append(toggleLabel);
+
   const input = document.createElement("input");
-  input.className = "info-content info-input";
+  input.className = "info-content info-input hidden";
   input.type = "number";
   input.min = "0";
   input.max = "100";
@@ -492,10 +514,22 @@ export const buildInfoRowDiscount = async (mode, fieldName, labelText) => {
   input.name = mode === "add" ? fieldName : `edit-${fieldName}`;
 
   if (mode === "edit") {
-    input.readOnly = true;
+    toggleCheckbox.disabled = true;
+    input.disabled = true;
   }
 
-  contentWrapper.append(input);
+  toggleCheckbox.addEventListener("change", () => {
+    if (toggleCheckbox.checked) {
+      input.classList.remove("hidden");
+      toggleText.textContent = "Discount Active";
+    } else {
+      input.classList.add("hidden");
+      input.value = "";
+      toggleText.textContent = "No Discount";
+    }
+  });
+
+  contentWrapper.append(toggleRow, input);
   row.append(label, contentWrapper);
 
   return row;
