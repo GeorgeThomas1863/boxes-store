@@ -48,7 +48,13 @@
   }
 
   .modal-actions {
+    flex-direction: row;
+    justify-content: flex-end;
     padding: 1.5rem 2rem;
+  }
+
+  .btn-admin-submit {
+    margin-left: 1rem;
   }
 
   .category-section {

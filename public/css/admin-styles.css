@@ -929,8 +929,8 @@
 /* Modal Actions */
 .modal-actions {
   display: flex;
+  flex-direction: column-reverse;
   gap: 1rem;
-  justify-content: flex-end;
   padding: 1rem 1.25rem;
   border-top: 1px solid #e0e0e0;
   background: #fafafa;
@@ -961,7 +961,7 @@ a.btn {
 
 .btn-admin-submit {
   width: 100%;
-  margin-left: 1rem;
+  margin-left: 0;
   background-color: #000;
   color: #fff;
   border-color: #000;
