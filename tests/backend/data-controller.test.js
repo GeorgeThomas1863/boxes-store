@@ -20,6 +20,11 @@ vi.mock("dotenv", () => ({
   default: { config: vi.fn() },
 }));
 
+// Mock DB-touching modules not under test (prevent top-level dbConnect from firing)
+vi.mock("../../src/orders.js", () => ({ placeNewOrder: vi.fn() }));
+vi.mock("../../src/payments.js", () => ({ createPaymentIntent: vi.fn(), refundPayment: vi.fn() }));
+vi.mock("../../src/products.js", () => ({ updateProduct: vi.fn() }));
+
 import {
   getCartDataControl,
   getCartStatsControl,
