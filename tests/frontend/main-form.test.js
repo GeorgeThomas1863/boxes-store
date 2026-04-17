@@ -141,13 +141,6 @@ describe("buildCard", () => {
 // ---------------------------------------------------------------------------
 
 describe("buildMainForm", () => {
-  it("shows .no-products-msg when sendToBack returns 'FAIL'", async () => {
-    sendToBack.mockResolvedValue("FAIL");
-    const form = await buildMainForm();
-    document.body.appendChild(form);
-    expect(document.querySelector(".no-products-msg")).not.toBeNull();
-  });
-
   it("shows .no-products-msg when sendToBack returns null", async () => {
     sendToBack.mockResolvedValue(null);
     const form = await buildMainForm();

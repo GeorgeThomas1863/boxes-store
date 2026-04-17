@@ -1303,3 +1303,76 @@ a.btn {
   color: #333;
   border-color: #333;
 }
+
+/* ++++++++++++++++++++++++++++ */
+/* CONFIRM DIALOG STYLES */
+/* ++++++++++++++++++++++++++++ */
+
+.confirm-dialog {
+  font-family: "Georgia", serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.confirm-dialog-content {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.confirm-message {
+  margin: 0 0 1.25rem 0;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+.confirm-button-container {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.confirm-btn {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  min-width: 96px;
+}
+
+.confirm-btn-yes {
+  background-color: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+.confirm-btn-yes:hover {
+  background-color: #991b1b;
+  border-color: #991b1b;
+}
+
+.confirm-btn-no {
+  background-color: #f5f5f5;
+  color: #1a1a1a;
+  border-color: #d4d4d4;
+}
+
+.confirm-btn-no:hover {
+  background-color: #e5e5e5;
+}

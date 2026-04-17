@@ -151,7 +151,7 @@ describe("runSlotUploadPic", () => {
     const file = fakeFile("photo.jpg");
     attachFile(fileInput, file);
 
-    sendToBackFile.mockResolvedValue("FAIL");
+    sendToBackFile.mockResolvedValue(null);
 
     const result = await runSlotUploadPic(fileInput);
 

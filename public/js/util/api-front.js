@@ -20,8 +20,7 @@ export const sendToBack = async (inputParams, method = "POST") => {
 
     return data;
   } catch (error) {
-    // console.log(error);
-    return "FAIL";
+    return null;
   }
 };
 
@@ -34,13 +33,11 @@ export const sendToBackFile = async (inputParams) => {
       body: formData,
     });
 
-    if (!res.ok) {
-      return "FAIL";
-    }
+    if (!res.ok) return null;
 
     const data = await res.json();
     return data;
   } catch (e) {
-    return "FAIL";
+    return null;
   }
 };

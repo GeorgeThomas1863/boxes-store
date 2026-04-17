@@ -22,7 +22,7 @@ export const runModalTrigger = async (clickElement) => {
 
   if (mode === "edit" && entityType === "products") {
     const productData = await sendToBack({ route: "/get-product-data-route" }, "GET");
-    if (productData && productData.length) {
+    if (productData) {
       await populateAdminProductSelector(productData);
       await updateProductStats(productData);
     }
@@ -107,12 +107,12 @@ export const clearAdminEditFields = async () => {
 
 export const updateAdminStats = async () => {
   const productData = await sendToBack({ route: "/get-product-data-route" }, "GET");
-  if (productData && productData.length) await updateProductStats(productData);
+  if (productData) await updateProductStats(productData);
   return true;
 };
 
 export const updateProductStats = async (productData) => {
-  if (!productData || !productData.length) return null;
+  if (!productData) return null;
 
   const totalProducts = productData.length;
   const displayedProducts = productData.filter((p) => p.display === "yes").length;

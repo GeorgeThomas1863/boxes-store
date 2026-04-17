@@ -16,7 +16,7 @@ export const buildMainForm = async () => {
   cardsGrid.classList.add("cards-grid");
 
   const productData = await sendToBack({ route: "/get-product-data-route" }, "GET");
-  if (!productData || productData === "FAIL") {
+  if (!productData) {
     const msg = document.createElement("p");
     msg.className = "no-products-msg";
     msg.textContent = "Unable to load products — please refresh the page.";

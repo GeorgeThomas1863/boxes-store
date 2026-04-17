@@ -42,7 +42,7 @@ export const runSlotUploadPic = async (fileInput) => {
 
   const data = await sendToBackFile({ route: "/upload-product-pic-route", formData: formData });
 
-  if (data === "FAIL" || !data) {
+  if (!data) {
     uploadStatus.textContent = "✗ Upload failed";
     uploadStatus.style.color = "red";
     uploadBtn.uploadData = null;
@@ -59,7 +59,7 @@ export const runSlotUploadPic = async (fileInput) => {
 
   if (previousFilename && previousFilename !== data.filename) {
     const deleteResult = await sendToBack({ route: "/delete-pic-route", filename: previousFilename, entityType });
-    if (!deleteResult || deleteResult === "FAIL") {
+    if (!deleteResult) {
       await displayPopup("Previous file could not be removed from server", "error");
     }
   }
@@ -94,7 +94,7 @@ export const runDeleteSlotImage = async (deleteBtn) => {
 
   if (filename) {
     const deleteResult = await sendToBack({ route: "/delete-pic-route", filename, entityType });
-    if (!deleteResult || deleteResult === "FAIL") {
+    if (!deleteResult) {
       await displayPopup("Image removed from form but file deletion failed", "error");
     }
   }
@@ -155,7 +155,7 @@ export const runRemovePicSlot = async (removeBtn) => {
 
   if (filename) {
     const deleteResult = await sendToBack({ route: "/delete-pic-route", filename, entityType });
-    if (!deleteResult || deleteResult === "FAIL") {
+    if (!deleteResult) {
       await displayPopup("Slot removed but file deletion failed", "error");
     }
   }
