@@ -1,4 +1,5 @@
 import { runAuthSubmit } from "./auth.js";
+import { runContactSubmit } from "./run/contact-run.js";
 import { runPlaceOrder } from "./run/checkout-run.js";
 import { closePopup, closeConfirmDialog } from "./util/popup.js";
 import { runPwToggle } from "./util/collapse.js";
@@ -15,6 +16,7 @@ const checkoutElement = document.getElementById("checkout-element");
 const confirmElement = document.getElementById("confirm-element");
 const authElement = document.getElementById("auth-element");
 const adminElement = document.getElementById("admin-element");
+const contactElement = document.getElementById("contact-element");
 
 const generateSlug = (name) => {
   return (name || "")
@@ -78,6 +80,7 @@ export const clickHandler = async (e) => {
 
   if (clickType === "pwToggle") await runPwToggle();
   if (clickType === "auth-submit") await runAuthSubmit();
+  if (clickType === "contact-submit") await runContactSubmit();
 
   if (clickType === "add-to-cart") {
     await runAddToCart(clickedElement);
@@ -189,3 +192,4 @@ if (checkoutElement) {
 if (confirmElement) confirmElement.addEventListener("click", clickHandler);
 const aboutElement = document.getElementById("about-element");
 if (aboutElement) aboutElement.addEventListener("click", clickHandler);
+if (contactElement) contactElement.addEventListener("click", clickHandler);

@@ -34,7 +34,9 @@ export const buildMainForm = async () => {
 
   const bottomText = await buildBottomText();
 
-  container.append(navBar, topImage, cardsGrid, bottomText);
+  const footerCard = await buildMainFooterCard();
+  const disclaimer = await buildDisclaimerSection();
+  container.append(navBar, topImage, cardsGrid, bottomText, footerCard, disclaimer);
 
   return container;
 };
@@ -263,6 +265,137 @@ export const buildCarouselElement = (pics, altText, isCard, startIndex = 0) => {
   if (startIndex > 0) track.style.transform = `translateX(-${startIndex * 100}%)`;
   return carousel;
 };
+
+export const buildMainFooterCard = async () => {
+  const footerCard = document.createElement("div");
+  footerCard.className = "main-footer-card";
+
+  const items = document.createElement("div");
+  items.className = "main-footer-items";
+
+  const rows = [
+    { icon: "🏖️", label: "Based In", value: "Western North Carolina" },
+    { icon: "👩‍⚕️", label: "Ownership", value: "Owned & Operated by a Registered Nurse" },
+  ];
+
+  for (let i = 0; i < rows.length; i++) {
+    const rowData = rows[i];
+
+    const row = document.createElement("div");
+    row.className = "main-footer-row";
+
+    const iconWrap = document.createElement("div");
+    iconWrap.className = "main-f-icon-wrap";
+    iconWrap.textContent = rowData.icon;
+
+    const info = document.createElement("div");
+    info.className = "main-f-info";
+
+    const labelEl = document.createElement("div");
+    labelEl.className = "main-f-label";
+    labelEl.textContent = rowData.label;
+
+    const valueEl = document.createElement("div");
+    valueEl.className = "main-f-value";
+    valueEl.textContent = rowData.value;
+
+    info.append(labelEl, valueEl);
+    row.append(iconWrap, info);
+    items.append(row);
+  }
+
+  const divider = document.createElement("div");
+  divider.className = "main-footer-divider";
+
+  const copyright = document.createElement("div");
+  copyright.className = "main-footer-copyright";
+  copyright.textContent = "© 2026 PRN & Pretty Things Co.";
+
+  footerCard.append(items, divider, copyright);
+
+  return footerCard;
+};
+
+//-------------------------------------------
+
+export const buildDisclaimerSection = async () => {
+  const section = document.createElement("div");
+  section.className = "main-disclaimer";
+
+  const title = document.createElement("div");
+  title.className = "main-disclaimer-title";
+  title.textContent = "*DISCLAIMERS";
+
+  const disclaimerItems = [
+    {
+      header: "1. The Mystery Experience",
+      body: 'While we personally select every item to ensure it meets our "Nurse Approved" and "Coquette Aesthetic" standards, we cannot guarantee specific colors or variations. Items are subject to change.',
+      subItems: [],
+    },
+    {
+      header: "2. All Sales Are Final",
+      body: "Every box is a custom experience, packed specifically for your order. Because of this personalized process, all sales are final. We do not offer returns, exchanges, or refunds based on personal preference of the mystery items received. We put our heart into every pull and hope the surprises bring a smile to your end of shift!",
+      subItems: [],
+    },
+    {
+      header: "3. Shipping & Mountain Time",
+      body: "Processing: Each box is hand-packed in the heart of Western North Carolina. Please allow 3–5 business days for us to prepare your package for its journey.",
+      subItems: [
+        {
+          label: "*Accuracy:",
+          body: "Please double-check your shipping address at checkout. PRN & Pretty Things Co. is not responsible for packages sent to incorrectly provided addresses.",
+        },
+        {
+          label: "*Damages:",
+          body: "While we pack with care, the journey through the mountains can be bumpy! If an item arrives damaged, please email us a photo within 48 hours of delivery at [Your Email Address] so we can make it right.",
+        },
+      ],
+    },
+  ];
+
+  section.append(title);
+
+  for (let i = 0; i < disclaimerItems.length; i++) {
+    const itemData = disclaimerItems[i];
+
+    const item = document.createElement("div");
+    item.className = "main-disclaimer-item";
+
+    const header = document.createElement("div");
+    header.className = "main-disclaimer-item-header";
+    header.textContent = itemData.header;
+
+    const body = document.createElement("p");
+    body.className = "main-disclaimer-item-body";
+    body.textContent = itemData.body;
+
+    item.append(header, body);
+
+    for (let j = 0; j < itemData.subItems.length; j++) {
+      const subData = itemData.subItems[j];
+
+      const subItem = document.createElement("div");
+      subItem.className = "main-disclaimer-sub-item";
+
+      const subLabel = document.createElement("span");
+      subLabel.className = "main-disclaimer-sub-label";
+      subLabel.textContent = subData.label + " ";
+
+      const subBody = document.createElement("span");
+      subBody.className = "main-disclaimer-sub-body";
+      subBody.textContent = subData.body;
+
+      subItem.append(subLabel, subBody);
+      item.append(subItem);
+    }
+
+    section.append(item);
+  }
+
+  return section;
+};
+
+//-------------------------------------------
 
 export const buildBottomText = async () => {
   const section = document.createElement("div");

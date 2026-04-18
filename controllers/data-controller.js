@@ -3,6 +3,7 @@ import { validatePositiveInt, validateEmail, validateZip, validateString } from 
 import { placeNewOrder } from "../src/orders.js";
 import { createPaymentIntent, refundPayment } from "../src/payments.js";
 import { updateProduct } from "../src/products.js";
+import { submitContact } from "../src/contact.js";
 
 export const getCartDataControl = async (req, res) => {
   await buildCart(req);
@@ -164,4 +165,13 @@ export const placeOrderControl = async (req, res) => {
   }
 
   return res.json(data);
+};
+
+export const contactSubmitControl = async (req, res) => {
+  if (!req.body) return res.status(400).json({ success: false, message: "No input parameters" });
+
+  const data = await submitContact(req.body);
+  if (!data || !data.success) return res.status(500).json({ success: false, message: data?.message || "Failed to send message" });
+
+  res.json(data);
 };

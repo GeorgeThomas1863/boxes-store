@@ -8,6 +8,8 @@ export const getTargetElement = async () => {
   if (displayElement) return displayElement;
   if (cartElement) return cartElement;
   if (checkoutElement) return checkoutElement;
+  const contactElement = document.getElementById("contact-element");
+  if (contactElement) return contactElement;
   return null;
 };
 

@@ -1,0 +1,138 @@
+/* ===== CONTACT PAGE — body override ===== */
+body {
+  background: #fdf5ff;
+  overflow-x: hidden;
+}
+
+/* ===== CONTACT PAGE WRAPPER ===== */
+.contact-page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== CONTAINER ===== */
+.contact-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  width: 100%;
+}
+
+/* ===== PAGE HEADER ===== */
+.contact-page-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.contact-page-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #1a1a1a;
+}
+
+.contact-page-subtitle {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #5c4870;
+  letter-spacing: 0.5px;
+}
+
+/* ===== CARD ===== */
+.contact-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+/* ===== FORM CONTENT ===== */
+.contact-form-content {
+  padding: 1.5rem;
+}
+
+/* ===== FORM GROUPS ===== */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+  color: #1a1a1a;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  font-family: inherit;
+  color: #1a1a1a;
+  background: #fafafa;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #be3a7a;
+  outline: none;
+  background: #fff;
+}
+
+.form-group textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* ===== SUBMIT BUTTON ===== */
+.submit-button {
+  width: 100%;
+  padding: 13px;
+  background: #111;
+  color: #fff;
+  border: 2px solid #111;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.submit-button:hover {
+  background: #333;
+  border-color: #333;
+}
+
+.submit-button:active {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+  transform: translateY(1px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (min-width: 540px) {
+  .contact-container {
+    padding: 2rem 1.5rem;
+  }
+
+  .contact-form-content {
+    padding: 2rem;
+  }
+
+  .contact-page-title {
+    font-size: 2rem;
+  }
+}

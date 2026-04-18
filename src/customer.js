@@ -58,9 +58,9 @@ const updateCustomerData = async (inputParams) => {
     totalPaid: +(Number(checkData.totalPaid || 0) + Number(totalPaid)),
     totalItemsPurchased: +(Number(checkData.totalItemsPurchased || 0) + Number(totalItemsPurchased)),
     totalOrders: +(Number(checkData.totalOrders || 0) + 1),
-    nursingSpecialty: nursingSpecialty || null,
-    productLikes: productLikes || null,
-    productDislikes: productDislikes || null,
+    nursingSpecialty: nursingSpecialty ?? checkData.nursingSpecialty ?? null,
+    productLikes:     productLikes     ?? checkData.productLikes     ?? null,
+    productDislikes:  productDislikes  ?? checkData.productDislikes  ?? null,
   };
 
   const updateModel = new dbModel(
