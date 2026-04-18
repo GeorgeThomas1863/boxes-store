@@ -1,6 +1,7 @@
 import { TIKTOK_ICON_SVG, CAROUSEL_PREV_SVG, CAROUSEL_NEXT_SVG } from "../util/define-things.js";
 import { sendToBack } from "../util/api-front.js";
 import { buildSpinSelector } from "../util/spin-options.js";
+import { buildCollapseContainer } from "../util/collapse.js";
 
 export const buildMainForm = async () => {
   const container = document.createElement("div");
@@ -34,9 +35,9 @@ export const buildMainForm = async () => {
 
   const bottomText = await buildBottomText();
 
-  const footerCard = await buildMainFooterCard();
-  const disclaimer = await buildDisclaimerSection();
-  container.append(navBar, topImage, cardsGrid, bottomText, footerCard, disclaimer);
+  const bottomSection = await buildBottomSection();
+  const launchSection = await buildLaunchSection();
+  container.append(navBar, topImage, launchSection, cardsGrid, bottomText, bottomSection);
 
   return container;
 };
@@ -266,61 +267,55 @@ export const buildCarouselElement = (pics, altText, isCard, startIndex = 0) => {
   return carousel;
 };
 
-export const buildMainFooterCard = async () => {
-  const footerCard = document.createElement("div");
-  footerCard.className = "main-footer-card";
+export const buildBottomSection = async () => {
+  const bottomSection = document.createElement("div");
+  bottomSection.className = "main-bottom-section";
 
-  const items = document.createElement("div");
-  items.className = "main-footer-items";
+  const infoRows = await buildBottomInfoRows();
 
-  const rows = [
-    { icon: "🏖️", label: "Based In", value: "Western North Carolina" },
-    { icon: "👩‍⚕️", label: "Ownership", value: "Owned & Operated by a Registered Nurse" },
-  ];
+  const dividerTop = document.createElement("div");
+  dividerTop.className = "main-footer-divider";
 
-  for (let i = 0; i < rows.length; i++) {
-    const rowData = rows[i];
+  const disclaimerBlock = await buildBottomDisclaimerBlock();
 
-    const row = document.createElement("div");
-    row.className = "main-footer-row";
-
-    const iconWrap = document.createElement("div");
-    iconWrap.className = "main-f-icon-wrap";
-    iconWrap.textContent = rowData.icon;
-
-    const info = document.createElement("div");
-    info.className = "main-f-info";
-
-    const labelEl = document.createElement("div");
-    labelEl.className = "main-f-label";
-    labelEl.textContent = rowData.label;
-
-    const valueEl = document.createElement("div");
-    valueEl.className = "main-f-value";
-    valueEl.textContent = rowData.value;
-
-    info.append(labelEl, valueEl);
-    row.append(iconWrap, info);
-    items.append(row);
-  }
-
-  const divider = document.createElement("div");
-  divider.className = "main-footer-divider";
+  const dividerBottom = document.createElement("div");
+  dividerBottom.className = "main-footer-divider";
 
   const copyright = document.createElement("div");
   copyright.className = "main-footer-copyright";
   copyright.textContent = "© 2026 PRN & Pretty Things Co.";
 
-  footerCard.append(items, divider, copyright);
+  bottomSection.append(infoRows, dividerTop, disclaimerBlock, dividerBottom, copyright);
 
-  return footerCard;
+  return bottomSection;
 };
 
 //-------------------------------------------
 
-export const buildDisclaimerSection = async () => {
-  const section = document.createElement("div");
-  section.className = "main-disclaimer";
+export const buildBottomInfoRows = async () => {
+  const infoBlock = document.createElement("div");
+  infoBlock.className = "main-footer-info";
+
+  const lines = [
+    "Proudly based in Western North Carolina 🏔️",
+    "Owned and Operated by a Registered Nurse.",
+  ];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = document.createElement("p");
+    line.className = "main-footer-info-line";
+    line.textContent = lines[i];
+    infoBlock.append(line);
+  }
+
+  return infoBlock;
+};
+
+//-------------------------------------------
+
+export const buildBottomDisclaimerBlock = async () => {
+  const block = document.createElement("div");
+  block.className = "main-disclaimer-block";
 
   const title = document.createElement("div");
   title.className = "main-disclaimer-title";
@@ -353,7 +348,7 @@ export const buildDisclaimerSection = async () => {
     },
   ];
 
-  section.append(title);
+  block.append(title);
 
   for (let i = 0; i < disclaimerItems.length; i++) {
     const itemData = disclaimerItems[i];
@@ -389,10 +384,90 @@ export const buildDisclaimerSection = async () => {
       item.append(subItem);
     }
 
-    section.append(item);
+    block.append(item);
   }
 
-  return section;
+  return block;
+};
+
+//-------------------------------------------
+
+export const buildLaunchSection = async () => {
+  const card = document.createElement("div");
+  card.className = "launch-card";
+
+  const header = document.createElement("p");
+  header.className = "launch-header";
+  const bold = document.createElement("strong");
+  bold.textContent = "Now Launching";
+  const colon = document.createTextNode(": ");
+  const title = document.createElement("em");
+  title.className = "launch-header-title";
+  title.textContent = "The Fabulous Nurse Mystery Box";
+  header.append(bold, colon, title);
+
+  const subheader = document.createElement("p");
+  subheader.className = "launch-subheader";
+  subheader.textContent = "Each box includes 15 pink prize capsules and 1 Spin on the Mystery Wheel";
+
+  const capsulesTitle = document.createElement("span");
+  capsulesTitle.textContent = "Pink Prize Capsules";
+
+  const pillsWrap = document.createElement("div");
+  pillsWrap.className = "launch-pills";
+  const capsuleItems = [
+    "Shift Essentials",
+    "Self-care items",
+    "Fun off duty activities",
+    "RN's pick",
+    "Grab 2 extra picks",
+    "Specialty Item Mystery Spins",
+  ];
+  for (let i = 0; i < capsuleItems.length; i++) {
+    const pill = document.createElement("span");
+    pill.className = "launch-pill";
+    pill.textContent = capsuleItems[i];
+    pillsWrap.append(pill);
+  }
+
+  const capsulesCollapse = await buildCollapseContainer({
+    titleElement: capsulesTitle,
+    contentElement: pillsWrap,
+    isExpanded: false,
+    className: "launch-collapsible-item",
+  });
+
+  const wheelTitle = document.createElement("span");
+  wheelTitle.textContent = "Mystery Wheel Specialty Items";
+
+  const wheelList = document.createElement("ul");
+  wheelList.className = "launch-wheel-list";
+  const wheelItems = [
+    "Each number on the Mystery wheel correlates to a Specialty Item",
+    "Items include planners, chargers, handbags, and other sparkly accessories",
+    "1 spin is included in your purchase",
+    "Extra spins are available for purchase at checkout",
+  ];
+  for (let i = 0; i < wheelItems.length; i++) {
+    const li = document.createElement("li");
+    li.className = "launch-wheel-item";
+    li.textContent = wheelItems[i];
+    wheelList.append(li);
+  }
+
+  const wheelCollapse = await buildCollapseContainer({
+    titleElement: wheelTitle,
+    contentElement: wheelList,
+    isExpanded: false,
+    className: "launch-collapsible-item",
+  });
+
+  const row = document.createElement("div");
+  row.className = "launch-collapsibles-row";
+  row.append(capsulesCollapse, wheelCollapse);
+
+  card.append(header, subheader, row);
+  return card;
 };
 
 //-------------------------------------------

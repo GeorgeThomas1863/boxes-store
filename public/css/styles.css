@@ -739,53 +739,29 @@ h4 {
 /* Main Page Footer Card         */
 /* ============================= */
 
-.main-footer-card {
+.main-bottom-section {
   background: #ffffff;
   border-radius: 16px;
   padding: 20px 16px;
-  margin: 0 16px 16px;
+  margin: 0 16px 32px;
   box-shadow: 0 4px 16px rgba(233, 30, 140, 0.08);
   border: 1px solid rgba(233, 30, 140, 0.1);
 }
 
-.main-footer-items {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+.main-footer-info {
   margin-bottom: 16px;
 }
 
-.main-footer-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.main-f-icon-wrap {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba(233, 30, 140, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
-
-.main-f-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #e91e8c;
-  opacity: 0.8;
-}
-
-.main-f-value {
-  font-size: 13.5px;
+.main-footer-info-line {
+  font-size: 13px;
   font-weight: 500;
-  color: #1a1a1a;
+  color: #333;
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+
+.main-footer-info-line:last-child {
+  margin-bottom: 0;
 }
 
 .main-footer-divider {
@@ -804,14 +780,6 @@ h4 {
 /* ============================= */
 /* Main Page Disclaimer          */
 /* ============================= */
-
-.main-disclaimer {
-  margin: 12px 16px 32px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 12px;
-  border: 1px solid rgba(233, 30, 140, 0.1);
-}
 
 .main-disclaimer-title {
   font-size: 10px;
@@ -859,4 +827,132 @@ h4 {
   font-size: 11px;
   color: #555;
   line-height: 1.55;
+}
+
+/* ── LAUNCH CARD ── */
+
+.launch-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 14px;
+  border: 1px solid rgba(233, 30, 140, 0.1);
+  box-shadow: 0 2px 10px rgba(233, 30, 140, 0.07);
+  width: calc(100% - 2rem);
+  max-width: 480px;
+  padding: 1.1rem 1rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.launch-header {
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  color: #1a1a1a;
+  margin-bottom: 0.4rem;
+}
+
+.launch-header-title {
+  color: #e91e8c;
+  font-style: italic;
+}
+
+.launch-subheader {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #e91e8c;
+  text-align: center;
+  margin-bottom: 1rem;
+  line-height: 1.45;
+}
+
+.launch-collapsibles-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.launch-collapsible-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.launch-card .collapse-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.45rem 0.75rem;
+  user-select: none;
+  border: 1px solid rgba(233, 30, 140, 0.3);
+  border-radius: 8px;
+  background: rgba(233, 30, 140, 0.04);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.launch-card .collapse-header:hover {
+  background: rgba(233, 30, 140, 0.09);
+  border-color: rgba(233, 30, 140, 0.5);
+}
+
+.launch-card .collapse-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #e91e8c;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.launch-card .collapse-arrow {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #e91e8c;
+  transition: transform 0.2s ease;
+  transform: rotate(-90deg);
+  flex-shrink: 0;
+}
+
+.launch-card .collapse-arrow.expanded {
+  transform: rotate(0deg);
+}
+
+.launch-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.5rem 0 0.25rem;
+}
+
+.launch-pill {
+  background: rgba(233, 30, 140, 0.08);
+  border: 1px solid rgba(233, 30, 140, 0.22);
+  color: #b8166a;
+  border-radius: 20px;
+  padding: 0.22rem 0.65rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.launch-wheel-list {
+  list-style: none;
+  padding: 0.5rem 0 0.25rem;
+  margin: 0;
+}
+
+.launch-wheel-item {
+  font-size: 0.78rem;
+  color: #444;
+  line-height: 1.55;
+  padding: 0.15rem 0 0.15rem 0.9rem;
+  position: relative;
+}
+
+.launch-wheel-item::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: #e91e8c;
 }

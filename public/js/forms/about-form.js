@@ -19,26 +19,15 @@ const buildHero = () => {
   const hero = document.createElement("div");
   hero.className = "about-hero";
 
-  const pill = document.createElement("div");
-  pill.className = "about-hero-pill";
-  pill.textContent = "\u2726 Meet the Maker";
-
-  const h1 = document.createElement("h1");
-  const line1 = document.createTextNode("Hi, I\u2019m");
-  const br = document.createElement("br");
-  const em = document.createElement("em");
-  em.textContent = "Jessica, RN";
-  h1.append(line1, br, em);
-
   const sub = document.createElement("p");
   sub.className = "about-hero-sub";
-  sub.textContent = "Founder of PRN & Pretty Things Co. \u2022 Blue Ridge Mountains";
+  sub.textContent = "PRN & Pretty Things Co. \u2022 Blue Ridge Mountains";
 
   const emojiRow = document.createElement("div");
   emojiRow.className = "about-hero-emoji";
   emojiRow.textContent = "\uD83C\uDF38 \uD83D\uDD4A\uFE0F \uD83C\uDF80";
 
-  hero.append(pill, h1, sub, emojiRow);
+  hero.append(sub, emojiRow);
   return hero;
 };
 
@@ -137,7 +126,7 @@ const buildCards = () => {
       {
         parts: [
           {
-            text: 'I created PRN & Pretty Things Co. because I believe every healthcare hero and every \u201Cjust a girl\u201D doing her best deserves a moment of pure, uncomplicated joy.',
+            text: "I created PRN & Pretty Things Co. because I believe every healthcare hero and every \u201Cjust a girl\u201D doing her best deserves a moment of pure, uncomplicated joy.",
           },
         ],
       },
@@ -169,10 +158,9 @@ const buildQuote = () => {
   const line = document.createElement("div");
   line.className = "about-quote-line";
 
-  const cite = document.createElement("cite");
-  cite.textContent = "Jessica, RN \u2014 Founder";
 
-  quote.append(bigQ, blockquote, line, cite);
+
+  quote.append(bigQ, blockquote, line);
   return quote;
 };
 
