@@ -35,6 +35,7 @@ export const addCartItem = async (req) => {
   if (!safeProductId || !safeQuantity) {
     return { success: false, message: "Invalid product ID or quantity" };
   }
+  const cartItemId = `${safeProductId}_${extraSpins}`;
 
   // Look up the real product from DB to get trusted price
   const productModel = new dbModel({ keyToLookup: "productId", itemValue: safeProductId }, process.env.PRODUCTS_COLLECTION);
@@ -47,7 +48,7 @@ export const addCartItem = async (req) => {
 
   let existingItem = null;
   for (let i = 0; i < req.session.cart.length; i++) {
-    if (req.session.cart[i].productId !== safeProductId) continue;
+    if (req.session.cart[i].cartItemId !== cartItemId) continue;
 
     existingItem = req.session.cart[i];
     break;
@@ -63,6 +64,7 @@ export const addCartItem = async (req) => {
     // Build cart item from DB data — never trust client-supplied price
     const cartItem = {
       ...productData,
+      cartItemId,
       productId: safeProductId,
       quantity: safeQuantity,
       price: effectivePrice,
@@ -104,45 +106,49 @@ export const getCartStats = async (req) => {
 };
 
 export const updateCartItem = async (req) => {
-  const { quantity, productId } = req.body;
+  const { cartItemId } = req.body;
+  const safeQuantity = validatePositiveInt(req.body.quantity);
+  if (safeQuantity === null) {
+    return { success: false, message: "Invalid quantity" };
+  }
   await buildCart(req);
 
   let item = null;
   for (let i = 0; i < req.session.cart.length; i++) {
-    if (req.session.cart[i].productId !== productId) continue;
+    if (req.session.cart[i].cartItemId !== cartItemId) continue;
 
     item = req.session.cart[i];
     break;
   }
 
   if (!item) {
-    return { success: true, cart: req.session.cart };
+    return { success: false, message: "Item not in cart" };
   }
 
-  if (quantity <= 0) {
+  if (safeQuantity <= 0) {
     // Remove item if quantity is 0 or less
     let newCart = [];
     for (let i = 0; i < req.session.cart.length; i++) {
-      if (req.session.cart[i].productId !== productId) {
+      if (req.session.cart[i].cartItemId !== cartItemId) {
         newCart.push(req.session.cart[i]);
       }
     }
     req.session.cart = newCart;
   } else {
-    item.quantity = quantity;
+    item.quantity = safeQuantity;
   }
 
   return { success: true, cart: req.session.cart };
 };
 
 export const removeCartItem = async (req) => {
-  const { productId } = req.body;
-  if (!productId) return { success: false, error: "No product ID" };
+  const { cartItemId } = req.body;
+  if (!cartItemId) return { success: false, error: "No cart item ID" };
   await buildCart(req);
 
   let newCart = [];
   for (let i = 0; i < req.session.cart.length; i++) {
-    if (req.session.cart[i].productId !== productId) {
+    if (req.session.cart[i].cartItemId !== cartItemId) {
       newCart.push(req.session.cart[i]);
     }
   }
@@ -153,9 +159,7 @@ export const removeCartItem = async (req) => {
 
 export const updateCartSpins = async (req) => {
   await buildCart(req);
-  const { productId, extraSpins: rawExtraSpins, spinCost: rawSpinCost } = req.body;
-  const safeProductId = sanitizeMongoValue(productId);
-  if (!safeProductId) return { success: false, message: "Invalid product ID" };
+  const { cartItemId, extraSpins: rawExtraSpins, spinCost: rawSpinCost } = req.body;
   const extraSpins = Number(rawExtraSpins);
   const spinCost = Number(rawSpinCost);
   if (!isValidSpinOption(extraSpins, spinCost)) {
@@ -163,12 +167,32 @@ export const updateCartSpins = async (req) => {
   }
   let item = null;
   for (let i = 0; i < req.session.cart.length; i++) {
-    if (req.session.cart[i].productId !== safeProductId) continue;
+    if (req.session.cart[i].cartItemId !== cartItemId) continue;
     item = req.session.cart[i];
     break;
   }
   if (!item) return { success: false, message: "Item not in cart" };
-  item.extraSpins = extraSpins;
-  item.spinCost = spinCost;
+  const newCartItemId = `${item.productId}_${extraSpins}`;
+  let mergeTarget = null;
+  for (let i = 0; i < req.session.cart.length; i++) {
+    if (req.session.cart[i].cartItemId !== newCartItemId) continue;
+    if (req.session.cart[i].cartItemId === cartItemId) continue;
+    mergeTarget = req.session.cart[i];
+    break;
+  }
+  if (mergeTarget) {
+    mergeTarget.quantity += item.quantity;
+    let newCart = [];
+    for (let i = 0; i < req.session.cart.length; i++) {
+      if (req.session.cart[i].cartItemId !== cartItemId) {
+        newCart.push(req.session.cart[i]);
+      }
+    }
+    req.session.cart = newCart;
+  } else {
+    item.extraSpins = extraSpins;
+    item.spinCost = spinCost;
+    item.cartItemId = newCartItemId;
+  }
   return { success: true, cart: req.session.cart };
 };

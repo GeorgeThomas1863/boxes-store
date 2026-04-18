@@ -55,7 +55,6 @@ export const buildNavBar = async () => {
   ul.className = "nav-links";
 
   const navItems = [
-    { text: "How it works", href: "/how-it-works" },
     { text: "About", href: "/about" },
     { text: "Contact", href: "/contact" },
   ];

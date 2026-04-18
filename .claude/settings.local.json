@@ -24,7 +24,8 @@
       "Bash(npm test:*)",
       "Bash(cat vitest.config.js)",
       "Bash(cat vite.config.js)",
-      "Bash(npx vitest *)"
+      "Bash(npx vitest *)",
+      "Bash(xargs grep *)"
     ]
   }
 }

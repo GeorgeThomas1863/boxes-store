@@ -48,10 +48,10 @@ export const runAddToCart = async (clickElement) => {
 // Increase item quantity
 export const runIncreaseQuantity = async (clickElement) => {
   if (!clickElement) return null;
-  const productId = clickElement.dataset.productId;
+  const cartItemId = clickElement.dataset.cartItemId;
 
   // Get current quantity
-  const quantityElement = document.getElementById(`quantity-${productId}`);
+  const quantityElement = document.getElementById(`quantity-${cartItemId}`);
   if (!quantityElement) return null;
 
   const currentQuantity = parseInt(quantityElement.textContent);
@@ -60,7 +60,7 @@ export const runIncreaseQuantity = async (clickElement) => {
   const params = {
     route: "/cart/update",
     quantity: newQuantity,
-    productId: productId,
+    cartItemId: cartItemId,
   };
 
   const res = await sendToBack(params);
@@ -72,7 +72,7 @@ export const runIncreaseQuantity = async (clickElement) => {
 
   // Update display
   quantityElement.textContent = newQuantity;
-  await updateItemTotal(productId, newQuantity);
+  await updateItemTotal(cartItemId, newQuantity);
   await updateCartSummary();
   await updateNavbarCart();
 
@@ -81,9 +81,9 @@ export const runIncreaseQuantity = async (clickElement) => {
 
 export const runDecreaseQuantity = async (clickElement) => {
   if (!clickElement) return null;
-  const productId = clickElement.dataset.productId;
+  const cartItemId = clickElement.dataset.cartItemId;
   // Get current quantity
-  const quantityElement = document.getElementById(`quantity-${productId}`);
+  const quantityElement = document.getElementById(`quantity-${cartItemId}`);
   if (!quantityElement) return null;
 
   const currentQuantity = parseInt(quantityElement.textContent);
@@ -99,7 +99,7 @@ export const runDecreaseQuantity = async (clickElement) => {
   const params = {
     route: "/cart/update",
     quantity: newQuantity,
-    productId: productId,
+    cartItemId: cartItemId,
   };
 
   const res = await sendToBack(params);
@@ -111,7 +111,7 @@ export const runDecreaseQuantity = async (clickElement) => {
 
   // Update display
   quantityElement.textContent = newQuantity;
-  await updateItemTotal(productId, newQuantity);
+  await updateItemTotal(cartItemId, newQuantity);
   await updateCartSummary();
   await updateNavbarCart();
 
@@ -121,11 +121,12 @@ export const runDecreaseQuantity = async (clickElement) => {
 // Remove item from cart
 export const runRemoveFromCart = async (clickElement) => {
   if (!clickElement) return null;
-  const productId = clickElement.dataset.productId;
+  const cartItemId = clickElement.dataset.cartItemId;
+  if (!cartItemId) return null;
 
   const params = {
     route: "/cart/remove",
-    productId: productId,
+    cartItemId: cartItemId,
   };
 
   const res = await sendToBack(params);
@@ -136,7 +137,7 @@ export const runRemoveFromCart = async (clickElement) => {
   }
 
   // Remove item from DOM
-  const cartItem = document.querySelector(`[data-product-id="${productId}"]`);
+  const cartItem = document.querySelector(`.cart-item[data-cart-item-id="${cartItemId}"]`);
   if (cartItem) {
     cartItem.remove();
   }
@@ -274,12 +275,12 @@ export const updateCartSummary = async () => {
 };
 
 // Update item total display
-export const updateItemTotal = async (productId, quantity) => {
-  const itemTotalElement = document.getElementById(`item-total-${productId}`);
+export const updateItemTotal = async (cartItemId, quantity) => {
+  const itemTotalElement = document.getElementById(`item-total-${cartItemId}`);
   if (!itemTotalElement) return null;
 
   // Get price from cart item
-  const cartItem = document.querySelector(`[data-product-id="${productId}"]`);
+  const cartItem = document.querySelector(`.cart-item[data-cart-item-id="${cartItemId}"]`);
   if (!cartItem) return null;
 
   const price = parseFloat(cartItem.dataset.price);
@@ -293,15 +294,15 @@ export const updateItemTotal = async (productId, quantity) => {
 
 export const runUpdateSpins = async (changeElement) => {
   if (!changeElement) return null;
-  const productId = changeElement.dataset.productId;
-  if (!productId) return null;
+  const cartItemId = changeElement.dataset.cartItemId;
+  if (!cartItemId) return null;
 
   const extraSpins = parseInt(changeElement.value);
   const spinCost = parseFloat(changeElement.selectedOptions[0]?.dataset?.spinCost || 0);
 
   const res = await sendToBack({
     route: "/cart/update-spins",
-    productId,
+    cartItemId,
     extraSpins,
     spinCost,
   });
@@ -311,16 +312,7 @@ export const runUpdateSpins = async (changeElement) => {
     return null;
   }
 
-  const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
-  if (cartItem) {
-    const basePrice = parseFloat(cartItem.dataset.basePrice || cartItem.dataset.price);
-    cartItem.dataset.price = (basePrice + spinCost).toFixed(2);
-  }
-
-  const quantityEl = document.getElementById(`quantity-${productId}`);
-  const currentQuantity = parseInt(quantityEl?.textContent || 1);
-  await updateItemTotal(productId, currentQuantity);
-  await updateCartSummary();
+  await populateCart();
 
   return true;
 };

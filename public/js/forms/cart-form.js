@@ -132,15 +132,17 @@ export const buildSummaryRow = async (label, value, valueId) => {
 };
 
 export const buildCartItem = async (itemData) => {
+  const safeItemData = { ...itemData, cartItemId: itemData.cartItemId || `${itemData.productId}_${itemData.extraSpins || 0}` };
   const cartItem = document.createElement("div");
   cartItem.className = "cart-item";
-  cartItem.setAttribute("data-product-id", itemData.productId);
-  cartItem.setAttribute("data-base-price", itemData.price);
-  cartItem.setAttribute("data-price", itemData.price + (itemData.spinCost || 0));
+  cartItem.setAttribute("data-product-id", safeItemData.productId);
+  cartItem.setAttribute("data-cart-item-id", safeItemData.cartItemId);
+  cartItem.setAttribute("data-base-price", safeItemData.price);
+  cartItem.setAttribute("data-price", safeItemData.price + (safeItemData.spinCost || 0));
 
-  const itemImage = await buildCartItemImage(itemData);
-  const itemDetails = await buildCartItemDetails(itemData);
-  const itemActions = await buildCartItemActions(itemData);
+  const itemImage = await buildCartItemImage(safeItemData);
+  const itemDetails = await buildCartItemDetails(safeItemData);
+  const itemActions = await buildCartItemActions(safeItemData);
 
   cartItem.append(itemImage, itemDetails, itemActions);
 
@@ -170,7 +172,7 @@ export const buildCartItemDetails = async (itemData) => {
 
   const itemTotal = document.createElement("div");
   itemTotal.className = "cart-item-total";
-  itemTotal.id = `item-total-${itemData.productId}`;
+  itemTotal.id = `item-total-${itemData.cartItemId}`;
   const totalValue = (itemData.price + (itemData.spinCost || 0)) * itemData.quantity;
   itemTotal.textContent = `$${totalValue.toFixed(2)}`;
 
@@ -194,7 +196,7 @@ export const buildCartItemDetails = async (itemData) => {
     details.append(discountNote);
   }
 
-  const spinSel = buildSpinSelector(itemData.productId, itemData.extraSpins || 0);
+  const spinSel = buildSpinSelector(itemData.productId, itemData.extraSpins || 0, itemData.cartItemId);
   details.append(spinSel);
 
   return details;
@@ -227,18 +229,18 @@ export const buildQuantityControl = async (itemData) => {
   decreaseBtn.className = "cart-quantity-btn";
   decreaseBtn.textContent = "-";
   decreaseBtn.setAttribute("data-label", "decrease-quantity");
-  decreaseBtn.setAttribute("data-product-id", itemData.productId);
+  decreaseBtn.setAttribute("data-cart-item-id", itemData.cartItemId);
 
   const quantityDisplay = document.createElement("span");
   quantityDisplay.className = "cart-quantity-display";
-  quantityDisplay.id = `quantity-${itemData.productId}`;
+  quantityDisplay.id = `quantity-${itemData.cartItemId}`;
   quantityDisplay.textContent = itemData.quantity;
 
   const increaseBtn = document.createElement("button");
   increaseBtn.className = "cart-quantity-btn";
   increaseBtn.textContent = "+";
   increaseBtn.setAttribute("data-label", "increase-quantity");
-  increaseBtn.setAttribute("data-product-id", itemData.productId);
+  increaseBtn.setAttribute("data-cart-item-id", itemData.cartItemId);
 
   btnGroup.append(decreaseBtn, quantityDisplay, increaseBtn);
   control.append(label, btnGroup);
@@ -251,7 +253,7 @@ export const buildRemoveButton = async (itemData) => {
   removeBtn.className = "cart-remove-btn";
   removeBtn.textContent = "Remove";
   removeBtn.setAttribute("data-label", "remove-from-cart");
-  removeBtn.setAttribute("data-product-id", itemData.productId);
+  removeBtn.setAttribute("data-cart-item-id", itemData.cartItemId);
 
   return removeBtn;
 };
@@ -259,7 +261,7 @@ export const buildRemoveButton = async (itemData) => {
 export const buildItemTotal = async (itemData) => {
   const total = document.createElement("div");
   total.className = "cart-item-total";
-  total.id = `item-total-${itemData.productId}`;
+  total.id = `item-total-${itemData.cartItemId}`;
 
   const totalValue = itemData.price * itemData.quantity;
   total.textContent = `$${totalValue.toFixed(2)}`;
