@@ -7,6 +7,7 @@ import { populateCheckout } from "./run/checkout-run.js";
 import { buildAuthDisplay } from "./auth.js";
 import { updateAdminStats } from "./run/admin-run.js";
 import { buildConfirmOrderForm, populateConfirmOrder } from "./forms/confirm-form.js";
+import { buildAboutForm } from "./forms/about-form.js";
 
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
@@ -14,6 +15,7 @@ const checkoutElement = document.getElementById("checkout-element");
 const confirmElement = document.getElementById("confirm-element");
 const authElement = document.getElementById("auth-element");
 const adminElement = document.getElementById("admin-element");
+const aboutElement = document.getElementById("about-element");
 
 export const buildMainDisplay = async () => {
   if (!displayElement) return null;
@@ -65,6 +67,14 @@ export const buildCheckoutDisplay = async () => {
   return true;
 };
 
+export const buildAboutDisplay = async () => {
+  if (!aboutElement) return null;
+  const form = await buildAboutForm();
+  aboutElement.append(form);
+  await updateNavbarCart();
+  return true;
+};
+
 export const buildConfirmDisplay = async () => {
   if (!confirmElement) return null;
 
@@ -83,3 +93,4 @@ if (cartElement) buildCartDisplay();
 if (checkoutElement) buildCheckoutDisplay();
 if (authElement) buildAuthDisplay();
 if (confirmElement) buildConfirmDisplay();
+if (aboutElement) buildAboutDisplay();

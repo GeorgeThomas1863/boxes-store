@@ -3,7 +3,7 @@ import express from "express";
 import requireAuth from "../middleware/auth-config.js";
 import { authRateLimit } from "../middleware/rate-limit.js";
 
-import { displayMain, displayAdmin, displayCart, displayCheckout, displayConfirmOrder, display404, display500 } from "../controllers/display-controller.js";
+import { displayMain, displayAdmin, displayCart, displayCheckout, displayConfirmOrder, displayAbout, display404, display500 } from "../controllers/display-controller.js";
 import { getCartDataControl, getCartStatsControl, addToCartControl, updateCartItemControl, removeFromCartControl, clearCartControl, getStripeConfigControl, createPaymentIntentControl, placeOrderControl, updateCartSpinsControl } from "../controllers/data-controller.js";
 import { authController } from "../controllers/auth-controller.js";
 import { getProductDataControl, addNewProductControl, editProductControl, deleteProductControl, uploadPicControl, deletePicControl } from "../controllers/admin-controller.js";
@@ -23,6 +23,7 @@ router.post("/delete-product-route", requireAuth, deleteProductControl);
 router.post("/upload-product-pic-route", requireAuth, upload.single("image"), uploadErrorHandler, uploadPicControl);
 router.post("/delete-pic-route", requireAuth, deletePicControl);
 
+router.get("/about", displayAbout);
 router.get("/cart", displayCart);
 router.get("/checkout", displayCheckout);
 

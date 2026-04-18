@@ -143,3 +143,23 @@
     width: calc(100vw - 2rem);
   }
 }
+
+/* ======================== */
+/* About Page */
+/* ======================== */
+
+@media (min-width: 540px) {
+  .about-page {
+    padding: 0 24px 80px;
+  }
+}
+
+@media (min-width: 768px) {
+  .about-page {
+    max-width: 560px;
+  }
+
+  .about-hero h1 {
+    font-size: 56px;
+  }
+}

@@ -24,6 +24,10 @@ export const displayConfirmOrder = async (req, res) => {
   res.sendFile(path.join(__dirname, "../html/confirm-order.html"));
 };
 
+export const displayAbout = async (req, res) => {
+  res.sendFile(path.join(__dirname, "../html/about.html"));
+};
+
 export const display401 = (req, res) => {
   res.status(401).sendFile(path.join(__dirname, "../html/401.html"));
 };
