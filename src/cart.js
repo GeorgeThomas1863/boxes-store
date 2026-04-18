@@ -42,7 +42,7 @@ export const addCartItem = async (req) => {
   if (!productData) return { success: false, message: "Product not found" };
 
   const discount = productData.discount || 0;
-  const rawPrice = productData.price;
+  const rawPrice = Number(productData.price) || 0;
   const effectivePrice = discount > 0 ? Math.round(rawPrice * (1 - discount / 100) * 100) / 100 : rawPrice;
 
   let existingItem = null;

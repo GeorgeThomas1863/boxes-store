@@ -23,6 +23,14 @@ export const addNewProductControl = async (req, res) => {
     "discount",
   ]);
 
+  if ('price' in safeParams) {
+    const p = parseFloat(safeParams.price);
+    if (!Number.isFinite(p) || p < 0) {
+      return res.status(400).json({ error: "Price must be a non-negative number" });
+    }
+    safeParams.price = p;
+  }
+
   if ('discount' in safeParams) {
     const d = Number(safeParams.discount);
     if (!Number.isFinite(d) || d < 0 || d > 100) {
@@ -49,6 +57,14 @@ export const editProductControl = async (req, res) => {
     "productId",
     "discount",
   ]);
+
+  if ('price' in safeParams) {
+    const p = parseFloat(safeParams.price);
+    if (!Number.isFinite(p) || p < 0) {
+      return res.status(400).json({ error: "Price must be a non-negative number" });
+    }
+    safeParams.price = p;
+  }
 
   if ('discount' in safeParams) {
     const d = Number(safeParams.discount);
