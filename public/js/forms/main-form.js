@@ -399,16 +399,15 @@ export const buildLaunchSection = async () => {
   const header = document.createElement("p");
   header.className = "launch-header";
   const bold = document.createElement("strong");
-  bold.textContent = "Now Launching";
-  const colon = document.createTextNode(": ");
+  bold.textContent = "Now Accepting PRE-ORDERS For:";
   const title = document.createElement("em");
   title.className = "launch-header-title";
   title.textContent = "The Fabulous Nurse Mystery Box";
-  header.append(bold, colon, title);
+  header.append(bold, title);
 
   const subheader = document.createElement("p");
   subheader.className = "launch-subheader";
-  subheader.textContent = "Each box includes 15 pink prize capsules and 1 Spin on the Mystery Wheel";
+  subheader.textContent = "15 pink prize capsules and 1 Spin on the Mystery Wheel";
 
   const capsulesTitle = document.createElement("span");
   capsulesTitle.textContent = "Pink Prize Capsules";
@@ -462,11 +461,15 @@ export const buildLaunchSection = async () => {
     className: "launch-collapsible-item",
   });
 
+  const includesLabel = document.createElement("p");
+  includesLabel.className = "launch-includes-label";
+  includesLabel.textContent = "Each box includes:";
+
   const row = document.createElement("div");
   row.className = "launch-collapsibles-row";
   row.append(capsulesCollapse, wheelCollapse);
 
-  card.append(header, subheader, row);
+  card.append(header, subheader, includesLabel, row);
   return card;
 };
 

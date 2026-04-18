@@ -706,7 +706,9 @@ h4 {
   z-index: 10;
   padding: 0;
   opacity: 0.82;
-  transition: background 0.2s, opacity 0.2s;
+  transition:
+    background 0.2s,
+    opacity 0.2s;
 }
 
 .carousel-arrow:hover {
@@ -853,6 +855,8 @@ h4 {
 }
 
 .launch-header-title {
+  margin-top: 0.3rem;
+  display: block;
   color: #e91e8c;
   font-style: italic;
 }
@@ -864,6 +868,15 @@ h4 {
   text-align: center;
   margin-bottom: 1rem;
   line-height: 1.45;
+}
+
+.launch-includes-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
 }
 
 .launch-collapsibles-row {
@@ -887,7 +900,9 @@ h4 {
   border: 1px solid rgba(233, 30, 140, 0.3);
   border-radius: 8px;
   background: rgba(233, 30, 140, 0.04);
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .launch-card .collapse-header:hover {
