@@ -71,8 +71,27 @@
 /* ======================== */
 
 @media (min-width: 540px) {
+  .cart-item {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+
   .cart-item-image-container {
     flex: 0 0 130px;
+    width: auto;
+    height: auto;
+  }
+
+  .cart-item-actions {
+    flex: 0 0 auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 2rem;
+  }
+
+  .cart-quantity-control {
+    align-items: flex-end;
   }
 }
 

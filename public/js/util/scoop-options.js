@@ -1,7 +1,6 @@
 export const SCOOP_OPTIONS = [
   { label: "1 Spin (FREE!)", extraScoops: 0, scoopCost: 0 },
   { label: "3 Extra Spins", extraScoops: 3, scoopCost: 30 },
-  { label: "5 Extra Spins", extraScoops: 5, scoopCost: 40 },
 ];
 
 export const buildScoopSelector = (productId, selectedScoops = 0) => {

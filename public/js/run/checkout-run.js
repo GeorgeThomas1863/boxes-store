@@ -63,10 +63,11 @@ export const updateCheckoutSummary = async (taxRate = 0) => { // TAX DISABLED: t
     return null;
   }
 
-  const subtotal = cartData.total;
+  const spinTotal = cartData.spinTotal || 0;
+  const subtotal = cartData.total - spinTotal;
   // const tax = Math.round(subtotal * parseFloat(taxRate) * 100) / 100; // TAX DISABLED
   // const total = subtotal + tax; // TAX DISABLED
-  const total = subtotal; // TAX DISABLED
+  const total = cartData.total; // TAX DISABLED
 
   subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
   // if (taxElement) taxElement.textContent = `$${tax.toFixed(2)}`; // TAX DISABLED
@@ -76,7 +77,6 @@ export const updateCheckoutSummary = async (taxRate = 0) => { // TAX DISABLED: t
   const spinRow = document.getElementById("checkout-spin-row");
   const spinEl = document.getElementById("checkout-spin-total");
   if (spinRow && spinEl) {
-    const spinTotal = cartData.spinTotal || 0;
     if (spinTotal > 0) {
       spinRow.style.display = "";
       spinEl.textContent = `+$${spinTotal.toFixed(2)}`;

@@ -4,7 +4,6 @@ import { validatePositiveInt, sanitizeMongoValue } from "./sanitize.js";
 const VALID_SPIN_OPTIONS = [
   { extraSpins: 0, spinCost: 0 },
   { extraSpins: 3, spinCost: 30 },
-  { extraSpins: 5, spinCost: 40 },
 ];
 const isValidSpinOption = (extraSpins, spinCost) =>
   VALID_SPIN_OPTIONS.some(opt => opt.extraSpins === extraSpins && opt.spinCost === spinCost);

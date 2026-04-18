@@ -69,8 +69,11 @@ export const clickHandler = async (e) => {
   const clickType = clickedElement.getAttribute("data-label");
 
   if (clickType === "toggle-menu") {
-    const menu = document.querySelector(".nav-links");
-    if (menu) menu.classList.toggle("open");
+    const overlay = document.querySelector(".nav-overlay");
+    if (overlay) {
+      overlay.classList.toggle("open");
+      document.body.style.overflow = overlay.classList.contains("open") ? "hidden" : "";
+    }
   }
 
   if (clickType === "pwToggle") await runPwToggle();
@@ -184,3 +187,5 @@ if (checkoutElement) {
   checkoutElement.addEventListener("input", inputHandler);
 }
 if (confirmElement) confirmElement.addEventListener("click", clickHandler);
+const aboutElement = document.getElementById("about-element");
+if (aboutElement) aboutElement.addEventListener("click", clickHandler);

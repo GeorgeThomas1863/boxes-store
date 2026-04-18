@@ -254,15 +254,15 @@ export const updateCartSummary = async () => {
   }
 
   const { itemCount, total } = cartData;
+  const spinTotal = cartData.spinTotal || 0;
 
   itemCountElement.textContent = itemCount;
-  subtotalElement.textContent = `$${total.toFixed(2)}`;
+  subtotalElement.textContent = `$${(total - spinTotal).toFixed(2)}`;
   totalElement.textContent = `$${total.toFixed(2)}`;
 
   const spinRow = document.getElementById("cart-summary-spin-row");
   const spinEl = document.getElementById("cart-summary-spin-total");
   if (spinRow && spinEl) {
-    const spinTotal = cartData.spinTotal || 0;
     if (spinTotal > 0) {
       spinRow.style.display = "";
       spinEl.textContent = `+$${spinTotal.toFixed(2)}`;

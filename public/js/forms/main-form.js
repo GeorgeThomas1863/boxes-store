@@ -1,4 +1,4 @@
-import { FACEBOOK_ICON_SVG, INSTAGRAM_ICON_SVG, TIKTOK_ICON_SVG, CAROUSEL_PREV_SVG, CAROUSEL_NEXT_SVG } from "../util/define-things.js";
+import { TIKTOK_ICON_SVG, CAROUSEL_PREV_SVG, CAROUSEL_NEXT_SVG } from "../util/define-things.js";
 import { sendToBack } from "../util/api-front.js";
 import { buildSpinSelector } from "../util/spin-options.js";
 
@@ -68,44 +68,12 @@ export const buildNavBar = async () => {
     ul.appendChild(li);
   }
 
-  // Mobile social icons row (last item in dropdown)
-  const mobileSocialLi = document.createElement("li");
-  mobileSocialLi.className = "mobile-social-row";
-
-  const mobileTiktokLink = document.createElement("a");
-  //   mobileTiktokLink.href = "https://www.tiktok.com/@twosistersfiberart";
-  mobileTiktokLink.target = "_blank";
-  mobileTiktokLink.rel = "noopener noreferrer";
-  mobileTiktokLink.className = "social-icon";
-  mobileTiktokLink.setAttribute("aria-label", "Visit our TikTok page");
-  mobileTiktokLink.innerHTML = TIKTOK_ICON_SVG;
-
-  const mobileFbLink = document.createElement("a");
-  //   mobileFbLink.href = "https://www.facebook.com/people/Two-Sisters-Fiber-Art/100087889424782";
-  mobileFbLink.target = "_blank";
-  mobileFbLink.rel = "noopener noreferrer";
-  mobileFbLink.className = "social-icon";
-  mobileFbLink.setAttribute("aria-label", "Visit our Facebook page");
-  mobileFbLink.innerHTML = FACEBOOK_ICON_SVG;
-
-  const mobileIgLink = document.createElement("a");
-  //   mobileIgLink.href = "https://www.instagram.com/twosistersfiberart";
-  mobileIgLink.target = "_blank";
-  mobileIgLink.rel = "noopener noreferrer";
-  mobileIgLink.className = "social-icon";
-  mobileIgLink.setAttribute("aria-label", "Visit our Instagram page");
-  mobileIgLink.innerHTML = INSTAGRAM_ICON_SVG;
-
-  mobileSocialLi.append(mobileTiktokLink, mobileFbLink, mobileIgLink);
-  ul.appendChild(mobileSocialLi);
-
   const rightContainer = document.createElement("div");
   rightContainer.className = "nav-right-container";
 
-  // Add cart button
   const cartLi = document.createElement("li");
   cartLi.id = "nav-cart-container";
-  cartLi.style.display = "none"; // Hidden by default
+  cartLi.style.display = "none";
 
   const cartLink = document.createElement("a");
   cartLink.href = "/cart";
@@ -123,39 +91,15 @@ export const buildNavBar = async () => {
   cartLink.append(cartIcon, cartCount);
   cartLi.appendChild(cartLink);
 
-  // Social media icons container
-  const socialContainer = document.createElement("div");
-  socialContainer.className = "social-icons";
+  const navTiktokLink = document.createElement("a");
+  navTiktokLink.href = "https://www.tiktok.com/@prn_prettythings_co";
+  navTiktokLink.target = "_blank";
+  navTiktokLink.rel = "noopener noreferrer";
+  navTiktokLink.className = "social-icon nav-tiktok";
+  navTiktokLink.setAttribute("aria-label", "Visit our TikTok page");
+  navTiktokLink.innerHTML = TIKTOK_ICON_SVG;
 
-  // TikTok icon
-  const tiktokLink = document.createElement("a");
-  tiktokLink.href = "https://www.tiktok.com/@twosistersfiberart";
-  tiktokLink.target = "_blank";
-  tiktokLink.rel = "noopener noreferrer";
-  tiktokLink.className = "social-icon";
-  tiktokLink.setAttribute("aria-label", "Visit our TikTok page");
-  tiktokLink.innerHTML = TIKTOK_ICON_SVG;
-
-  // Facebook icon
-  const facebookLink = document.createElement("a");
-  facebookLink.href = "https://www.facebook.com/people/Two-Sisters-Fiber-Art/100087889424782";
-  facebookLink.target = "_blank";
-  facebookLink.rel = "noopener noreferrer";
-  facebookLink.className = "social-icon";
-  facebookLink.setAttribute("aria-label", "Visit our Facebook page");
-  facebookLink.innerHTML = FACEBOOK_ICON_SVG;
-
-  // Instagram icon
-  const instagramLink = document.createElement("a");
-  instagramLink.href = "https://www.instagram.com/twosistersfiberart";
-  instagramLink.target = "_blank";
-  instagramLink.rel = "noopener noreferrer";
-  instagramLink.className = "social-icon";
-  instagramLink.setAttribute("aria-label", "Visit our Instagram page");
-  instagramLink.innerHTML = INSTAGRAM_ICON_SVG;
-
-  socialContainer.append(tiktokLink, facebookLink, instagramLink);
-  rightContainer.append(cartLi, socialContainer);
+  rightContainer.append(cartLi, navTiktokLink);
 
   const hamburgerBtn = document.createElement("button");
   hamburgerBtn.className = "hamburger-btn";
@@ -168,10 +112,19 @@ export const buildNavBar = async () => {
     hamburgerBtn.appendChild(line);
   }
 
-  navContainer.append(logo, ul, rightContainer, hamburgerBtn);
-  nav.appendChild(navContainer);
+  const navOverlay = document.createElement("div");
+  navOverlay.className = "nav-overlay";
 
-  // initMobileMenu(nav);
+  const menuCloseBtn = document.createElement("button");
+  menuCloseBtn.className = "nav-menu-close";
+  menuCloseBtn.setAttribute("data-label", "toggle-menu");
+  menuCloseBtn.setAttribute("aria-label", "Close menu");
+  menuCloseBtn.textContent = "✕";
+
+  navOverlay.append(menuCloseBtn, ul);
+
+  navContainer.append(hamburgerBtn, logo, rightContainer);
+  nav.append(navContainer, navOverlay);
 
   return nav;
 };

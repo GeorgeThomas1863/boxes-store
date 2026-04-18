@@ -1,7 +1,6 @@
 export const SPIN_OPTIONS = [
   { label: "1 Spin (free)", extraSpins: 0, spinCost: 0 },
   { label: "3 Extra Spins", extraSpins: 3, spinCost: 30 },
-  { label: "5 Extra Spins", extraSpins: 5, spinCost: 40 },
 ];
 
 export const buildSpinSelector = (productId, selectedSpins = 0, cartItemId = null) => {
