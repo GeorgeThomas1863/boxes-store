@@ -28,7 +28,7 @@ const buildConfirmHeader = () => {
 const buildConfirmContent = () => {
   const content = document.createElement("div");
   content.className = "confirm-content";
-  content.append(buildDetailsCard(), buildItemsCard(), buildActions());
+  content.append(buildDetailsCard(), buildPreferencesCard(), buildItemsCard(), buildActions());
   return content;
 };
 
@@ -83,6 +83,26 @@ const buildItemsCard = () => {
   );
 
   card.append(title, itemsContainer, summaryDetails);
+  return card;
+};
+
+const buildPreferencesCard = () => {
+  const card = document.createElement("div");
+  card.className = "confirm-card";
+
+  const title = document.createElement("h2");
+  title.className = "confirm-card-title";
+  title.textContent = "Customer Preferences";
+
+  const grid = document.createElement("div");
+  grid.className = "confirm-details-grid";
+  grid.append(
+    buildDetailRow("Nursing Specialty", "confirm-nursing-specialty"),
+    buildDetailRow("Product Likes", "confirm-product-likes"),
+    buildDetailRow("Product Dislikes", "confirm-product-dislikes")
+  );
+
+  card.append(title, grid);
   return card;
 };
 
@@ -218,7 +238,9 @@ export const populateConfirmOrder = () => {
 const populateOrderDetails = (data) => {
   if (!data) return null;
 
-  const { orderNumber, orderDate, email, firstName, lastName, address, city, state, zip, subtotal, tax, shippingCost, totalCost } = data;
+  const { orderNumber, orderDate, email, firstName, lastName, address, city, state, zip,
+    nursingSpecialty, productLikes, productDislikes,
+    subtotal, tax, shippingCost, totalCost } = data;
 
   const set = (id, text) => {
     const el = document.getElementById(id);
@@ -241,6 +263,10 @@ const populateOrderDetails = (data) => {
     paymentStatusEl.style.color = "#22c55e";
     paymentStatusEl.style.fontWeight = "500";
   }
+
+  set("confirm-nursing-specialty", nursingSpecialty || "Not provided");
+  set("confirm-product-likes", productLikes || "Not provided");
+  set("confirm-product-dislikes", productDislikes || "Not provided");
 
   const shippingAddressEl = document.getElementById("confirm-shipping-address");
   if (shippingAddressEl) {

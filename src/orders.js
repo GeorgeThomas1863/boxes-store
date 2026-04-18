@@ -10,7 +10,8 @@ export const placeNewOrder = async (req) => {
   if (!req || !req.body) return { success: false, message: "No input parameters" };
   if (!req.session.cart || !req.session.cart.length) return { success: false, message: "Cart is empty" };
 
-  const { paymentIntentId, firstName, lastName, email, phone, address, city, state, zip } = req.body;
+  const { paymentIntentId, firstName, lastName, email, phone, address, city, state, zip,
+    nursingSpecialty, productLikes, productDislikes } = req.body;
 
   const cartStats = await getCartStats(req);
   if (!cartStats || !cartStats.success) return { success: false, message: "Failed to get cart data" };
@@ -33,6 +34,7 @@ export const placeNewOrder = async (req) => {
 
     const orderObj = {
       firstName, lastName, email, phone, address, city, state, zip,
+      nursingSpecialty, productLikes, productDislikes,
       items: req.session.cart,
       itemCount: cartStats.itemCount,
       subtotal, tax, shippingCost, totalCost,
@@ -71,6 +73,7 @@ export const placeNewOrder = async (req) => {
         shippingCost: orderData.shippingCost,
         totalCost: orderData.totalCost,
         firstName, lastName, email, phone, address, city, state, zip,
+        nursingSpecialty, productLikes, productDislikes,
         cartData: orderData.items,
       },
     };
@@ -152,6 +155,7 @@ const buildEmailHtml = (orderData, type) => {
   const {
     firstName, lastName, email,
     address, city, state, zip,
+    nursingSpecialty, productLikes, productDislikes,
     items, subtotal, tax, totalCost,
     amountPaid, paymentId, paymentStatus,
     orderDate, orderNumber,
@@ -171,6 +175,19 @@ const buildEmailHtml = (orderData, type) => {
   });
 
   const isAdmin = type === "admin";
+
+  const prefSpecialty = nursingSpecialty ? escapeHtml(nursingSpecialty) : "<em>Not provided</em>";
+  const prefLikes     = productLikes ? escapeHtml(productLikes) : "<em>Not provided</em>";
+  const prefDislikes  = productDislikes ? escapeHtml(productDislikes) : "<em>Not provided</em>";
+
+  const preferencesSection = `
+    <hr style="margin: 24px 0; border: none; border-top: 1px solid #ccc;">
+    <h2>Customer Preferences</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+      <tr><td style="padding: 4px 8px;"><strong>Nursing Specialty:</strong></td><td style="padding: 4px 8px;">${prefSpecialty}</td></tr>
+      <tr><td style="padding: 4px 8px;"><strong>Product Likes:</strong></td><td style="padding: 4px 8px;">${prefLikes}</td></tr>
+      <tr><td style="padding: 4px 8px;"><strong>Product Dislikes:</strong></td><td style="padding: 4px 8px;">${prefDislikes}</td></tr>
+    </table>`;
 
   const safeItems = Array.isArray(items) ? items : [];
   let itemRows = "";
@@ -227,6 +244,8 @@ const buildEmailHtml = (orderData, type) => {
 
       <h2>Shipping Address</h2>
       <p>${safeFirstName} ${safeLastName}<br>${safeAddress}<br>${safeCity}, ${safeState} ${safeZip}</p>
+
+      ${preferencesSection}
 
       ${paymentSection}
     </div>

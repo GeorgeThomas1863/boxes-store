@@ -42,10 +42,11 @@ export const buildCheckoutFormSection = async () => {
   const formSection = document.createElement("div");
   formSection.className = "checkout-form-section";
 
+  const preferencesCard = await buildCustomerPreferencesCard();
   const customerInfoCard = await buildCustomerInfoCard();
   const paymentCard = await buildPaymentCard();
 
-  formSection.append(customerInfoCard, paymentCard);
+  formSection.append(preferencesCard, customerInfoCard, paymentCard);
 
   return formSection;
 };
@@ -100,6 +101,40 @@ export const buildCustomerInfoCard = async () => {
 
   card.append(cardTitle, form);
 
+  return card;
+};
+
+export const buildCustomerPreferencesCard = async () => {
+  const card = document.createElement("div");
+  card.className = "checkout-card";
+
+  const cardTitle = document.createElement("h2");
+  cardTitle.className = "checkout-card-title";
+  cardTitle.textContent = "Customer Preferences";
+
+  const note = document.createElement("p");
+  note.className = "checkout-card-note";
+  note.textContent = "All fields are optional. Help us personalize your box!";
+
+  const form = document.createElement("form");
+  form.className = "checkout-form";
+  form.id = "customer-preferences-form";
+
+  const specialtyField = await buildFormField(
+    "Nursing Specialty", "text", "nursingSpecialty", "nursing-specialty", false,
+    "e.g. ICU, Pediatrics (optional)"
+  );
+  const likesField = await buildFormField(
+    "Product Likes", "text", "productLikes", "product-likes", false,
+    "e.g. bold colors, soft fabrics (optional)"
+  );
+  const dislikesField = await buildFormField(
+    "Product Dislikes", "text", "productDislikes", "product-dislikes", false,
+    "e.g. strong scents (optional)"
+  );
+
+  form.append(specialtyField, likesField, dislikesField);
+  card.append(cardTitle, note, form);
   return card;
 };
 
@@ -372,7 +407,7 @@ export const buildCheckoutItem = async (itemData) => {
 
 
 
-export const buildFormField = async (label, type, name, id, required = false) => {
+export const buildFormField = async (label, type, name, id, required = false, placeholder = "") => {
   const field = document.createElement("div");
   field.className = "checkout-form-field";
 
@@ -388,6 +423,9 @@ export const buildFormField = async (label, type, name, id, required = false) =>
   input.id = id;
   if (required) {
     input.required = true;
+  }
+  if (placeholder) {
+    input.placeholder = placeholder;
   }
 
   field.append(labelElement, input);

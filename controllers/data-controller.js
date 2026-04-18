@@ -139,6 +139,14 @@ export const placeOrderControl = async (req, res) => {
   req.body.state     = state;
   req.body.zip       = zip;
 
+  const nursingSpecialty = validateString(req.body.nursingSpecialty, 200) || null;
+  const productLikes     = validateString(req.body.productLikes, 500) || null;
+  const productDislikes  = validateString(req.body.productDislikes, 500) || null;
+
+  req.body.nursingSpecialty = nursingSpecialty;
+  req.body.productLikes     = productLikes;
+  req.body.productDislikes  = productDislikes;
+
   // Clear pending intent from session before order attempt (prevents replay)
   req.session.pendingPaymentIntentId = null;
 

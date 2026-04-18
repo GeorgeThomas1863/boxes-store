@@ -2,10 +2,15 @@ import dbModel from "../models/db-model.js";
 
 export const storeCustomerData = async (orderData) => {
   if (!orderData) return null;
-  const { firstName, lastName, email, phone, address, city, state, zip, orderId, orderDate, amountPaid, itemCount } = orderData;
+  const { firstName, lastName, email, phone, address, city, state, zip,
+    nursingSpecialty, productLikes, productDislikes,
+    orderId, orderDate, amountPaid, itemCount } = orderData;
 
   const customerParams = {
     firstName, lastName, email, phone, address, city, state, zip,
+    nursingSpecialty: nursingSpecialty || null,
+    productLikes: productLikes || null,
+    productDislikes: productDislikes || null,
     lastOrderId: orderId,
     lastOrderDate: orderDate,
     lastAmountPaid: +amountPaid,
@@ -34,7 +39,8 @@ export const storeCustomerData = async (orderData) => {
 
 const updateCustomerData = async (inputParams) => {
   if (!inputParams) return null;
-  const { firstName, lastName, email, lastOrderId, lastOrderDate, lastAmountPaid, totalPaid, totalItemsPurchased } = inputParams;
+  const { firstName, lastName, email, lastOrderId, lastOrderDate, lastAmountPaid, totalPaid, totalItemsPurchased,
+    nursingSpecialty, productLikes, productDislikes } = inputParams;
 
   const checkParams = {
     keyToLookup1: "firstName", keyToLookup2: "lastName", keyToLookup3: "email",
@@ -52,6 +58,9 @@ const updateCustomerData = async (inputParams) => {
     totalPaid: +(Number(checkData.totalPaid || 0) + Number(totalPaid)),
     totalItemsPurchased: +(Number(checkData.totalItemsPurchased || 0) + Number(totalItemsPurchased)),
     totalOrders: +(Number(checkData.totalOrders || 0) + 1),
+    nursingSpecialty: nursingSpecialty || null,
+    productLikes: productLikes || null,
+    productDislikes: productDislikes || null,
   };
 
   const updateModel = new dbModel(

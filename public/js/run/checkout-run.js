@@ -97,6 +97,9 @@ const getCustomerParams = () => ({
   city: document.getElementById("city")?.value?.trim() || "",
   state: document.getElementById("state")?.value || "",
   zip: document.getElementById("zip")?.value?.trim() || "",
+  nursingSpecialty: document.getElementById("nursing-specialty")?.value?.trim() || "",
+  productLikes: document.getElementById("product-likes")?.value?.trim() || "",
+  productDislikes: document.getElementById("product-dislikes")?.value?.trim() || "",
 });
 
 export const runPlaceOrder = async () => {
