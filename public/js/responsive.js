@@ -3,7 +3,7 @@ import { runPlaceOrder } from "./run/checkout-run.js";
 import { closePopup, closeConfirmDialog } from "./util/popup.js";
 import { runPwToggle } from "./util/collapse.js";
 
-import { runAddToCart, runIncreaseQuantity, runDecreaseQuantity, runRemoveFromCart } from "./run/cart-run.js";
+import { runAddToCart, runIncreaseQuantity, runDecreaseQuantity, runRemoveFromCart, runUpdateSpins } from "./run/cart-run.js";
 import { runModalTrigger, runModalClose, updateAdminStats } from "./run/admin-run.js";
 import { runAddNewProduct, runEditProduct, runDeleteProduct, changeAdminProductSelector } from "./run/admin-products.js";
 import { runSlotUploadPic, runSlotUploadClick, runDeleteSlotImage, runAddPicSlot, runRemovePicSlot } from "./run/upload-pic.js";
@@ -103,6 +103,7 @@ export const changeHandler = async (e) => {
   }
 
   if (changeId === "product-selector") await changeAdminProductSelector(changeElement);
+  if (changeType === "spin-select") await runUpdateSpins(changeElement);
 };
 
 export const keyHandler = async (e) => {
@@ -132,6 +133,7 @@ export const inputHandler = async (e) => {
 
 if (displayElement) displayElement.addEventListener("click", clickHandler);
 if (cartElement) cartElement.addEventListener("click", clickHandler);
+if (cartElement) cartElement.addEventListener("change", changeHandler);
 if (authElement) {
   authElement.addEventListener("click", clickHandler);
   authElement.addEventListener("keypress", keyHandler);

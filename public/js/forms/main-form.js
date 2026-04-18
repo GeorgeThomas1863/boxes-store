@@ -1,5 +1,6 @@
 import { FACEBOOK_ICON_SVG, INSTAGRAM_ICON_SVG, TIKTOK_ICON_SVG } from "../util/define-things.js";
 import { sendToBack } from "../util/api-front.js";
+import { buildSpinSelector } from "../util/spin-options.js";
 
 export const buildMainForm = async () => {
   const container = document.createElement("div");
@@ -238,7 +239,7 @@ export const buildCard = (productData) => {
   addToCartBtn.textContent = "Add to Cart";
   addToCartBtn.productId = productId;
 
-  const toAppend = [label, priceSpan];
+  const toAppend = [label, priceSpan, addToCartBtn];
 
   if (description) {
     const desc = document.createElement("p");
@@ -248,7 +249,7 @@ export const buildCard = (productData) => {
     toAppend.push(desc);
   }
 
-  toAppend.push(addToCartBtn);
+  toAppend.push(buildSpinSelector(productId, 0));
   card.append(...toAppend);
   return card;
 };

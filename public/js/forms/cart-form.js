@@ -1,4 +1,5 @@
 // forms/cart-form.js
+import { buildSpinSelector } from "../util/spin-options.js";
 export const buildCartForm = async () => {
   const cartContainer = document.createElement("div");
   cartContainer.className = "cart-container";
@@ -73,6 +74,9 @@ export const buildCartSummarySection = async () => {
 
   const itemCountRow = await buildSummaryRow("Items:", "0", "cart-summary-item-count");
   const subtotalRow = await buildSummaryRow("Subtotal:", "$0.00", "cart-summary-subtotal");
+  const spinRow = await buildSummaryRow("Extra Spins:", "$0.00", "cart-summary-spin-total");
+  spinRow.id = "cart-summary-spin-row";
+  spinRow.style.display = "none";
   const shippingRow = await buildSummaryRow("Shipping:", "FREE", "cart-summary-shipping");
 
   const totalRow = document.createElement("div");
@@ -89,7 +93,7 @@ export const buildCartSummarySection = async () => {
 
   totalRow.append(totalLabel, totalValue);
 
-  summaryDetails.append(itemCountRow, subtotalRow, shippingRow, totalRow);
+  summaryDetails.append(itemCountRow, subtotalRow, spinRow, shippingRow, totalRow);
 
   const checkoutBtn = document.createElement("button");
   checkoutBtn.className = "cart-checkout-btn";
@@ -131,7 +135,8 @@ export const buildCartItem = async (itemData) => {
   const cartItem = document.createElement("div");
   cartItem.className = "cart-item";
   cartItem.setAttribute("data-product-id", itemData.productId);
-  cartItem.setAttribute("data-price", itemData.price);
+  cartItem.setAttribute("data-base-price", itemData.price);
+  cartItem.setAttribute("data-price", itemData.price + (itemData.spinCost || 0));
 
   const itemImage = await buildCartItemImage(itemData);
   const itemDetails = await buildCartItemDetails(itemData);
@@ -166,7 +171,7 @@ export const buildCartItemDetails = async (itemData) => {
   const itemTotal = document.createElement("div");
   itemTotal.className = "cart-item-total";
   itemTotal.id = `item-total-${itemData.productId}`;
-  const totalValue = itemData.price * itemData.quantity;
+  const totalValue = (itemData.price + (itemData.spinCost || 0)) * itemData.quantity;
   itemTotal.textContent = `$${totalValue.toFixed(2)}`;
 
   const name = document.createElement("h2");
@@ -188,6 +193,9 @@ export const buildCartItemDetails = async (itemData) => {
     discountNote.textContent = `${itemData.discount}% discount applied`;
     details.append(discountNote);
   }
+
+  const spinSel = buildSpinSelector(itemData.productId, itemData.extraSpins || 0);
+  details.append(spinSel);
 
   return details;
 };

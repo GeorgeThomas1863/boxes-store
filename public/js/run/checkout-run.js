@@ -73,6 +73,18 @@ export const updateCheckoutSummary = async (taxRate = 0) => { // TAX DISABLED: t
   shippingElement.textContent = "FREE";
   totalElement.textContent = `$${total.toFixed(2)}`;
 
+  const spinRow = document.getElementById("checkout-spin-row");
+  const spinEl = document.getElementById("checkout-spin-total");
+  if (spinRow && spinEl) {
+    const spinTotal = cartData.spinTotal || 0;
+    if (spinTotal > 0) {
+      spinRow.style.display = "";
+      spinEl.textContent = `+$${spinTotal.toFixed(2)}`;
+    } else {
+      spinRow.style.display = "none";
+    }
+  }
+
   return true;
 };
 

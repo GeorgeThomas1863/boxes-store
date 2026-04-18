@@ -17,6 +17,11 @@ export const runAddToCart = async (clickElement) => {
   const name = productCard.querySelector(".product-name")?.textContent;
   const image = productCard.querySelector(".product-image")?.src;
 
+  const spinContainer = clickElement.closest(".product-card, .product-detail-overlay");
+  const spinSelect = spinContainer?.querySelector(".spin-selector");
+  const extraSpins = parseInt(spinSelect?.value || 0);
+  const spinCost = parseFloat(spinSelect?.selectedOptions?.[0]?.dataset?.spinCost || 0);
+
   const res = await sendToBack({
     route: "/cart/add",
     data: {
@@ -24,6 +29,8 @@ export const runAddToCart = async (clickElement) => {
       name,
       image,
       quantity: 1,
+      extraSpins,
+      spinCost,
     },
   });
 
@@ -251,6 +258,18 @@ export const updateCartSummary = async () => {
   subtotalElement.textContent = `$${total.toFixed(2)}`;
   totalElement.textContent = `$${total.toFixed(2)}`;
 
+  const spinRow = document.getElementById("cart-summary-spin-row");
+  const spinEl = document.getElementById("cart-summary-spin-total");
+  if (spinRow && spinEl) {
+    const spinTotal = cartData.spinTotal || 0;
+    if (spinTotal > 0) {
+      spinRow.style.display = "";
+      spinEl.textContent = `+$${spinTotal.toFixed(2)}`;
+    } else {
+      spinRow.style.display = "none";
+    }
+  }
+
   return true;
 };
 
@@ -268,6 +287,40 @@ export const updateItemTotal = async (productId, quantity) => {
 
   const total = price * quantity;
   itemTotalElement.textContent = `$${total.toFixed(2)}`;
+
+  return true;
+};
+
+export const runUpdateSpins = async (changeElement) => {
+  if (!changeElement) return null;
+  const productId = changeElement.dataset.productId;
+  if (!productId) return null;
+
+  const extraSpins = parseInt(changeElement.value);
+  const spinCost = parseFloat(changeElement.selectedOptions[0]?.dataset?.spinCost || 0);
+
+  const res = await sendToBack({
+    route: "/cart/update-spins",
+    productId,
+    extraSpins,
+    spinCost,
+  });
+
+  if (!res || !res.success) {
+    await displayPopup("Failed to update spins", "error");
+    return null;
+  }
+
+  const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+  if (cartItem) {
+    const basePrice = parseFloat(cartItem.dataset.basePrice || cartItem.dataset.price);
+    cartItem.dataset.price = (basePrice + spinCost).toFixed(2);
+  }
+
+  const quantityEl = document.getElementById(`quantity-${productId}`);
+  const currentQuantity = parseInt(quantityEl?.textContent || 1);
+  await updateItemTotal(productId, currentQuantity);
+  await updateCartSummary();
 
   return true;
 };

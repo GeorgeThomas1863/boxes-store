@@ -1,4 +1,5 @@
 import { buildCollapseContainer } from "../util/collapse.js";
+import { buildSpinSelector } from "../util/spin-options.js";
 
 export const buildAdminForm = async () => {
   const adminFormWrapper = document.createElement("div");
@@ -680,7 +681,7 @@ export const buildProductDetailModal = async (productData) => {
   addToCartBtn.productId = productId;
   addToCartBtn.textContent = "Add to Cart";
 
-  const toAppend = [nameEl, priceEl];
+  const toAppend = [nameEl, priceEl, addToCartBtn];
 
   if (description) {
     const descEl = document.createElement("p");
@@ -689,7 +690,7 @@ export const buildProductDetailModal = async (productData) => {
     toAppend.push(descEl);
   }
 
-  toAppend.push(addToCartBtn);
+  toAppend.push(buildSpinSelector(productId, 0));
   body.append(...toAppend);
   wrapper.append(body);
   overlay.append(wrapper);

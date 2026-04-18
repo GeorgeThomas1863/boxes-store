@@ -1,4 +1,4 @@
-import { buildCart, getCartStats, addCartItem, updateCartItem, removeCartItem } from "../src/cart.js";
+import { buildCart, getCartStats, addCartItem, updateCartItem, removeCartItem, updateCartSpins } from "../src/cart.js";
 import { validatePositiveInt, validateEmail, validateZip, validateString } from "../src/sanitize.js";
 import { placeNewOrder } from "../src/orders.js";
 import { createPaymentIntent, refundPayment } from "../src/payments.js";
@@ -52,6 +52,12 @@ export const removeFromCartControl = async (req, res) => {
 export const clearCartControl = async (req, res) => {
   req.session.cart = [];
   res.json({ success: true, cart: [] });
+};
+
+export const updateCartSpinsControl = async (req, res) => {
+  if (!req.body) return res.status(400).json({ success: false });
+  const result = await updateCartSpins(req);
+  return res.json(result);
 };
 
 const markProductsSold = async (cartItems) => {

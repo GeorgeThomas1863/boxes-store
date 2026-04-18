@@ -553,6 +553,12 @@
   border-color: #dc2626;
 }
 
+.checkout-item-spin-note {
+  font-size: 0.75rem;
+  color: #666;
+  font-style: italic;
+}
+
 /* LOADING OVERLAY */
 .loading-overlay {
   position: fixed;

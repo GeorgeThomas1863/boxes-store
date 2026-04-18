@@ -156,6 +156,9 @@ export const buildCheckoutSummarySection = async () => {
 
   const subtotalRow = await buildSummaryRow("Subtotal:", "$0.00", "checkout-subtotal");
   // const taxRow = await buildSummaryRow("Tax:", "$0.00", "checkout-tax"); // TAX DISABLED
+  const spinRow = await buildSummaryRow("Extra Spins:", "$0.00", "checkout-spin-total");
+  spinRow.id = "checkout-spin-row";
+  spinRow.style.display = "none";
   const shippingRow = await buildSummaryRow("Shipping:", "FREE", "checkout-shipping");
 
   const totalRow = document.createElement("div");
@@ -172,7 +175,7 @@ export const buildCheckoutSummarySection = async () => {
 
   totalRow.append(totalLabel, totalValue);
 
-  summaryDetails.append(subtotalRow, shippingRow, totalRow); // TAX DISABLED: taxRow removed
+  summaryDetails.append(subtotalRow, spinRow, shippingRow, totalRow); // TAX DISABLED: taxRow removed
 
   // Place order button
   const placeOrderBtn = document.createElement("button");
@@ -334,10 +337,17 @@ export const buildCheckoutItem = async (itemData) => {
 
   const itemPrice = document.createElement("div");
   itemPrice.className = "checkout-item-price";
-  const totalPrice = itemData.price * itemData.quantity;
+  const totalPrice = (itemData.price + (itemData.spinCost || 0)) * itemData.quantity;
   itemPrice.textContent = `$${totalPrice.toFixed(2)}`;
 
   itemDetails.append(itemName, itemQuantity);
+
+  if ((itemData.spinCost || 0) > 0) {
+    const spinNote = document.createElement("div");
+    spinNote.className = "checkout-item-spin-note";
+    spinNote.textContent = `${itemData.extraSpins} Extra Spins`;
+    itemDetails.append(spinNote);
+  }
 
   if (itemData.discount > 0) {
     const discountNote = document.createElement("span");
