@@ -1,3 +1,4 @@
+import { buildCarouselElement } from "./main-form.js";
 import { buildCollapseContainer } from "../util/collapse.js";
 import { buildSpinSelector } from "../util/spin-options.js";
 
@@ -603,7 +604,7 @@ export const buildInfoRowTextarea = async (mode, fieldName, labelText) => {
 // PRODUCT DETAIL MODAL (main page)
 // =============================
 
-export const buildProductDetailModal = async (productData) => {
+export const buildProductDetailModal = async (productData, startIndex = 0) => {
   const { productId, name, price, picData, description, discount } = productData;
 
   const overlay = document.createElement("div");
@@ -628,17 +629,29 @@ export const buildProductDetailModal = async (productData) => {
 
   // Image section (skip if no picData)
   const pics = picData ? (Array.isArray(picData) ? picData : [picData]) : [];
-  if (pics.length > 0 && pics[0]?.path) {
+  if (pics.length > 0) {
     const imageWrap = document.createElement("div");
     imageWrap.className = "product-detail-image-wrap";
 
-    const img = document.createElement("img");
-    img.className = "product-detail-image";
-    img.src = pics[0].path;
-    img.alt = name || "";
-    img.loading = "lazy";
+    if (pics.length === 1) {
+      if (pics[0].mediaType === "video") {
+        const videoEl = document.createElement("video");
+        videoEl.className = "product-detail-image";
+        videoEl.controls = true;
+        videoEl.src = pics[0].path;
+        imageWrap.append(videoEl);
+      } else if (pics[0]?.path) {
+        const img = document.createElement("img");
+        img.className = "product-detail-image";
+        img.src = pics[0].path;
+        img.alt = name || "";
+        img.loading = "lazy";
+        imageWrap.append(img);
+      }
+    } else {
+      imageWrap.append(buildCarouselElement(pics, name || "", false, startIndex));
+    }
 
-    imageWrap.append(img);
     wrapper.append(imageWrap);
   }
 

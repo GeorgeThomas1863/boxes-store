@@ -1,4 +1,4 @@
-import { FACEBOOK_ICON_SVG, INSTAGRAM_ICON_SVG, TIKTOK_ICON_SVG } from "../util/define-things.js";
+import { FACEBOOK_ICON_SVG, INSTAGRAM_ICON_SVG, TIKTOK_ICON_SVG, CAROUSEL_PREV_SVG, CAROUSEL_NEXT_SVG } from "../util/define-things.js";
 import { sendToBack } from "../util/api-front.js";
 import { buildSpinSelector } from "../util/spin-options.js";
 
@@ -190,13 +190,17 @@ export const buildCard = (productData) => {
   card.productData = productData;
 
   if (picData && picData.length > 0) {
-    const img = document.createElement("img");
-    img.src = picData[0].path;
-    img.alt = name;
-    img.loading = "lazy";
-    img.className = "product-image";
-    img.setAttribute("data-label", "product-card-click");
-    card.append(img);
+    if (picData.length === 1) {
+      const img = document.createElement("img");
+      img.src = picData[0].path;
+      img.alt = name;
+      img.loading = "lazy";
+      img.className = "product-image";
+      img.setAttribute("data-label", "product-card-click");
+      card.append(img);
+    } else {
+      card.append(buildCarouselElement(picData, name, true));
+    }
   }
 
   const label = document.createElement("div");
@@ -252,6 +256,60 @@ export const buildCard = (productData) => {
   toAppend.push(buildSpinSelector(productId, 0));
   card.append(...toAppend);
   return card;
+};
+
+export const buildCarouselElement = (pics, altText, isCard, startIndex = 0) => {
+  const carousel = document.createElement("div");
+  carousel.className = "product-carousel";
+  if (isCard) carousel.setAttribute("data-label", "product-card-click");
+
+  const track = document.createElement("div");
+  track.className = "carousel-track";
+
+  for (let i = 0; i < pics.length; i++) {
+    let slide;
+    if (pics[i].mediaType === "video") {
+      slide = document.createElement("video");
+      slide.controls = true;
+    } else {
+      slide = document.createElement("img");
+      slide.alt = altText;
+      if (isCard || i !== startIndex) slide.setAttribute("loading", "lazy");
+    }
+    slide.className = "carousel-slide";
+    if (isCard && pics[i].mediaType !== "video") slide.setAttribute("data-label", "product-card-click");
+    slide.draggable = false;
+    slide.src = pics[i].path;
+    track.append(slide);
+  }
+
+  const prevBtn = document.createElement("button");
+  prevBtn.className = "carousel-arrow carousel-arrow-prev";
+  prevBtn.setAttribute("data-label", "carousel-prev");
+  prevBtn.type = "button";
+  prevBtn.innerHTML = CAROUSEL_PREV_SVG;
+
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "carousel-arrow carousel-arrow-next";
+  nextBtn.setAttribute("data-label", "carousel-next");
+  nextBtn.type = "button";
+  nextBtn.innerHTML = CAROUSEL_NEXT_SVG;
+
+  const dotsContainer = document.createElement("div");
+  dotsContainer.className = "carousel-dots";
+
+  for (let i = 0; i < pics.length; i++) {
+    const dot = document.createElement("button");
+    dot.className = "carousel-dot" + (i === startIndex ? " active" : "");
+    dot.setAttribute("data-label", "product-carousel-dot");
+    dot.setAttribute("data-index", String(i));
+    dot.type = "button";
+    dotsContainer.append(dot);
+  }
+
+  carousel.append(track, prevBtn, nextBtn, dotsContainer);
+  if (startIndex > 0) track.style.transform = `translateX(-${startIndex * 100}%)`;
+  return carousel;
 };
 
 export const buildBottomText = async () => {

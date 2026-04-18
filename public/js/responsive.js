@@ -26,6 +26,19 @@ const generateSlug = (name) => {
     .replace(/^-|-$/g, "");
 };
 
+const goToSlide = (carousel, index) => {
+  const track = carousel.querySelector(".carousel-track");
+  const dots = carousel.querySelectorAll(".carousel-dot");
+  if (track) track.style.transform = `translateX(-${index * 100}%)`;
+  for (let i = 0; i < dots.length; i++) dots[i].classList.remove("active");
+  if (dots[index]) dots[index].classList.add("active");
+};
+
+const getActiveCarouselIndex = (carousel) => {
+  const dot = carousel.querySelector(".carousel-dot.active");
+  return dot ? parseInt(dot.getAttribute("data-index")) : 0;
+};
+
 const runOpenProductModal = async (clickElement) => {
   const card = clickElement.closest(".product-card");
   if (!card || !card.productData) return;
@@ -33,7 +46,9 @@ const runOpenProductModal = async (clickElement) => {
   const existing = document.getElementById("product-detail-modal");
   if (existing) existing.remove();
 
-  const modal = await buildProductDetailModal(card.productData);
+  const cardCarousel = card.querySelector(".product-carousel");
+  const startIndex = cardCarousel ? getActiveCarouselIndex(cardCarousel) : 0;
+  const modal = await buildProductDetailModal(card.productData, startIndex);
   modal.id = "product-detail-modal";
   if (!displayElement) return;
   displayElement.append(modal);
@@ -79,6 +94,27 @@ export const clickHandler = async (e) => {
   if (clickType?.includes("close-modal-")) await runModalClose(clickedElement);
   if (clickType === "product-card-click") await runOpenProductModal(clickedElement);
   if (clickType === "close-product-modal") runCloseProductModal();
+
+  if (clickType === "carousel-prev") {
+    const carousel = clickedElement.closest(".product-carousel");
+    if (carousel) {
+      const total = carousel.querySelectorAll(".carousel-dot").length;
+      const current = getActiveCarouselIndex(carousel);
+      if (current > 0) goToSlide(carousel, current - 1);
+    }
+  }
+  if (clickType === "carousel-next") {
+    const carousel = clickedElement.closest(".product-carousel");
+    if (carousel) {
+      const total = carousel.querySelectorAll(".carousel-dot").length;
+      const current = getActiveCarouselIndex(carousel);
+      if (current < total - 1) goToSlide(carousel, current + 1);
+    }
+  }
+  if (clickType === "product-carousel-dot") {
+    const carousel = clickedElement.closest(".product-carousel");
+    if (carousel) goToSlide(carousel, parseInt(clickedElement.getAttribute("data-index")));
+  }
 
   if (clickType === "new-product-submit") await runAddNewProduct();
   if (clickType === "edit-product-submit") await runEditProduct();
