@@ -28,7 +28,9 @@
       "Bash(xargs grep *)",
       "WebSearch",
       "mcp__plugin_context7_context7__resolve-library-id",
-      "mcp__plugin_context7_context7__query-docs"
+      "mcp__plugin_context7_context7__query-docs",
+      "Bash(git -C /c/Users/computer/Desktop/ALL2/PROJECTS/CODING_PROJECTS/R_Project/boxes-store log --all --grep=\"orderId\\\\|order.*id\\\\|hide.*id\" --oneline)",
+      "Skill(firecrawl:firecrawl)"
     ]
   }
 }

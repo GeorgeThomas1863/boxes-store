@@ -70,13 +70,13 @@ const buildCards = () => {
   const card1 = buildCard({
     delay: "0.1s",
     barClass: "about-pink-bar",
-    tag: "\uD83D\uDC8C Origin Story",
-    heading: "Finding Forever Home in the Blue Ridge",
+    tag: "\uD83D\uDC8C My Journey",
+    heading: "Finding Our Forever Home in the Blue Ridge",
     paragraphs: [
       {
         parts: [
           {
-            text: "I\u2019m a Registered Nurse with a decade of clinical experience, and the heart behind PRN & Pretty Things Co. My journey to these mountains began in 2021. Originally from the Northeast, my husband and I have truly found our ",
+            text: "Originally from the Northeast, my journey to these mountains began in 2021. My husband and I have truly found our ",
           },
           { text: "\u201Cforever home\u201D", highlight: true },
           { text: " in Western North Carolina." },
@@ -96,12 +96,19 @@ const buildCards = () => {
     delay: "0.2s",
     barClass: "about-purple-bar",
     tag: "\uD83D\uDD4A\uFE0F My Calling",
-    heading: "Ten Years of Hospice Nursing",
+    heading: "A Decade of Nursing, Called to Comfort",
     paragraphs: [
       {
         parts: [
           {
-            text: "I\u2019ve spent the last 10 years dedicated to nursing, with my heart firmly planted in hospice care. Being a hospice nurse has taught me so much about the beauty of life and the importance of comfort, peace, and small moments of joy.",
+            text: "I\u2019m Rachel, a Registered Nurse with a decade of clinical experience, and the heart behind PRN & Pretty Things Co.",
+          },
+        ],
+      },
+      {
+        parts: [
+          {
+            text: "Over the last couple years I\u2019ve found my heart drawn to hospice care \u2014 where the focus is on comfort, peace, and making every moment count.",
           },
         ],
       },
@@ -110,7 +117,7 @@ const buildCards = () => {
           { text: "There is a " },
           { text: "special kind of honor", highlight: true },
           {
-            text: " in being there for patients and families during their most sacred time. I know firsthand how heavy the heart can feel after a long shift.",
+            text: " in being there for patients and families during a sacred time. I know firsthand how heavy the heart can feel after a long shift.",
           },
         ],
       },
@@ -160,7 +167,10 @@ const buildQuote = () => {
 
 
 
-  quote.append(bigQ, blockquote, line);
+  const cite = document.createElement("cite");
+  cite.textContent = "\u2014 Rachel, RN";
+
+  quote.append(bigQ, blockquote, line, cite);
   return quote;
 };
 
@@ -173,7 +183,7 @@ const buildFooter = () => {
 
   const rows = [
     { icon: "\uD83C\uDFD4\uFE0F", label: "Based In", value: "Western North Carolina" },
-    { icon: "\uD83D\uDC69\u200D\u2695\uFE0F", label: "Ownership", value: "Owned & Operated by a Registered Nurse" },
+    { icon: "\uD83D\uDC69\uD83C\uDFFD\u200D\u2695\uFE0F", label: "Ownership", value: "Owned & Operated by a Registered Nurse" },
   ];
 
   rows.forEach(({ icon, label, value }) => {
@@ -224,7 +234,7 @@ export const buildAboutForm = async () => {
   const quoteCard = buildQuote();
   const footerCard = buildFooter();
 
-  page.append(hero, card1, card2, card3, quoteCard, footerCard);
+  page.append(hero, card2, card1, card3, quoteCard, footerCard);
   container.append(mesh, ...orbs, nav, page);
   return container;
 };

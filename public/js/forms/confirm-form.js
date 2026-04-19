@@ -43,7 +43,6 @@ const buildDetailsCard = () => {
   const grid = document.createElement("div");
   grid.className = "confirm-details-grid";
   grid.append(
-    buildDetailRow("Order Number", "confirm-order-number"),
     buildDetailRow("Order Date", "confirm-order-date"),
     buildDetailRow("Payment Status", "confirm-payment-status"),
     buildDetailRow("Email", "confirm-customer-email")
@@ -194,6 +193,13 @@ export const buildConfirmItem = (itemData) => {
 
   details.append(name, qty);
 
+  if (itemData.extraSpins > 0) {
+    const spins = document.createElement("div");
+    spins.className = "confirm-item-spins";
+    spins.textContent = `+${itemData.extraSpins} Extra Spins`;
+    details.append(spins);
+  }
+
   if (itemData.discount > 0) {
     const discountNote = document.createElement("span");
     discountNote.className = "confirm-item-discount-note";
@@ -238,7 +244,7 @@ export const populateConfirmOrder = () => {
 const populateOrderDetails = (data) => {
   if (!data) return null;
 
-  const { orderNumber, orderDate, email, firstName, lastName, address, city, state, zip,
+  const { orderDate, email, firstName, lastName, address, city, state, zip,
     nursingSpecialty, productLikes, productDislikes,
     subtotal, tax, shippingCost, totalCost } = data;
 
@@ -247,7 +253,6 @@ const populateOrderDetails = (data) => {
     if (el) el.textContent = text;
   };
 
-  set("confirm-order-number", orderNumber || "N/A");
   set("confirm-order-date", new Date(orderDate).toLocaleDateString("en-US", {
     year: "numeric", month: "long", day: "numeric",
   }));

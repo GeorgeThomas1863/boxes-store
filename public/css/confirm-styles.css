@@ -168,6 +168,12 @@
   font-style: italic;
 }
 
+.confirm-item-spins {
+  font-size: 0.75rem;
+  color: #0891b2;
+  font-style: italic;
+}
+
 .confirm-summary-details {
   display: flex;
   flex-direction: column;
