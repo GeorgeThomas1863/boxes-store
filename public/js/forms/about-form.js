@@ -127,7 +127,7 @@ const buildCards = () => {
   const card3 = buildCard({
     delay: "0.3s",
     barClass: "about-mint-bar",
-    tag: "\uD83C\uDF80 The Brand",
+    tag: "\uD83C\uDF80 Our Values",
     heading: "Every Girl Deserves a Hug in a Box",
     paragraphs: [
       {
@@ -160,7 +160,7 @@ const buildQuote = () => {
 
   const blockquote = document.createElement("blockquote");
   blockquote.textContent =
-    "I\u2019ve learned that the smallest comforts make the biggest difference. I created PRN & Pretty Things Co. to bring a little extra peace and joy to your off-duty hours.";
+    "I\u2019ve learned the smallest comforts make the biggest difference. I created PRN & Pretty Things Co. to bring a little extra peace and joy to your off-duty hours.";
 
   const line = document.createElement("div");
   line.className = "about-quote-line";
@@ -182,8 +182,8 @@ const buildFooter = () => {
   items.className = "about-footer-items";
 
   const rows = [
-    { icon: "\uD83C\uDFD4\uFE0F", label: "Based In", value: "Western North Carolina" },
     { icon: "\uD83D\uDC69\uD83C\uDFFB\u200D\u2695\uFE0F", label: "Ownership", value: "Owned & Operated by a Registered Nurse" },
+    { icon: "\uD83C\uDFD4\uFE0F", label: "Based In", value: "Western North Carolina" },
   ];
 
   rows.forEach(({ icon, label, value }) => {

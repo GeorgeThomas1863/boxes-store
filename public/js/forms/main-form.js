@@ -296,16 +296,24 @@ export const buildBottomInfoRows = async () => {
   const infoBlock = document.createElement("div");
   infoBlock.className = "main-footer-info";
 
-  const lines = [
-    "Proudly based in Western North Carolina 🏔️",
-    "Owned and Operated by a Registered Nurse \uD83D\uDC69\uD83C\uDFFB\u200D\u2695\uFE0F",
+  const rows = [
+    { icon: "\uD83D\uDC69\uD83C\uDFFB\u200D\u2695\uFE0F", text: "Owned and Operated by a Registered Nurse" },
+    { icon: "\uD83C\uDFD4\uFE0F", text: "Proudly based in Western North Carolina" },
   ];
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = document.createElement("p");
-    line.className = "main-footer-info-line";
-    line.textContent = lines[i];
-    infoBlock.append(line);
+  for (let i = 0; i < rows.length; i++) {
+    const row = document.createElement("div");
+    row.className = "main-footer-info-line main-footer-icon-row";
+
+    const iconWrap = document.createElement("div");
+    iconWrap.className = "main-footer-icon-wrap";
+    iconWrap.textContent = rows[i].icon;
+
+    const text = document.createElement("span");
+    text.textContent = rows[i].text;
+
+    row.append(iconWrap, text);
+    infoBlock.append(row);
   }
 
   return infoBlock;
