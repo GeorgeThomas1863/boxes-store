@@ -3,25 +3,26 @@ import { sendMail } from "../../src/mailer.js";
 
 describe("sendMail", () => {
   beforeEach(() => {
-    process.env.MAILERSEND_API_KEY = "test-api-key";
+    process.env.RESEND_API_KEY = "test-api-key";
 
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      headers: { get: (name) => (name === "X-Message-Id" ? "<test-message-id@mailersend.com>" : null) },
+      json: async () => ({ id: "test-message-id" }),
+      text: async () => "OK",
     });
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
     delete global.fetch;
-    delete process.env.MAILERSEND_API_KEY;
+    delete process.env.RESEND_API_KEY;
   });
 
-  it("calls the correct MailerSend endpoint", async () => {
+  it("calls the correct Resend endpoint", async () => {
     await sendMail({ from: "store@example.com", to: "buyer@example.com", subject: "Test", html: "<p>Hi</p>" });
 
     const [url] = global.fetch.mock.calls[0];
-    expect(url).toBe("https://api.mailersend.com/v1/email");
+    expect(url).toBe("https://api.resend.com/emails");
   });
 
   it("sends a POST with Bearer auth header and JSON content-type", async () => {
@@ -33,31 +34,31 @@ describe("sendMail", () => {
     expect(options.headers["Content-Type"]).toBe("application/json");
   });
 
-  it("sends from, to, subject, and html as JSON objects/arrays", async () => {
+  it("sends from as string, to as string array, with subject and html", async () => {
     await sendMail({ from: "store@example.com", to: "buyer@example.com", subject: "Order Confirmation", html: "<p>Thanks!</p>" });
 
     const body = JSON.parse(global.fetch.mock.calls[0][1].body);
-    expect(body.from).toEqual({ email: "store@example.com" });
-    expect(body.to).toEqual([{ email: "buyer@example.com" }]);
+    expect(body.from).toBe("store@example.com");
+    expect(body.to).toEqual(["buyer@example.com"]);
     expect(body.subject).toBe("Order Confirmation");
     expect(body.html).toBe("<p>Thanks!</p>");
   });
 
-  it("includes fromName as from.name when provided", async () => {
+  it("includes fromName in from string when provided", async () => {
     await sendMail({ from: "store@example.com", fromName: "PRN & Pretty Things Co.", to: "buyer@example.com", subject: "Test", html: "<p>Hi</p>" });
 
     const body = JSON.parse(global.fetch.mock.calls[0][1].body);
-    expect(body.from).toEqual({ email: "store@example.com", name: "PRN & Pretty Things Co." });
+    expect(body.from).toBe("PRN & Pretty Things Co. <store@example.com>");
   });
 
-  it("omits from.name when fromName is not provided", async () => {
+  it("uses plain email string for from when fromName is not provided", async () => {
     await sendMail({ from: "store@example.com", to: "buyer@example.com", subject: "Test", html: "<p>Hi</p>" });
 
     const body = JSON.parse(global.fetch.mock.calls[0][1].body);
-    expect(body.from).toEqual({ email: "store@example.com" });
+    expect(body.from).toBe("store@example.com");
   });
 
-  it("sends bcc as an array of recipient objects", async () => {
+  it("sends bcc as an array of email strings", async () => {
     await sendMail({
       from: "store@example.com",
       to: "buyer@example.com",
@@ -67,7 +68,7 @@ describe("sendMail", () => {
     });
 
     const body = JSON.parse(global.fetch.mock.calls[0][1].body);
-    expect(body.bcc).toEqual([{ email: "admin1@example.com" }, { email: "admin2@example.com" }]);
+    expect(body.bcc).toEqual(["admin1@example.com", "admin2@example.com"]);
   });
 
   it("splits a comma-separated 'to' string into multiple recipients", async () => {
@@ -79,10 +80,10 @@ describe("sendMail", () => {
     });
 
     const body = JSON.parse(global.fetch.mock.calls[0][1].body);
-    expect(body.to).toEqual([{ email: "admin1@example.com" }, { email: "admin2@example.com" }]);
+    expect(body.to).toEqual(["admin1@example.com", "admin2@example.com"]);
   });
 
-  it("sets reply_to as an object when replyTo is provided", async () => {
+  it("sets reply_to as a plain string when replyTo is provided", async () => {
     await sendMail({
       from: "store@example.com",
       to: "buyer@example.com",
@@ -92,15 +93,15 @@ describe("sendMail", () => {
     });
 
     const body = JSON.parse(global.fetch.mock.calls[0][1].body);
-    expect(body.reply_to).toEqual({ email: "customer@example.com" });
+    expect(body.reply_to).toBe("customer@example.com");
   });
 
-  it("returns messageId from X-Message-Id response header", async () => {
+  it("returns messageId from JSON response body", async () => {
     const result = await sendMail({ from: "store@example.com", to: "buyer@example.com", subject: "Test", html: "<p>Hi</p>" });
-    expect(result.messageId).toBe("<test-message-id@mailersend.com>");
+    expect(result.messageId).toBe("test-message-id");
   });
 
-  it("throws when MailerSend returns a non-2xx status", async () => {
+  it("throws when Resend returns a non-2xx status", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 401,
@@ -109,7 +110,7 @@ describe("sendMail", () => {
 
     await expect(
       sendMail({ from: "a@b.com", to: "c@d.com", subject: "X", html: "<p>X</p>" })
-    ).rejects.toThrow("MailerSend error 401");
+    ).rejects.toThrow("Resend error 401");
   });
 
   it("throws when 'to' is absent", async () => {
@@ -118,11 +119,11 @@ describe("sendMail", () => {
     ).rejects.toThrow("sendMail: 'to' is required");
   });
 
-  it("throws when MAILERSEND_API_KEY is not set", async () => {
-    delete process.env.MAILERSEND_API_KEY;
+  it("throws when RESEND_API_KEY is not set", async () => {
+    delete process.env.RESEND_API_KEY;
     await expect(
       sendMail({ from: "a@b.com", to: "c@d.com", subject: "X", html: "<p>X</p>" })
-    ).rejects.toThrow("sendMail: MAILERSEND_API_KEY must be set");
+    ).rejects.toThrow("sendMail: RESEND_API_KEY must be set");
   });
 
   it("throws when 'from' is not provided", async () => {

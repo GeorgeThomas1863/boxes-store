@@ -1,17 +1,17 @@
 const toRecipients = (val) => {
   if (!val) return [];
   const list = Array.isArray(val) ? val : val.split(",").map((s) => s.trim()).filter(Boolean);
-  return list.map((email) => ({ email }));
+  return list;
 };
 
 export const sendMail = async ({ from, fromName, to, bcc, subject, html, text, replyTo }) => {
-  if (!process.env.MAILERSEND_API_KEY) {
-    throw new Error("sendMail: MAILERSEND_API_KEY must be set");
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error("sendMail: RESEND_API_KEY must be set");
   }
   if (!from) throw new Error("sendMail: 'from' is required");
   if (!to) throw new Error("sendMail: 'to' is required");
 
-  const body = { from: { email: from, ...(fromName && { name: fromName }) }, subject };
+  const body = { from: fromName ? `${fromName} <${from}>` : from, subject };
 
   const toList = toRecipients(to);
   if (toList.length) body.to = toList;
@@ -21,12 +21,12 @@ export const sendMail = async ({ from, fromName, to, bcc, subject, html, text, r
 
   if (html) body.html = html;
   if (text) body.text = text;
-  if (replyTo) body.reply_to = { email: replyTo };
+  if (replyTo) body.reply_to = replyTo;
 
-  const response = await fetch("https://api.mailersend.com/v1/email", {
+  const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.MAILERSEND_API_KEY}`,
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -34,8 +34,9 @@ export const sendMail = async ({ from, fromName, to, bcc, subject, html, text, r
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`MailerSend error ${response.status}: ${errorText}`);
+    throw new Error(`Resend error ${response.status}: ${errorText}`);
   }
 
-  return { messageId: response.headers.get("X-Message-Id") };
+  const data = await response.json();
+  return { messageId: data.id };
 };
