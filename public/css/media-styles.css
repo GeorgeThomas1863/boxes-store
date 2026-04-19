@@ -219,7 +219,8 @@
 }
 
 @media (min-width: 768px) {
-  .launch-card {
+  .launch-card,
+  .cards-grid {
     max-width: 560px;
   }
 }
