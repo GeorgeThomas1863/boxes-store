@@ -4,14 +4,14 @@ const toRecipients = (val) => {
   return list.map((email) => ({ email }));
 };
 
-export const sendMail = async ({ from, to, bcc, subject, html, text, replyTo }) => {
+export const sendMail = async ({ from, fromName, to, bcc, subject, html, text, replyTo }) => {
   if (!process.env.MAILERSEND_API_KEY) {
     throw new Error("sendMail: MAILERSEND_API_KEY must be set");
   }
   if (!from) throw new Error("sendMail: 'from' is required");
-  if (!to && !bcc) throw new Error("sendMail: at least one of 'to' or 'bcc' is required");
+  if (!to) throw new Error("sendMail: 'to' is required");
 
-  const body = { from: { email: from }, subject };
+  const body = { from: { email: from, ...(fromName && { name: fromName }) }, subject };
 
   const toList = toRecipients(to);
   if (toList.length) body.to = toList;

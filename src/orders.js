@@ -125,6 +125,7 @@ export const sendOrderConfirmationEmails = async (orderData) => {
   try {
     await sendMail({
       from: process.env.EMAIL_USER,
+      fromName: process.env.EMAIL_FROM_NAME,
       to: email,
       subject: `Order Confirmation — #${safeOrderNumber}`,
       html: buyerHtml,
@@ -137,6 +138,7 @@ export const sendOrderConfirmationEmails = async (orderData) => {
   try {
     await sendMail({
       from: process.env.EMAIL_USER,
+      fromName: process.env.EMAIL_FROM_NAME,
       to: [process.env.EMAIL_RECIPIENT_1, process.env.EMAIL_RECIPIENT_2].filter(Boolean).join(", "),
       subject: `New Order — #${safeOrderNumber} from ${sanitizeEmailHeader(firstName)} ${sanitizeEmailHeader(lastName)}`,
       html: adminHtml,

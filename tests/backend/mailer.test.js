@@ -43,6 +43,20 @@ describe("sendMail", () => {
     expect(body.html).toBe("<p>Thanks!</p>");
   });
 
+  it("includes fromName as from.name when provided", async () => {
+    await sendMail({ from: "store@example.com", fromName: "PRN & Pretty Things Co.", to: "buyer@example.com", subject: "Test", html: "<p>Hi</p>" });
+
+    const body = JSON.parse(global.fetch.mock.calls[0][1].body);
+    expect(body.from).toEqual({ email: "store@example.com", name: "PRN & Pretty Things Co." });
+  });
+
+  it("omits from.name when fromName is not provided", async () => {
+    await sendMail({ from: "store@example.com", to: "buyer@example.com", subject: "Test", html: "<p>Hi</p>" });
+
+    const body = JSON.parse(global.fetch.mock.calls[0][1].body);
+    expect(body.from).toEqual({ email: "store@example.com" });
+  });
+
   it("sends bcc as an array of recipient objects", async () => {
     await sendMail({
       from: "store@example.com",
@@ -98,10 +112,10 @@ describe("sendMail", () => {
     ).rejects.toThrow("MailerSend error 401");
   });
 
-  it("throws when both 'to' and 'bcc' are absent", async () => {
+  it("throws when 'to' is absent", async () => {
     await expect(
       sendMail({ from: "store@example.com", subject: "Test", html: "<p>Hi</p>" })
-    ).rejects.toThrow("sendMail: at least one of 'to' or 'bcc' is required");
+    ).rejects.toThrow("sendMail: 'to' is required");
   });
 
   it("throws when MAILERSEND_API_KEY is not set", async () => {

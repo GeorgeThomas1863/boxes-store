@@ -25,6 +25,7 @@ export const submitContact = async (inputParams) => {
 
   const mailParams = {
     from: process.env.EMAIL_USER,
+    fromName: process.env.EMAIL_FROM_NAME,
     to: [process.env.EMAIL_RECIPIENT_1, process.env.EMAIL_RECIPIENT_2].filter(Boolean).join(", "),
     subject: `SITE MESSAGE FROM ${sanitizeEmailHeader(cleanName)} | SUBJECT: ${sanitizeEmailHeader(cleanSubject)}`,
     html: `
