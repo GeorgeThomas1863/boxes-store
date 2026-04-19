@@ -127,7 +127,7 @@ export const sendOrderConfirmationEmails = async (orderData) => {
       from: process.env.EMAIL_USER,
       fromName: process.env.EMAIL_FROM_NAME,
       to: email,
-      subject: `Order Confirmation — #${safeOrderNumber}`,
+      subject: `Order Confirmation - PRN & Pretty Things Co.`,
       html: buyerHtml,
     });
     buyerSent = true;
@@ -195,19 +195,24 @@ const buildEmailHtml = (orderData, type) => {
   let itemRows = "";
   for (let i = 0; i < safeItems.length; i++) {
     const item = safeItems[i];
-    const lineTotal = escapeHtml((Number(item.price) * Number(item.quantity)).toFixed(2));
+    const lineTotal = escapeHtml(((Number(item.price) + (Number(item.spinCost) || 0)) * Number(item.quantity)).toFixed(2));
     itemRows += `<tr>
       ${isAdmin ? `<td style="padding: 8px; border-bottom: 1px solid #eee;">${escapeHtml(item.itemId || "")}</td>` : ""}
-      <td style="padding: 8px; border-bottom: 1px solid #eee;">${escapeHtml(item.name)}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #eee;">${escapeHtml(item.name)}${item.extraSpins > 0 ? `<br><small style="color: #666;">+ ${escapeHtml(String(item.extraSpins))} Extra Spins</small>` : ""}</td>
       <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${escapeHtml(String(item.quantity))}</td>
       <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">$${lineTotal}</td>
     </tr>`;
   }
 
+  let spinTotal = 0;
+  for (let i = 0; i < safeItems.length; i++) {
+    spinTotal += (Number(safeItems[i].spinCost) || 0) * Number(safeItems[i].quantity);
+  }
+
   const header = isAdmin
     ? `<h2>New Order — #${safeOrderNumber}</h2>
        <p><strong>Customer:</strong> ${safeFirstName} ${safeLastName} (${safeEmail})</p>`
-    : `<h2>Order Confirmation — #${safeOrderNumber}</h2>
+    : `<h2>Order Confirmation</h2>
        <p>Thank you for your order, ${safeFirstName} ${safeLastName}!</p>`;
 
   const paymentSection = isAdmin
@@ -241,6 +246,7 @@ const buildEmailHtml = (orderData, type) => {
       <div style="margin-top: 16px; text-align: right;">
         <p><strong>Subtotal:</strong> $${escapeHtml(Number(subtotal).toFixed(2))}</p>
         <!-- <p><strong>Tax:</strong> $${escapeHtml(Number(tax).toFixed(2))}</p> --> <!-- TAX DISABLED -->
+        ${spinTotal > 0 ? `<p><strong>Extra Spins:</strong> +$${escapeHtml(spinTotal.toFixed(2))}</p>` : ""}
         <p style="font-size: 18px;"><strong>Total:</strong> $${escapeHtml(Number(totalCost).toFixed(2))}</p>
       </div>
 

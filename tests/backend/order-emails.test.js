@@ -33,6 +33,17 @@ const mockOrder = {
   orderId: "abc123",
 };
 
+const mockOrderWithSpins = {
+  ...mockOrder,
+  items: [
+    { name: "Red Box", price: 25.0, quantity: 1, productId: "p1", itemId: "rb-001", extraSpins: 3, spinCost: 30 },
+    { name: "Blue Box", price: 20.0, quantity: 1, productId: "p2", itemId: "bb-001", extraSpins: 0, spinCost: 0 },
+  ],
+  subtotal: 75.0,
+  totalCost: 75.0,
+  amountPaid: 75.0,
+};
+
 describe("sendOrderConfirmationEmails", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -47,12 +58,12 @@ describe("sendOrderConfirmationEmails", () => {
     expect(sendMail).not.toHaveBeenCalled();
   });
 
-  it("sends buyer email to customer address with order number in subject", async () => {
+  it("sends buyer email to customer address with company name in subject", async () => {
     await sendOrderConfirmationEmails(mockOrder);
 
     const buyerCall = sendMail.mock.calls.find((c) => c[0].to === "jane@example.com");
     expect(buyerCall).toBeDefined();
-    expect(buyerCall[0].subject).toContain("1001");
+    expect(buyerCall[0].subject).toBe("Order Confirmation - PRN & Pretty Things Co.");
     expect(buyerCall[0].from).toBe("store@example.com");
   });
 
@@ -124,9 +135,9 @@ describe("email HTML content (via sendOrderConfirmationEmails)", () => {
     return adminCall[0].html;
   };
 
-  it("buyer html contains order number and customer name", async () => {
+  it("buyer html contains customer name but NOT order number", async () => {
     const html = await getBuyerHtml();
-    expect(html).toContain("1001");
+    expect(html).not.toContain("1001");
     expect(html).toContain("Jane");
     expect(html).toContain("Doe");
   });
@@ -189,5 +200,66 @@ describe("email HTML content (via sendOrderConfirmationEmails)", () => {
     const result = await sendOrderConfirmationEmails({ ...mockOrder, items: undefined });
     expect(result.buyerSent).toBe(true);
     expect(result.adminSent).toBe(true);
+  });
+});
+
+describe("extra spins in email HTML", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    process.env.EMAIL_USER = "store@example.com";
+    process.env.EMAIL_RECIPIENT_1 = "admin@example.com";
+    process.env.EMAIL_RECIPIENT_2 = "";
+  });
+
+  const getSpinBuyerHtml = async () => {
+    await sendOrderConfirmationEmails(mockOrderWithSpins);
+    const buyerCall = sendMail.mock.calls.find((c) => c[0].to === mockOrderWithSpins.email);
+    return buyerCall[0].html;
+  };
+
+  const getSpinAdminHtml = async () => {
+    await sendOrderConfirmationEmails(mockOrderWithSpins);
+    const adminCall = sendMail.mock.calls.find((c) => c[0].to?.includes("admin@example.com"));
+    return adminCall[0].html;
+  };
+
+  it("buyer html shows extra spins note for item with extraSpins > 0", async () => {
+    const html = await getSpinBuyerHtml();
+    expect(html).toContain("3 Extra Spins");
+  });
+
+  it("buyer html does NOT show extra spins note for item with extraSpins = 0", async () => {
+    const html = await getSpinBuyerHtml();
+    const blueBoxIdx = html.indexOf("Blue Box");
+    const afterBlueBox = html.slice(blueBoxIdx);
+    expect(afterBlueBox.slice(0, 200)).not.toContain("Extra Spins");
+  });
+
+  it("buyer html includes Extra Spins summary line when spinTotal > 0", async () => {
+    const html = await getSpinBuyerHtml();
+    expect(html).toContain("Extra Spins");
+    expect(html).toContain("+$30.00");
+  });
+
+  it("buyer html line total for spin item includes spinCost", async () => {
+    const html = await getSpinBuyerHtml();
+    expect(html).toContain("55.00");
+  });
+
+  it("admin html shows extra spins note for item with extraSpins > 0", async () => {
+    const html = await getSpinAdminHtml();
+    expect(html).toContain("3 Extra Spins");
+  });
+
+  it("admin html includes Extra Spins summary line when spinTotal > 0", async () => {
+    const html = await getSpinAdminHtml();
+    expect(html).toContain("+$30.00");
+  });
+
+  it("order with no extra spins shows no Extra Spins line in buyer html", async () => {
+    await sendOrderConfirmationEmails(mockOrder);
+    const buyerCall = sendMail.mock.calls.find((c) => c[0].to === mockOrder.email);
+    const html = buyerCall[0].html;
+    expect(html).not.toContain("Extra Spins");
   });
 });
