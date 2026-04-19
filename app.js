@@ -1,5 +1,3 @@
-//FINISH SETTING UP MAILGUN
-
 //make auth button work
 
 //remove examples directory 

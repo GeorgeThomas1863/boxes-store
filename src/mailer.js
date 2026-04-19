@@ -1,39 +1,41 @@
+const toRecipients = (val) => {
+  if (!val) return [];
+  const list = Array.isArray(val) ? val : val.split(",").map((s) => s.trim()).filter(Boolean);
+  return list.map((email) => ({ email }));
+};
+
 export const sendMail = async ({ from, to, bcc, subject, html, text, replyTo }) => {
-  if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN) {
-    throw new Error("sendMail: MAILGUN_API_KEY and MAILGUN_DOMAIN must be set");
+  if (!process.env.MAILERSEND_API_KEY) {
+    throw new Error("sendMail: MAILERSEND_API_KEY must be set");
   }
   if (!from) throw new Error("sendMail: 'from' is required");
   if (!to && !bcc) throw new Error("sendMail: at least one of 'to' or 'bcc' is required");
 
-  const params = new URLSearchParams();
+  const body = { from: { email: from }, subject };
 
-  params.append("from", from);
-  if (to) params.append("to", to);
-  params.append("subject", subject);
-  if (html) params.append("html", html);
-  if (text) params.append("text", text);
-  if (bcc) {
-    if (Array.isArray(bcc)) bcc.forEach((addr) => params.append("bcc", addr));
-    else params.append("bcc", bcc);
-  }
-  if (replyTo) params.append("h:Reply-To", replyTo);
+  const toList = toRecipients(to);
+  if (toList.length) body.to = toList;
 
-  const credentials = Buffer.from(`api:${process.env.MAILGUN_API_KEY}`).toString("base64");
+  const bccList = toRecipients(bcc);
+  if (bccList.length) body.bcc = bccList;
 
-  const response = await fetch(
-    `https://api.mailgun.net/v3/${process.env.MAILGUN_DOMAIN}/messages`,
-    {
-      method: "POST",
-      headers: { Authorization: `Basic ${credentials}` },
-      body: params,
-    }
-  );
+  if (html) body.html = html;
+  if (text) body.text = text;
+  if (replyTo) body.reply_to = { email: replyTo };
+
+  const response = await fetch("https://api.mailersend.com/v1/email", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.MAILERSEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Mailgun error ${response.status}: ${errorText}`);
+    throw new Error(`MailerSend error ${response.status}: ${errorText}`);
   }
 
-  const data = await response.json();
-  return { messageId: data.id };
+  return { messageId: response.headers.get("X-Message-Id") };
 };
