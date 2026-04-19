@@ -45,7 +45,7 @@ const buildDetailsCard = () => {
   grid.append(
     buildDetailRow("Order Date", "confirm-order-date"),
     buildDetailRow("Payment Status", "confirm-payment-status"),
-    buildDetailRow("Email", "confirm-customer-email")
+    buildDetailRow("Email", "confirm-customer-email"),
   );
 
   const shippingTitle = document.createElement("h2");
@@ -78,7 +78,7 @@ const buildItemsCard = () => {
     buildSummaryRow("Subtotal:", "confirm-subtotal"),
     // buildSummaryRow("Tax:", "confirm-tax"), // TAX DISABLED
     buildSummaryRow("Shipping:", "confirm-shipping"),
-    buildTotalRow()
+    buildTotalRow(),
   );
 
   card.append(title, itemsContainer, summaryDetails);
@@ -98,7 +98,7 @@ const buildPreferencesCard = () => {
   grid.append(
     buildDetailRow("Nursing Specialty", "confirm-nursing-specialty"),
     buildDetailRow("Product Likes", "confirm-product-likes"),
-    buildDetailRow("Product Dislikes", "confirm-product-dislikes")
+    buildDetailRow("Product Dislikes", "confirm-product-dislikes"),
   );
 
   card.append(title, grid);
@@ -229,7 +229,8 @@ export const populateConfirmOrder = () => {
     console.error("Failed to parse order data:", e);
     const container = document.getElementById("confirm-items-container");
     if (container) {
-      container.textContent = "Your order was placed successfully. Please check your email for confirmation, or contact support if you need order details.";
+      container.textContent =
+        "Your order was placed successfully. Please check your email for confirmation, or contact admin@prnprettythings.com if you need order details.";
     }
     return null;
   }
@@ -244,18 +245,37 @@ export const populateConfirmOrder = () => {
 const populateOrderDetails = (data) => {
   if (!data) return null;
 
-  const { orderDate, email, firstName, lastName, address, city, state, zip,
-    nursingSpecialty, productLikes, productDislikes,
-    subtotal, tax, shippingCost, totalCost } = data;
+  const {
+    orderDate,
+    email,
+    firstName,
+    lastName,
+    address,
+    city,
+    state,
+    zip,
+    nursingSpecialty,
+    productLikes,
+    productDislikes,
+    subtotal,
+    tax,
+    shippingCost,
+    totalCost,
+  } = data;
 
   const set = (id, text) => {
     const el = document.getElementById(id);
     if (el) el.textContent = text;
   };
 
-  set("confirm-order-date", new Date(orderDate).toLocaleDateString("en-US", {
-    year: "numeric", month: "long", day: "numeric",
-  }));
+  set(
+    "confirm-order-date",
+    new Date(orderDate).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }),
+  );
   set("confirm-customer-email", email);
   set("confirm-subtotal", `$${Number(subtotal).toFixed(2)}`);
   // set("confirm-tax", `$${Number(tax).toFixed(2)}`); // TAX DISABLED

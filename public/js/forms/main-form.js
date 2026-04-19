@@ -350,7 +350,7 @@ export const buildBottomDisclaimerBlock = async () => {
         },
         {
           label: "*Damages:",
-          body: "While we pack with care, the journey through the mountains can be bumpy! If an item arrives damaged, please email us a photo within 48 hours of delivery at [Your Email Address] so we can make it right.",
+          body: "While we pack with care, the journey through the mountains can be bumpy! If an item arrives damaged, please email us a photo within 48 hours of delivery at admin@prnprettythings.com so we can make it right.",
         },
       ],
     },
