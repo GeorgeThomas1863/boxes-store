@@ -75,11 +75,12 @@ function buildSummaryDOM() {
   return els;
 }
 
-function buildItemTotalDOM(productId, price) {
+function buildItemTotalDOM(cartItemId, price) {
   const itemTotal = document.createElement("div");
-  itemTotal.id = `item-total-${productId}`;
+  itemTotal.id = `item-total-${cartItemId}`;
   const cartItem = document.createElement("div");
-  cartItem.setAttribute("data-product-id", productId);
+  cartItem.className = "cart-item";
+  cartItem.setAttribute("data-cart-item-id", cartItemId);
   cartItem.dataset.price = String(price);
   document.body.append(itemTotal, cartItem);
   return { itemTotal, cartItem };
@@ -251,10 +252,11 @@ describe("updateItemTotal", () => {
     expect(itemTotal.textContent).toBe("$13.50");
   });
 
-  it("returns null when #item-total-{productId} not in DOM", async () => {
+  it("returns null when #item-total-{cartItemId} not in DOM", async () => {
     // Only build the cart item element, not the total display element
     const cartItem = document.createElement("div");
-    cartItem.setAttribute("data-product-id", "prod2");
+    cartItem.className = "cart-item";
+    cartItem.setAttribute("data-cart-item-id", "prod2");
     cartItem.dataset.price = "5.00";
     document.body.appendChild(cartItem);
 
@@ -263,7 +265,7 @@ describe("updateItemTotal", () => {
     expect(result).toBeNull();
   });
 
-  it("returns null when cart item element with data-product-id not in DOM", async () => {
+  it("returns null when .cart-item[data-cart-item-id] not in DOM", async () => {
     // Only build the total display element, not the cart item
     const itemTotal = document.createElement("div");
     itemTotal.id = "item-total-prod3";

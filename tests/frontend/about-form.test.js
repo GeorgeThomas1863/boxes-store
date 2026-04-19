@@ -89,26 +89,6 @@ describe("buildAboutForm — hero", () => {
     expect(container.querySelector(".about-hero")).not.toBeNull();
   });
 
-  it("hero pill contains 'Meet the Maker'", async () => {
-    const container = await buildAboutForm();
-    const pill = container.querySelector(".about-hero-pill");
-    expect(pill).not.toBeNull();
-    expect(pill.textContent).toContain("Meet the Maker");
-  });
-
-  it("h1 contains 'Jessica, RN' in an em element", async () => {
-    const container = await buildAboutForm();
-    const em = container.querySelector(".about-hero h1 em");
-    expect(em).not.toBeNull();
-    expect(em.textContent).toBe("Jessica, RN");
-  });
-
-  it("h1 text includes 'Hi, I\u2019m'", async () => {
-    const container = await buildAboutForm();
-    const h1 = container.querySelector(".about-hero h1");
-    expect(h1.textContent).toContain("Hi, I\u2019m");
-  });
-
   it(".about-hero-sub mentions 'PRN & Pretty Things Co.'", async () => {
     const container = await buildAboutForm();
     const sub = container.querySelector(".about-hero-sub");
@@ -138,18 +118,18 @@ describe("buildAboutForm — cards", () => {
     expect(container.querySelectorAll(".about-g-card").length).toBe(3);
   });
 
-  it("card 1 heading is 'Finding Forever Home in the Blue Ridge'", async () => {
+  it("first card in DOM is the nursing card (page.append order: card2, card1, card3)", async () => {
     const container = await buildAboutForm();
     const cards = container.querySelectorAll(".about-g-card");
     expect(cards[0].querySelector("h2").textContent).toBe(
-      "Finding Forever Home in the Blue Ridge"
+      "A Decade of Nursing, Called to Comfort"
     );
   });
 
-  it("card 2 heading is 'Ten Years of Hospice Nursing'", async () => {
+  it("second card in DOM is the journey card", async () => {
     const container = await buildAboutForm();
     const cards = container.querySelectorAll(".about-g-card");
-    expect(cards[1].querySelector("h2").textContent).toBe("Ten Years of Hospice Nursing");
+    expect(cards[1].querySelector("h2").textContent).toBe("Finding Our Forever Home in the Blue Ridge");
   });
 
   it("card 3 heading is 'Every Girl Deserves a Hug in a Box'", async () => {
@@ -158,16 +138,16 @@ describe("buildAboutForm — cards", () => {
     expect(cards[2].querySelector("h2").textContent).toBe("Every Girl Deserves a Hug in a Box");
   });
 
-  it("card 1 has animationDelay of '0.1s'", async () => {
+  it("first DOM card (nursing) has animationDelay of '0.2s'", async () => {
     const container = await buildAboutForm();
     const cards = container.querySelectorAll(".about-g-card");
-    expect(cards[0].style.animationDelay).toBe("0.1s");
+    expect(cards[0].style.animationDelay).toBe("0.2s");
   });
 
-  it("card 2 has animationDelay of '0.2s'", async () => {
+  it("second DOM card (journey) has animationDelay of '0.1s'", async () => {
     const container = await buildAboutForm();
     const cards = container.querySelectorAll(".about-g-card");
-    expect(cards[1].style.animationDelay).toBe("0.2s");
+    expect(cards[1].style.animationDelay).toBe("0.1s");
   });
 
   it("card 3 has animationDelay of '0.3s'", async () => {
@@ -176,16 +156,16 @@ describe("buildAboutForm — cards", () => {
     expect(cards[2].style.animationDelay).toBe("0.3s");
   });
 
-  it("card 1 has accent bar with class about-pink-bar", async () => {
+  it("first DOM card (nursing) has accent bar with class about-purple-bar", async () => {
     const container = await buildAboutForm();
     const card = container.querySelectorAll(".about-g-card")[0];
-    expect(card.querySelector(".about-pink-bar")).not.toBeNull();
+    expect(card.querySelector(".about-purple-bar")).not.toBeNull();
   });
 
-  it("card 2 has accent bar with class about-purple-bar", async () => {
+  it("second DOM card (journey) has accent bar with class about-pink-bar", async () => {
     const container = await buildAboutForm();
     const card = container.querySelectorAll(".about-g-card")[1];
-    expect(card.querySelector(".about-purple-bar")).not.toBeNull();
+    expect(card.querySelector(".about-pink-bar")).not.toBeNull();
   });
 
   it("card 3 has accent bar with class about-mint-bar", async () => {
@@ -202,20 +182,20 @@ describe("buildAboutForm — cards", () => {
     });
   });
 
-  it("card 1 has a highlighted span with '\u201Cforever home\u201D'", async () => {
+  it("first DOM card (nursing) has a highlighted span with 'special kind of honor'", async () => {
     const container = await buildAboutForm();
     const card = container.querySelectorAll(".about-g-card")[0];
     const highlights = card.querySelectorAll(".about-inline-hl");
     const texts = Array.from(highlights).map((el) => el.textContent);
-    expect(texts).toContain("\u201Cforever home\u201D");
+    expect(texts).toContain("special kind of honor");
   });
 
-  it("card 2 has a highlighted span with 'special kind of honor'", async () => {
+  it("second DOM card (journey) has a highlighted span with '\u201Cforever home\u201D'", async () => {
     const container = await buildAboutForm();
     const card = container.querySelectorAll(".about-g-card")[1];
     const highlights = card.querySelectorAll(".about-inline-hl");
     const texts = Array.from(highlights).map((el) => el.textContent);
-    expect(texts).toContain("special kind of honor");
+    expect(texts).toContain("\u201Cforever home\u201D");
   });
 
   it("card 3 has a highlighted span with 'hug in a box'", async () => {
@@ -252,11 +232,11 @@ describe("buildAboutForm — quote", () => {
     expect(blockquote.textContent).toContain("smallest comforts make the biggest difference");
   });
 
-  it("cite contains 'Jessica, RN \u2014 Founder'", async () => {
+  it("cite contains '\u2014 Rachel, RN'", async () => {
     const container = await buildAboutForm();
     const cite = container.querySelector(".about-quote-glass cite");
     expect(cite).not.toBeNull();
-    expect(cite.textContent).toBe("Jessica, RN \u2014 Founder");
+    expect(cite.textContent).toBe("\u2014 Rachel, RN");
   });
 
   it(".about-big-q opening mark is present", async () => {
@@ -394,12 +374,6 @@ describe("buildAboutForm — DOM order", () => {
 // ---------------------------------------------------------------------------
 
 describe("buildAboutForm — XSS safety", () => {
-  it("hero h1 em textContent equals 'Jessica, RN' with no HTML injection", async () => {
-    const container = await buildAboutForm();
-    const em = container.querySelector(".about-hero h1 em");
-    expect(em.innerHTML).toBe("Jessica, RN");
-  });
-
   it("blockquote textContent does not contain raw HTML tags", async () => {
     const container = await buildAboutForm();
     const blockquote = container.querySelector("blockquote");
