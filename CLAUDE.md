@@ -30,8 +30,11 @@ This is a mobile-first ecommerce store.
 - **Framework**: Express.js v5
 - **Database**: MongoDB (v7 driver); custom config
 - **Session**: express-session (24h sessions, httpOnly cookies)
+- **Payments**: Stripe (v22)
+- **File uploads**: multer (v2)
 - **Env config**: dotenv
 - **Dev**: nodemon
+- **Testing**: vitest + jsdom
 - **Language**: JavaScript (no TypeScript)
 
 ## Architecture
@@ -39,13 +42,14 @@ This is a mobile-first ecommerce store.
 MVC-style layout:
 
 ```
-controllers/       Route handlers (auth, display, data)
-middleware/         Session config, DB connection, auth guard, rate limiting
+controllers/       Route handlers (auth, display, admin, data)
+middleware/        Session, DB, auth guard, rate limiting, stripe config, upload error handling
 models/            Database models
 routes/            Express router
-html/              Static HTML pages (index, admin, error pages)
+src/               Business logic modules (cart, orders, payments, products, mailer, sanitize, upload-back, customer, contact)
+html/              Static HTML pages (index, admin, error pages, about, cart, contact, checkout, confirm)
 public/            Static assets (css/, js/, images/)
-src/               (empty, unused)
+tests/             vitest unit tests (backend + frontend)
 ```
 
 Entry point: `app.js` -- wires middleware in order: session, static files, body parsers, then routes.
@@ -74,8 +78,25 @@ Required in `.env`:
 
 ## Known Issues and Stubs
 
-- **Auth route not connected**: `auth-controller.js` and `requireAuth` middleware exist but are not wired into `router.js`
+None currently tracked.
 
 ## Mobile-First Design
 
 The app is designed mobile-first. `media-styles.css` handles responsive breakpoints. Frontend JS includes a `responsive.js` module. All UI work should follow a mobile-first approach.
+
+## Potential Future Features
+
+### Product Image Aspect Ratio Display (NOT YET IMPLEMENTED)
+
+The `.EXAMPLE-CODE` directory has a display-side solution for handling varied product image aspect ratios. If product images look bad due to mismatched proportions, implement this pattern:
+
+**How it works:**
+- `rotate-pics.js` exports `needsContain(img, element)` — compares `img.naturalWidth/naturalHeight` against the container's dimensions
+- If ratio mismatch exceeds **1.25 (25%)**, adds CSS class `contain-mode` (or `bg-contain-mode` for background images)
+- CSS toggles `object-fit` from `cover` (crop to fill) → `contain` (show whole image)
+- Applied via `{ once: true }` load listener on the `<img>` element; uses `preloadImage(url)` Promise for background images
+
+**Key files in `.EXAMPLE-CODE` to reference:**
+- `public/js/helpers/rotate-pics.js` — `needsContain()`, `preloadImage()`, `setCurrentPic()`
+- `public/js/helpers/products-run.js` — where `contain-mode` is applied to product detail modal image on load
+- `public/css/products-styles.css` — `.product-detail-image` and `.product-detail-image.contain-mode` rules
