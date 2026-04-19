@@ -14,7 +14,9 @@ config/
 .claude/pics/
 .claude/settings.local.json
 
-docs/*
+docs/
+tests/
+vitest.config.js
 
 .EXAMPLE-CODE/*
 
