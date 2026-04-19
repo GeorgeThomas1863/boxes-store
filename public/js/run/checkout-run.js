@@ -126,6 +126,24 @@ export const runPlaceOrder = async () => {
     return null;
   }
 
+  const zip = document.getElementById("zip")?.value?.trim();
+  if (!/^\d{5}(-\d{4})?$/.test(zip)) {
+    await displayPopup("Please enter a valid ZIP code (e.g. 12345 or 12345-6789).", "error");
+    return null;
+  }
+
+  const phone = document.getElementById("phone")?.value?.trim();
+  if (!/^[+\d()\-\s.]+$/.test(phone) || phone.replace(/\D/g, "").length < 7) {
+    await displayPopup("Please enter a valid phone number.", "error");
+    return null;
+  }
+
+  const email = document.getElementById("email")?.value?.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    await displayPopup("Please enter a valid email address.", "error");
+    return null;
+  }
+
   const placeOrderBtn = document.getElementById("checkout-place-order-btn");
   const errorContainer = document.getElementById("payment-error");
 
