@@ -298,7 +298,7 @@ export const buildBottomInfoRows = async () => {
 
   const lines = [
     "Proudly based in Western North Carolina 🏔️",
-    "Owned and Operated by a Registered Nurse.",
+    "Owned and Operated by a Registered Nurse \uD83D\uDC69\uD83C\uDFFB\u200D\u2695\uFE0F",
   ];
 
   for (let i = 0; i < lines.length; i++) {

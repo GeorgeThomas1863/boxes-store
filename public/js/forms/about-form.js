@@ -183,7 +183,7 @@ const buildFooter = () => {
 
   const rows = [
     { icon: "\uD83C\uDFD4\uFE0F", label: "Based In", value: "Western North Carolina" },
-    { icon: "\uD83D\uDC69\uD83C\uDFFD\u200D\u2695\uFE0F", label: "Ownership", value: "Owned & Operated by a Registered Nurse" },
+    { icon: "\uD83D\uDC69\uD83C\uDFFB\u200D\u2695\uFE0F", label: "Ownership", value: "Owned & Operated by a Registered Nurse" },
   ];
 
   rows.forEach(({ icon, label, value }) => {
