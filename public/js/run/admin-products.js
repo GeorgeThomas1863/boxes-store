@@ -210,7 +210,7 @@ export const populateAdminProductSelector = async (inputArray) => {
 export const populateEditFormProducts = async (inputObj) => {
   if (!inputObj) return null;
 
-  const { itemId, name, urlName, price, description, discount } = inputObj;
+  const { itemId, name, urlName, price, description, discount, display } = inputObj;
 
   const adminEditMapArray = [
     { id: "edit-item-id", value: itemId },
@@ -226,6 +226,14 @@ export const populateEditFormProducts = async (inputObj) => {
     if (field) {
       field.value = adminEditMapArray[i].value || "";
     }
+  }
+
+  const displayToggle = document.getElementById("edit-display-toggle");
+  const displayToggleText = document.getElementById("edit-display-toggle-text");
+  if (displayToggle && displayToggleText) {
+    const isVisible = display !== "no";
+    displayToggle.checked = isVisible;
+    displayToggleText.textContent = isVisible ? "Visible" : "Hidden";
   }
 
   const deleteButton = document.getElementById("delete-product-button");

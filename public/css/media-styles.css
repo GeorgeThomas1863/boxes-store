@@ -224,3 +224,31 @@
     max-width: 560px;
   }
 }
+
+/* ======================== */
+/* Out of Stock Banner       */
+/* ======================== */
+
+@media (min-width: 540px) {
+  .out-of-stock-banner {
+    padding: 2rem 1.75rem;
+  }
+
+  .out-of-stock-icon {
+    font-size: 2.5rem;
+  }
+
+  .out-of-stock-title {
+    font-size: 1.1rem;
+  }
+
+  .out-of-stock-body {
+    font-size: 0.95rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .out-of-stock-banner {
+    padding: 2.5rem 2rem;
+  }
+}

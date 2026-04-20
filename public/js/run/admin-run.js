@@ -55,6 +55,7 @@ export const enableAdminEditFields = async () => {
     "edit-description",
     "edit-discount",
     "edit-discount-toggle",
+    "edit-display-toggle",
     "edit-submit-button",
   ];
   for (let i = 0; i < enableFieldsArray.length; i++) {
@@ -73,6 +74,7 @@ export const disableAdminEditFields = async () => {
     "edit-description",
     "edit-discount",
     "edit-discount-toggle",
+    "edit-display-toggle",
     "edit-submit-button",
   ];
   for (let i = 0; i < disableFieldsArray.length; i++) {
@@ -103,6 +105,11 @@ export const clearAdminEditFields = async () => {
   if (discountToggle) discountToggle.checked = false;
   if (discountInput) discountInput.classList.add("hidden");
   if (discountToggleText) discountToggleText.textContent = "No Discount";
+
+  const displayToggle = document.getElementById("edit-display-toggle");
+  const displayToggleText = document.getElementById("edit-display-toggle-text");
+  if (displayToggle) displayToggle.checked = true;
+  if (displayToggleText) displayToggleText.textContent = "Visible";
 
   const deleteProductButton = document.getElementById("delete-product-button");
   if (deleteProductButton) deleteProductButton.disabled = true;

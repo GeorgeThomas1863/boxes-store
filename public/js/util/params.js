@@ -15,6 +15,7 @@ export const buildNewProductParams = async () => {
     picData: picData,
     dateCreated: new Date().toISOString(),
     discount: parseFloat(document.getElementById("discount")?.value) || 0,
+    display: document.getElementById("display-toggle")?.checked === false ? "no" : "yes",
   };
   return params;
 };
@@ -34,6 +35,7 @@ export const getEditProductParams = async () => {
     description: document.getElementById("edit-description")?.value || "",
     picData: picData,
     discount: parseFloat(document.getElementById("edit-discount")?.value) || 0,
+    display: document.getElementById("edit-display-toggle")?.checked === false ? "no" : "yes",
   };
   return params;
 };

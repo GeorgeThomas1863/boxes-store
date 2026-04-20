@@ -379,9 +379,10 @@ export const buildProductDetailsSection = async (mode) => {
 
   const priceRow = await buildInfoRowPrice(mode, "price", "Price");
   const discountRow = await buildInfoRowDiscount(mode, "discount", "Discount (%)");
+  const displayToggleRow = await buildInfoRowDisplayToggle(mode);
   const descRow = await buildInfoRowTextarea(mode, "description", "Description");
 
-  section.append(header, itemIdRow, nameRow, priceRow, discountRow, descRow, slugRow);
+  section.append(header, itemIdRow, nameRow, priceRow, discountRow, displayToggleRow, descRow, slugRow);
 
   return section;
 };
@@ -532,6 +533,53 @@ export const buildInfoRowDiscount = async (mode, fieldName, labelText) => {
   });
 
   contentWrapper.append(toggleRow, input);
+  row.append(label, contentWrapper);
+
+  return row;
+};
+
+export const buildInfoRowDisplayToggle = async (mode) => {
+  const row = document.createElement("div");
+  row.className = "info-row";
+
+  const label = document.createElement("div");
+  label.className = "info-label";
+  label.textContent = "Show on Site";
+
+  const contentWrapper = document.createElement("div");
+  contentWrapper.className = "info-content-wrapper";
+
+  const toggleRow = document.createElement("div");
+  toggleRow.className = "discount-toggle-row";
+
+  const toggleLabel = document.createElement("label");
+  toggleLabel.className = "discount-toggle-label";
+
+  const toggleCheckbox = document.createElement("input");
+  toggleCheckbox.type = "checkbox";
+  toggleCheckbox.className = "discount-toggle-checkbox";
+  toggleCheckbox.id = mode === "add" ? "display-toggle" : "edit-display-toggle";
+  toggleCheckbox.checked = true;
+
+  if (mode === "edit") {
+    toggleCheckbox.disabled = true;
+  }
+
+  const toggleTrack = document.createElement("span");
+  toggleTrack.className = "discount-toggle-track display-toggle-track";
+
+  const toggleText = document.createElement("span");
+  toggleText.className = "discount-toggle-text";
+  toggleText.id = mode === "add" ? "display-toggle-text" : "edit-display-toggle-text";
+  toggleText.textContent = "Visible";
+
+  toggleCheckbox.addEventListener("change", () => {
+    toggleText.textContent = toggleCheckbox.checked ? "Visible" : "Hidden";
+  });
+
+  toggleLabel.append(toggleCheckbox, toggleTrack, toggleText);
+  toggleRow.append(toggleLabel);
+  contentWrapper.append(toggleRow);
   row.append(label, contentWrapper);
 
   return row;

@@ -27,9 +27,14 @@ export const buildMainForm = async () => {
     const products = productData
       .filter((p) => p.display !== "no" && p.sold !== "yes")
       .sort((a, b) => new Date(b.dateCreated || 0) - new Date(a.dateCreated || 0));
-    for (let i = 0; i < products.length; i++) {
-      const card = buildCard(products[i]);
-      if (card) cardsGrid.append(card);
+    if (products.length === 0) {
+      const banner = await buildOutOfStockBanner();
+      cardsGrid.append(banner);
+    } else {
+      for (let i = 0; i < products.length; i++) {
+        const card = buildCard(products[i]);
+        if (card) cardsGrid.append(card);
+      }
     }
   }
 
@@ -479,6 +484,38 @@ export const buildLaunchSection = async () => {
 
   card.append(header, subheader, includesLabel, row);
   return card;
+};
+
+//-------------------------------------------
+
+export const buildOutOfStockBanner = async () => {
+  const banner = document.createElement("div");
+  banner.className = "out-of-stock-banner";
+
+  const icon = document.createElement("div");
+  icon.className = "out-of-stock-icon";
+  icon.textContent = "🎀";
+
+  const title = document.createElement("p");
+  title.className = "out-of-stock-title";
+  title.textContent = "Currently Out of Stock";
+
+  const bodyOne = document.createElement("p");
+  bodyOne.className = "out-of-stock-body";
+  bodyOne.textContent = "Thank you so much for your incredible support! Every box has found its home, we\u2019re not accepting new orders at this time. We will restock soon!";
+
+  const bodyTwo = document.createElement("p");
+  bodyTwo.className = "out-of-stock-body";
+  bodyTwo.textContent = "If you\u2019d like to be the first to know when new orders are available, send us a message and we\u2019ll be in touch. \uD83D\uDC97\uD83C\uDF38";
+
+  const link = document.createElement("a");
+  link.className = "out-of-stock-link";
+  link.href = "/contact";
+  link.textContent = "Send Us a Message \u2192";
+
+  banner.append(icon, title, bodyOne, bodyTwo, link);
+
+  return banner;
 };
 
 //-------------------------------------------

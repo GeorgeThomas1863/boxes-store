@@ -21,6 +21,7 @@ export const addNewProductControl = async (req, res) => {
     "picData",
     "dateCreated",
     "discount",
+    "display",
   ]);
 
   if ('price' in safeParams) {
@@ -56,6 +57,7 @@ export const editProductControl = async (req, res) => {
     "picData",
     "productId",
     "discount",
+    "display",
   ]);
 
   if ('price' in safeParams) {

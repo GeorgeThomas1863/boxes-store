@@ -173,7 +173,7 @@ const buildEmailHtml = (orderData, type) => {
   const safeZip       = escapeHtml(zip);
 
   const formattedDate = new Date(orderDate).toLocaleDateString("en-US", {
-    year: "numeric", month: "long", day: "numeric",
+    year: "numeric", month: "long", day: "numeric", timeZone: "America/New_York",
   });
 
   const isAdmin = type === "admin";
