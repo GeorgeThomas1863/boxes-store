@@ -1,6 +1,6 @@
 import { sendToBack } from "../util/api-front.js";
 import { buildModal } from "../forms/admin-form.js";
-import { populateAdminProductSelector } from "./admin-products.js";
+import { populateAdminProductSelector, changeAdminProductSelector } from "./admin-products.js";
 
 const adminElement = document.getElementById("admin-element");
 
@@ -25,6 +25,11 @@ export const runModalTrigger = async (clickElement) => {
     if (productData) {
       await populateAdminProductSelector(productData);
       await updateProductStats(productData);
+      const productSelector = document.getElementById("product-selector");
+      if (productSelector && productSelector.options.length > 1) {
+        productSelector.selectedIndex = 1;
+        await changeAdminProductSelector(productSelector);
+      }
     }
   }
 
