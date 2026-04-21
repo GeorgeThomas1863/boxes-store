@@ -69,7 +69,7 @@ export const deletePic = async (filename, entityType) => {
   }
 
   if (!fs.existsSync(resolvedPath)) {
-    return { success: true, message: "File not found" };
+    return { success: false, message: "File not found" };
   }
 
   fs.unlinkSync(resolvedPath);

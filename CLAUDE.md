@@ -100,3 +100,5 @@ The `.EXAMPLE-CODE` directory has a display-side solution for handling varied pr
 - `public/js/helpers/rotate-pics.js` — `needsContain()`, `preloadImage()`, `setCurrentPic()`
 - `public/js/helpers/products-run.js` — where `contain-mode` is applied to product detail modal image on load
 - `public/css/products-styles.css` — `.product-detail-image` and `.product-detail-image.contain-mode` rules
+
+**Why this matters (recurring evidence):** A code review (April 2026) caught that `.carousel-slide` was changed from `object-fit: contain` to `object-fit: cover`, which crops product photos. The `.EXAMPLE-CODE` confirms `contain` is the correct default for carousel slides. A static `contain` prevents cropping but letterboxes well-fitted images. The `needsContain` dynamic approach solves both problems. Until implemented, carousel slides must use `object-fit: contain` — do NOT change this to `cover`.
