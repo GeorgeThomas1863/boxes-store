@@ -10,6 +10,12 @@ import { runAddNewProduct, runEditProduct, runDeleteProduct, changeAdminProductS
 import { runSlotUploadPic, runSlotUploadClick, runDeleteSlotImage, runAddPicSlot, runRemovePicSlot } from "./run/upload-pic.js";
 import { buildProductDetailModal } from "./forms/admin-form.js";
 
+let touchStartX = null;
+let swipeHandled = false;
+let mouseStartX = null;
+let mouseDragCarousel = null;
+let recentTouchSwipe = false;
+
 const displayElement = document.getElementById("display-element");
 const cartElement = document.getElementById("cart-element");
 const checkoutElement = document.getElementById("checkout-element");
@@ -41,6 +47,13 @@ const getActiveCarouselIndex = (carousel) => {
   return dot ? parseInt(dot.getAttribute("data-index")) : 0;
 };
 
+const advanceCarousel = (carousel, direction) => {
+  const total = carousel.querySelectorAll(".carousel-dot").length;
+  const current = getActiveCarouselIndex(carousel);
+  if (direction === "next" && current < total - 1) goToSlide(carousel, current + 1);
+  if (direction === "prev" && current > 0) goToSlide(carousel, current - 1);
+};
+
 const runOpenProductModal = async (clickElement) => {
   const card = clickElement.closest(".product-card");
   if (!card || !card.productData) return;
@@ -66,6 +79,7 @@ const runCloseProductModal = () => {
 };
 
 export const clickHandler = async (e) => {
+  if (swipeHandled) { swipeHandled = false; return; }
   const clickedElement = e.target;
   const clickId = clickedElement.id;
   const clickType = clickedElement.getAttribute("data-label");
@@ -173,7 +187,53 @@ export const inputHandler = async (e) => {
   }
 };
 
+const touchStartHandler = (e) => {
+  if (!e.target.closest(".product-carousel")) return;
+  touchStartX = e.changedTouches[0].clientX;
+};
+
+const touchEndHandler = (e) => {
+  if (touchStartX === null) return;
+  const carousel = e.target.closest(".product-carousel");
+  if (!carousel) { touchStartX = null; return; }
+  const deltaX = e.changedTouches[0].clientX - touchStartX;
+  touchStartX = null;
+  if (Math.abs(deltaX) < 30) return;
+  swipeHandled = true;
+  recentTouchSwipe = true;
+  setTimeout(() => { recentTouchSwipe = false; }, 500);
+  advanceCarousel(carousel, deltaX < 0 ? "next" : "prev");
+};
+
+const mouseDownHandler = (e) => {
+  if (recentTouchSwipe) return;
+  const carousel = e.target.closest(".product-carousel");
+  if (!carousel) return;
+  if (e.target.closest(".carousel-arrow") || e.target.closest(".carousel-dot")) return;
+  mouseStartX = e.clientX;
+  mouseDragCarousel = carousel;
+};
+
+const mouseUpHandler = (e) => {
+  if (mouseStartX === null) return;
+  const startX = mouseStartX;
+  const carousel = mouseDragCarousel;
+  mouseStartX = null;
+  mouseDragCarousel = null;
+  if (!carousel) return;
+  const deltaX = e.clientX - startX;
+  if (Math.abs(deltaX) < 30) return;
+  swipeHandled = true;
+  advanceCarousel(carousel, deltaX < 0 ? "next" : "prev");
+};
+
 if (displayElement) displayElement.addEventListener("click", clickHandler);
+if (displayElement) {
+  displayElement.addEventListener("touchstart", touchStartHandler, { passive: true });
+  displayElement.addEventListener("touchend", touchEndHandler);
+  displayElement.addEventListener("mousedown", mouseDownHandler);
+  document.addEventListener("mouseup", mouseUpHandler);
+}
 if (cartElement) cartElement.addEventListener("click", clickHandler);
 if (cartElement) cartElement.addEventListener("change", changeHandler);
 if (authElement) {

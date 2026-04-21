@@ -162,10 +162,6 @@
     width: calc(100vw - 2rem);
   }
 
-  .carousel-slide {
-    height: auto;
-    background-color: transparent;
-  }
 }
 
 /* ======================== */
