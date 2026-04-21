@@ -77,6 +77,8 @@ export const runSlotUploadPic = async (fileInput) => {
 
 export const runDeleteSlotImage = async (deleteBtn) => {
   if (!deleteBtn) return null;
+  if (deleteBtn.disabled) return null;
+  deleteBtn.disabled = true;
 
   const slot = deleteBtn.closest(".pic-slot");
   if (!slot) return null;
@@ -98,9 +100,6 @@ export const runDeleteSlotImage = async (deleteBtn) => {
       await displayPopup("Image removed from form but file deletion failed", "error");
     }
   }
-  if (originalFilename && originalFilename !== filename) {
-    await sendToBack({ route: "/delete-pic-route", filename: originalFilename, entityType });
-  }
 
   if (uploadBtn) {
     uploadBtn.uploadData = null;
@@ -119,6 +118,7 @@ export const runDeleteSlotImage = async (deleteBtn) => {
     currentVideo.classList.add("hidden");
   }
   if (imagePlaceholder) imagePlaceholder.classList.remove("hidden");
+  deleteBtn.disabled = false;
   deleteBtn.classList.add("hidden");
   if (fileInput) fileInput.value = "";
 };
@@ -145,22 +145,21 @@ export const runAddPicSlot = async () => {
 
 export const runRemovePicSlot = async (removeBtn) => {
   if (!removeBtn) return null;
+  if (removeBtn.disabled) return null;
+  removeBtn.disabled = true;
+
   const slot = removeBtn.closest(".pic-slot");
   if (!slot) return null;
 
   const uploadBtn = slot.querySelector(".upload-btn");
   const entityType = uploadBtn?.entityType || "products";
   const filename = uploadBtn?.uploadData?.filename;
-  const originalFilename = uploadBtn?.uploadData?.originalFilename;
 
   if (filename) {
     const deleteResult = await sendToBack({ route: "/delete-pic-route", filename, entityType });
     if (!deleteResult) {
       await displayPopup("Slot removed but file deletion failed", "error");
     }
-  }
-  if (originalFilename && originalFilename !== filename) {
-    await sendToBack({ route: "/delete-pic-route", filename: originalFilename, entityType });
   }
 
   slot.remove();
