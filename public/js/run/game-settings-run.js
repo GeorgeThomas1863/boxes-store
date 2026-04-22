@@ -16,6 +16,7 @@ export const runGameSettingsModalTrigger = async () => {
   const modal = await buildGameSettingsModal(settings);
   adminElement.append(modal);
   modal.classList.add("visible");
+  initCapsuleDescriptionDragSort();
 
   return true;
 };
@@ -241,4 +242,48 @@ export const runRemoveCapsuleDescription = async (clickElement) => {
   if (row) row.remove();
 
   return true;
+};
+
+//---
+
+export const initCapsuleDescriptionDragSort = () => {
+  const list = document.getElementById("capsule-descriptions-list");
+  if (!list) return;
+
+  let draggedRow = null;
+
+  list.addEventListener("dragstart", (e) => {
+    if (e.target.closest(".btn-remove-desc")) {
+      e.preventDefault();
+      return;
+    }
+    const row = e.target.closest(".capsule-desc-row");
+    if (!row) return;
+    draggedRow = row;
+    e.dataTransfer.effectAllowed = "move";
+    requestAnimationFrame(() => {
+      row.classList.add("dragging");
+    });
+  });
+
+  list.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    const target = e.target.closest(".capsule-desc-row");
+    if (!target || !draggedRow || target === draggedRow) return;
+    const rect = target.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    if (e.clientY < midY) {
+      list.insertBefore(draggedRow, target);
+    } else {
+      list.insertBefore(draggedRow, target.nextSibling);
+    }
+  });
+
+  list.addEventListener("dragend", () => {
+    if (draggedRow) {
+      draggedRow.classList.remove("dragging");
+      draggedRow = null;
+    }
+  });
 };

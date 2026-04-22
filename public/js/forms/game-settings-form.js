@@ -165,6 +165,11 @@ export const buildCapsuleDescriptionRow = async (desc) => {
   const row = document.createElement("div");
   row.className = "capsule-desc-row";
   row.setAttribute("data-description", desc);
+  row.draggable = true;
+
+  const dragHandle = document.createElement("span");
+  dragHandle.className = "capsule-desc-drag-handle";
+  dragHandle.textContent = "⠿";
 
   const label = document.createElement("span");
   label.className = "capsule-desc-label";
@@ -174,9 +179,10 @@ export const buildCapsuleDescriptionRow = async (desc) => {
   removeButton.className = "btn-remove-desc";
   removeButton.textContent = "×";
   removeButton.type = "button";
+  removeButton.draggable = false;
   removeButton.setAttribute("data-label", "remove-capsule-description");
 
-  row.append(label, removeButton);
+  row.append(dragHandle, label, removeButton);
 
   return row;
 };

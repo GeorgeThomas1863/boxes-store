@@ -1608,6 +1608,23 @@ a.btn {
   color: #333;
 }
 
+.capsule-desc-drag-handle {
+  cursor: grab;
+  color: #aaa;
+  font-size: 1.1rem;
+  padding-right: 0.4rem;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.capsule-desc-drag-handle:active {
+  cursor: grabbing;
+}
+
+.capsule-desc-row.dragging {
+  opacity: 0.4;
+}
+
 .btn-remove-desc {
   background: transparent;
   border: none;
