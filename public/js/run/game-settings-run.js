@@ -287,4 +287,34 @@ export const initCapsuleDescriptionDragSort = () => {
       draggedRow = null;
     }
   });
+
+  list.addEventListener("touchstart", (e) => {
+    if (e.target.closest(".btn-remove-desc")) return;
+    const row = e.target.closest(".capsule-desc-row");
+    if (!row) return;
+    draggedRow = row;
+    row.classList.add("dragging");
+  }, { passive: true });
+
+  list.addEventListener("touchmove", (e) => {
+    if (!draggedRow) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY)?.closest(".capsule-desc-row");
+    if (!target || target === draggedRow) return;
+    const rect = target.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    if (touch.clientY < midY) {
+      list.insertBefore(draggedRow, target);
+    } else {
+      list.insertBefore(draggedRow, target.nextSibling);
+    }
+  }, { passive: false });
+
+  list.addEventListener("touchend", () => {
+    if (draggedRow) {
+      draggedRow.classList.remove("dragging");
+      draggedRow = null;
+    }
+  });
 };
