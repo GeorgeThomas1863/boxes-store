@@ -45,7 +45,7 @@ export const runSaveGameSettings = async () => {
   if (result) {
     invalidateGameSettingsCache();
     displayPopup("Game settings saved!", "success");
-    const modal = document.querySelector(".modal-overlay");
+    const modal = document.getElementById("game-settings-modal");
     if (modal) modal.remove();
   } else {
     displayPopup("Failed to save settings", "error");
