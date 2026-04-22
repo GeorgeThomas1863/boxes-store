@@ -1601,6 +1601,7 @@ a.btn {
   justify-content: space-between;
   padding: 0.6rem 0;
   border-bottom: 1px solid #f0f0f0;
+  user-select: none;
 }
 
 .capsule-desc-label {
