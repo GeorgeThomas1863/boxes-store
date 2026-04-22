@@ -328,6 +328,7 @@ export const runToggleReorderLabels = () => {
   const btn = document.getElementById("reorder-labels-btn");
   const addBtn = document.getElementById("add-capsule-description-btn");
   if (!list || !btn) return;
+  if (list.querySelector(".add-desc-row")) return;
 
   const isReordering = list.classList.toggle("reordering");
   btn.textContent = isReordering ? "Done" : "Reorder Labels";
