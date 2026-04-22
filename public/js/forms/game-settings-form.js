@@ -154,7 +154,18 @@ export const buildCapsuleDescriptionsSection = async (capsuleDescriptions) => {
   addButton.setAttribute("data-label", "add-capsule-description");
   addButton.id = "add-capsule-description-btn";
 
-  section.append(sectionHeader, sublabel, descriptionsList, addButton);
+  const reorderButton = document.createElement("button");
+  reorderButton.className = "btn-reorder-desc";
+  reorderButton.textContent = "Reorder Labels";
+  reorderButton.type = "button";
+  reorderButton.setAttribute("data-label", "toggle-reorder-labels");
+  reorderButton.id = "reorder-labels-btn";
+
+  const descActions = document.createElement("div");
+  descActions.className = "desc-actions-row";
+  descActions.append(addButton, reorderButton);
+
+  section.append(sectionHeader, sublabel, descriptionsList, descActions);
 
   return section;
 };

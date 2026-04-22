@@ -254,6 +254,7 @@ export const initCapsuleDescriptionDragSort = () => {
   let draggedRow = null;
 
   list.addEventListener("dragstart", (e) => {
+    if (!list.classList.contains("reordering")) return;
     if (e.target.closest(".btn-remove-desc")) {
       e.preventDefault();
       return;
@@ -289,6 +290,7 @@ export const initCapsuleDescriptionDragSort = () => {
   });
 
   list.addEventListener("touchstart", (e) => {
+    if (!list.classList.contains("reordering")) return;
     if (e.target.closest(".btn-remove-desc")) return;
     const row = e.target.closest(".capsule-desc-row");
     if (!row) return;
@@ -317,4 +319,18 @@ export const initCapsuleDescriptionDragSort = () => {
       draggedRow = null;
     }
   });
+};
+
+//---
+
+export const runToggleReorderLabels = () => {
+  const list = document.getElementById("capsule-descriptions-list");
+  const btn = document.getElementById("reorder-labels-btn");
+  const addBtn = document.getElementById("add-capsule-description-btn");
+  if (!list || !btn) return;
+
+  const isReordering = list.classList.toggle("reordering");
+  btn.textContent = isReordering ? "Done" : "Reorder Labels";
+  btn.classList.toggle("btn-reorder-desc-active", isReordering);
+  if (addBtn) addBtn.disabled = isReordering;
 };
