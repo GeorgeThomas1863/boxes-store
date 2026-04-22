@@ -431,18 +431,11 @@ export const buildLaunchSection = async () => {
 
   const pillsWrap = document.createElement("div");
   pillsWrap.className = "launch-pills";
-  const capsuleItems = [
-    "Shift Essentials",
-    "Self-care items",
-    "Fun off duty activities",
-    "RN's pick",
-    "Grab 2 extra picks",
-    "Specialty Item Mystery Spins",
-  ];
-  for (let i = 0; i < capsuleItems.length; i++) {
+  const items = Array.isArray(settings.capsuleDescriptions) ? settings.capsuleDescriptions : [];
+  for (let i = 0; i < items.length; i++) {
     const pill = document.createElement("span");
     pill.className = "launch-pill";
-    pill.textContent = capsuleItems[i];
+    pill.textContent = items[i];
     pillsWrap.append(pill);
   }
 

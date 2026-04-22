@@ -144,7 +144,7 @@ export const getGameSettingsControl = async (req, res) => {
 };
 
 export const saveGameSettingsControl = async (req, res) => {
-  const { capsuleCount, spinOptions } = req.body;
+  const { capsuleCount, spinOptions, capsuleDescriptions = [] } = req.body;
 
   // validate capsuleCount
   const count = Number(capsuleCount);
@@ -168,6 +168,17 @@ export const saveGameSettingsControl = async (req, res) => {
     }
   }
 
+  // validate capsuleDescriptions
+  if (!Array.isArray(capsuleDescriptions)) {
+    return res.status(400).json({ error: "capsuleDescriptions must be an array" });
+  }
+  for (let i = 0; i < capsuleDescriptions.length; i++) {
+    const trimmed = String(capsuleDescriptions[i]).trim();
+    if (!trimmed || trimmed.length > 80) {
+      return res.status(400).json({ error: "Each capsule description must be a non-empty string of 80 characters or fewer" });
+    }
+  }
+
   // build clean options (no labels — saveGameSettings generates them)
   const cleanOptions = [];
   for (let i = 0; i < spinOptions.length; i++) {
@@ -175,8 +186,13 @@ export const saveGameSettingsControl = async (req, res) => {
     cleanOptions.push({ extraSpins: Number(opt.extraSpins), spinCost: Number(opt.spinCost) });
   }
 
+  const cleanDescriptions = [];
+  for (let i = 0; i < capsuleDescriptions.length; i++) {
+    cleanDescriptions.push(String(capsuleDescriptions[i]).trim());
+  }
+
   try {
-    const result = await saveGameSettings({ capsuleCount: count, spinOptions: cleanOptions });
+    const result = await saveGameSettings({ capsuleCount: count, spinOptions: cleanOptions, capsuleDescriptions: cleanDescriptions });
     return res.json(result);
   } catch (error) {
     console.error("Error saving game settings:", error);

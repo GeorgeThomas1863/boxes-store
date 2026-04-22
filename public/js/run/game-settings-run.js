@@ -1,7 +1,7 @@
 import { sendToBack } from "../util/api-front.js";
 import { displayPopup } from "../util/popup.js";
 import { getGameSettings, invalidateGameSettingsCache } from "../util/game-settings-cache.js";
-import { buildGameSettingsModal, buildAddSpinRow, buildSpinOptionRow } from "../forms/game-settings-form.js";
+import { buildGameSettingsModal, buildAddSpinRow, buildSpinOptionRow, buildCapsuleDescriptionRow, buildAddCapsuleDescriptionRow } from "../forms/game-settings-form.js";
 
 //---
 
@@ -40,7 +40,13 @@ export const runSaveGameSettings = async () => {
     spinOptions.push({ extraSpins, spinCost });
   }
 
-  const result = await sendToBack({ route: "/save-game-settings-route", capsuleCount, spinOptions });
+  const descRows = document.querySelectorAll("#capsule-descriptions-list .capsule-desc-row");
+  const capsuleDescriptions = [];
+  for (let i = 0; i < descRows.length; i++) {
+    capsuleDescriptions.push(descRows[i].getAttribute("data-description"));
+  }
+
+  const result = await sendToBack({ route: "/save-game-settings-route", capsuleCount, spinOptions, capsuleDescriptions });
 
   if (result) {
     invalidateGameSettingsCache();
@@ -150,6 +156,88 @@ export const runCancelAddSpinOption = async () => {
 
 export const runRemoveSpinOption = async (clickElement) => {
   const row = clickElement.closest(".spin-option-row");
+  if (row) row.remove();
+
+  return true;
+};
+
+//---
+
+export const runAddCapsuleDescriptionRow = async () => {
+  const list = document.getElementById("capsule-descriptions-list");
+  if (!list) return null;
+
+  if (list.querySelector(".add-desc-row")) return null;
+
+  const addBtn = document.getElementById("add-capsule-description-btn");
+  if (addBtn) addBtn.disabled = true;
+
+  const row = await buildAddCapsuleDescriptionRow();
+  list.append(row);
+
+  return true;
+};
+
+//---
+
+export const runConfirmAddCapsuleDescription = async () => {
+  const addRow = document.querySelector("#capsule-descriptions-list .add-desc-row");
+  if (!addRow) return null;
+
+  const descInput = document.getElementById("new-capsule-description");
+  const desc = descInput?.value.trim() ?? "";
+
+  const showInlineError = (message) => {
+    let errorSpan = addRow.querySelector(".add-desc-error");
+    if (!errorSpan) {
+      errorSpan = document.createElement("span");
+      errorSpan.className = "add-desc-error";
+      errorSpan.style.color = "#dc2626";
+      errorSpan.style.fontSize = "0.8rem";
+      addRow.append(errorSpan);
+    }
+    errorSpan.textContent = message;
+  };
+
+  if (!desc) {
+    showInlineError("Label cannot be empty");
+    return null;
+  }
+
+  if (desc.length > 80) {
+    showInlineError("Label must be 80 characters or fewer");
+    return null;
+  }
+
+  const newRow = await buildCapsuleDescriptionRow(desc);
+
+  addRow.remove();
+
+  const addBtn = document.getElementById("add-capsule-description-btn");
+  if (addBtn) addBtn.disabled = false;
+
+  const list = document.getElementById("capsule-descriptions-list");
+  if (list) list.append(newRow);
+
+  return true;
+};
+
+//---
+
+export const runCancelAddCapsuleDescription = async () => {
+  const addRow = document.querySelector("#capsule-descriptions-list .add-desc-row");
+  if (addRow) addRow.remove();
+
+  const addBtn = document.getElementById("add-capsule-description-btn");
+  if (addBtn) addBtn.disabled = false;
+
+  return true;
+};
+
+//---
+
+export const runRemoveCapsuleDescription = async (clickElement) => {
+  const row = clickElement.closest(".capsule-desc-row");
   if (row) row.remove();
 
   return true;

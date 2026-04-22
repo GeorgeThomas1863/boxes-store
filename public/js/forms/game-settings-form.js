@@ -56,9 +56,10 @@ export const buildGameSettingsBody = async (settings) => {
   modalBody.className = "modal-body";
 
   const capsuleSection = await buildCapsuleSection(settings.capsuleCount);
+  const capsuleDescriptionsSection = await buildCapsuleDescriptionsSection(settings.capsuleDescriptions);
   const spinOptionsSection = await buildSpinOptionsSection(settings.spinOptions);
 
-  modalBody.append(capsuleSection, spinOptionsSection);
+  modalBody.append(capsuleSection, capsuleDescriptionsSection, spinOptionsSection);
 
   return modalBody;
 };
@@ -108,6 +109,114 @@ export const buildCapsuleSection = async (capsuleCount) => {
   section.append(sectionHeader, infoRow);
 
   return section;
+};
+
+//---
+// CAPSULE DESCRIPTIONS SECTION
+//---
+
+export const buildCapsuleDescriptionsSection = async (capsuleDescriptions) => {
+  const section = document.createElement("div");
+  section.className = "product-section";
+
+  const sectionHeader = document.createElement("div");
+  sectionHeader.className = "section-header";
+
+  const sectionIcon = document.createElement("span");
+  sectionIcon.className = "section-icon";
+  sectionIcon.textContent = "🏷️";
+
+  const sectionTitle = document.createElement("h3");
+  sectionTitle.className = "section-title";
+  sectionTitle.textContent = "Capsule Pill Labels";
+
+  sectionHeader.append(sectionIcon, sectionTitle);
+
+  const sublabel = document.createElement("p");
+  sublabel.className = "spin-options-sublabel";
+  sublabel.textContent = "Labels shown in the Pink Prize Capsules section";
+
+  const descriptionsList = document.createElement("div");
+  descriptionsList.id = "capsule-descriptions-list";
+  descriptionsList.className = "capsule-descriptions-list";
+
+  for (let i = 0; i < capsuleDescriptions.length; i++) {
+    const row = await buildCapsuleDescriptionRow(capsuleDescriptions[i]);
+    descriptionsList.append(row);
+  }
+
+  const addButton = document.createElement("button");
+  addButton.className = "btn-add-desc";
+  addButton.textContent = "+ Add Label";
+  addButton.type = "button";
+  addButton.setAttribute("data-label", "add-capsule-description");
+  addButton.id = "add-capsule-description-btn";
+
+  section.append(sectionHeader, sublabel, descriptionsList, addButton);
+
+  return section;
+};
+
+//---
+// CAPSULE DESCRIPTION ROW
+//---
+
+export const buildCapsuleDescriptionRow = async (desc) => {
+  const row = document.createElement("div");
+  row.className = "capsule-desc-row";
+  row.setAttribute("data-description", desc);
+
+  const label = document.createElement("span");
+  label.className = "capsule-desc-label";
+  label.textContent = desc;
+
+  const removeButton = document.createElement("button");
+  removeButton.className = "btn-remove-desc";
+  removeButton.textContent = "×";
+  removeButton.type = "button";
+  removeButton.setAttribute("data-label", "remove-capsule-description");
+
+  row.append(label, removeButton);
+
+  return row;
+};
+
+//---
+// ADD CAPSULE DESCRIPTION ROW (inline input row)
+//---
+
+export const buildAddCapsuleDescriptionRow = async () => {
+  const row = document.createElement("div");
+  row.className = "add-desc-row";
+
+  const descLabel = document.createElement("label");
+  descLabel.className = "add-desc-label";
+  descLabel.textContent = "Label:";
+
+  const descInput = document.createElement("input");
+  descInput.className = "desc-input";
+  descInput.type = "text";
+  descInput.id = "new-capsule-description";
+  descInput.placeholder = "e.g. Shift Essentials";
+  descInput.setAttribute("maxlength", "80");
+
+  const confirmButton = document.createElement("button");
+  confirmButton.className = "btn-confirm-desc";
+  confirmButton.textContent = "✓";
+  confirmButton.type = "button";
+  confirmButton.setAttribute("data-label", "confirm-add-capsule-description");
+  confirmButton.title = "Confirm";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.className = "btn-cancel-desc";
+  cancelButton.textContent = "×";
+  cancelButton.type = "button";
+  cancelButton.setAttribute("data-label", "cancel-add-capsule-description");
+  cancelButton.title = "Cancel";
+
+  row.append(descLabel, descInput, confirmButton, cancelButton);
+
+  return row;
 };
 
 //---
