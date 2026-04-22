@@ -461,8 +461,8 @@ export const buildLaunchSection = async () => {
   const wheelItems = [
     "Each number on the Mystery wheel correlates to a Specialty Item",
     "Items include planners, chargers, handbags, and other sparkly accessories",
-    "1 spin is included in your purchase",
-    "Extra spins are available for purchase at checkout",
+    "1 FREE spin is included in your purchase",
+    "Extra spins are available for purchase",
   ];
   for (let i = 0; i < wheelItems.length; i++) {
     const li = document.createElement("li");
