@@ -116,6 +116,8 @@ export const buildCapsuleSection = async (capsuleCount) => {
 //---
 
 export const buildCapsuleDescriptionsSection = async (capsuleDescriptions) => {
+  const descriptions = Array.isArray(capsuleDescriptions) ? capsuleDescriptions : [];
+
   const section = document.createElement("div");
   section.className = "product-section";
 
@@ -140,8 +142,8 @@ export const buildCapsuleDescriptionsSection = async (capsuleDescriptions) => {
   descriptionsList.id = "capsule-descriptions-list";
   descriptionsList.className = "capsule-descriptions-list";
 
-  for (let i = 0; i < capsuleDescriptions.length; i++) {
-    const row = await buildCapsuleDescriptionRow(capsuleDescriptions[i]);
+  for (let i = 0; i < descriptions.length; i++) {
+    const row = await buildCapsuleDescriptionRow(descriptions[i]);
     descriptionsList.append(row);
   }
 

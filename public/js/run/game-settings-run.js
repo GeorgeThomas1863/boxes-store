@@ -44,7 +44,8 @@ export const runSaveGameSettings = async () => {
   const descRows = document.querySelectorAll("#capsule-descriptions-list .capsule-desc-row");
   const capsuleDescriptions = [];
   for (let i = 0; i < descRows.length; i++) {
-    capsuleDescriptions.push(descRows[i].getAttribute("data-description"));
+    const desc = descRows[i].getAttribute("data-description");
+    if (desc !== null) capsuleDescriptions.push(desc);
   }
 
   const result = await sendToBack({ route: "/save-game-settings-route", capsuleCount, spinOptions, capsuleDescriptions });
