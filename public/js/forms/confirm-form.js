@@ -99,6 +99,7 @@ const buildPreferencesCard = () => {
     buildDetailRow("Nursing Specialty", "confirm-nursing-specialty"),
     buildDetailRow("Product Likes", "confirm-product-likes"),
     buildDetailRow("Product Dislikes", "confirm-product-dislikes"),
+    buildDetailRow("TikTok Handle", "confirm-tiktok-handle"),
   );
 
   card.append(title, grid);
@@ -257,6 +258,7 @@ const populateOrderDetails = (data) => {
     nursingSpecialty,
     productLikes,
     productDislikes,
+    tiktokHandle,
     subtotal,
     tax,
     shippingCost,
@@ -292,6 +294,7 @@ const populateOrderDetails = (data) => {
   set("confirm-nursing-specialty", nursingSpecialty || "Not provided");
   set("confirm-product-likes", productLikes || "Not provided");
   set("confirm-product-dislikes", productDislikes || "Not provided");
+  set("confirm-tiktok-handle", tiktokHandle || "Not provided");
 
   const shippingAddressEl = document.getElementById("confirm-shipping-address");
   if (shippingAddressEl) {

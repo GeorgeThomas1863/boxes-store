@@ -1,5 +1,6 @@
 // forms/cart-form.js
 import { buildSpinSelector } from "../util/spin-options.js";
+import { getGameSettings } from "../util/game-settings-cache.js";
 export const buildCartForm = async () => {
   const cartContainer = document.createElement("div");
   cartContainer.className = "cart-container";
@@ -196,8 +197,9 @@ export const buildCartItemDetails = async (itemData) => {
     details.append(discountNote);
   }
 
-  const spinSel = buildSpinSelector(itemData.productId, itemData.extraSpins || 0, itemData.cartItemId);
-  details.append(spinSel);
+  const settings = await getGameSettings();
+  const spinSel = buildSpinSelector(itemData.productId, itemData.extraSpins || 0, itemData.cartItemId, settings.spinOptions);
+  if (spinSel) details.append(spinSel);
 
   return details;
 };

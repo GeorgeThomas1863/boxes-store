@@ -75,8 +75,11 @@ export const buildCustomerInfoCard = async () => {
   // Email
   const emailField = await buildFormField("Email", "email", "email", "email", true);
 
-  // Phone
-  const phoneField = await buildFormField("Phone", "tel", "phone", "phone", true);
+  // Phone (optional)
+  const phoneField = await buildFormField("Phone", "tel", "phone", "phone", false, "(optional)");
+
+  // TikTok Handle (optional)
+  const tiktokField = await buildFormField("TikTok Handle", "text", "tiktokHandle", "tiktok-handle", false, "@yourhandle (optional)");
 
   // Shipping Address Title
   const shippingTitle = document.createElement("h2");
@@ -97,7 +100,7 @@ export const buildCustomerInfoCard = async () => {
   locationRow.append(cityField, stateField, zipField);
 
 
-  form.append(nameRow, emailField, phoneField, shippingTitle, addressField, locationRow);
+  form.append(nameRow, emailField, phoneField, tiktokField, shippingTitle, addressField, locationRow);
 
   card.append(cardTitle, form);
 

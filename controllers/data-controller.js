@@ -117,7 +117,6 @@ export const placeOrderControl = async (req, res) => {
   const firstName = validateString(req.body.firstName, 100);
   const lastName  = validateString(req.body.lastName, 100);
   const email     = validateEmail(req.body.email);
-  const phone     = validateString(req.body.phone, 30);
   const address   = validateString(req.body.address, 200);
   const city      = validateString(req.body.city, 100);
   const state     = validateString(req.body.state, 50);
@@ -125,7 +124,6 @@ export const placeOrderControl = async (req, res) => {
 
   if (!firstName || !lastName) return res.status(400).json({ error: "Invalid name" });
   if (!email)    return res.status(400).json({ error: "Invalid email" });
-  if (!phone)    return res.status(400).json({ error: "Invalid phone" });
   if (!address)  return res.status(400).json({ error: "Invalid address" });
   if (!city)     return res.status(400).json({ error: "Invalid city" });
   if (!state)    return res.status(400).json({ error: "Invalid state" });
@@ -134,11 +132,13 @@ export const placeOrderControl = async (req, res) => {
   req.body.firstName = firstName;
   req.body.lastName  = lastName;
   req.body.email     = email;
-  req.body.phone     = phone;
   req.body.address   = address;
   req.body.city      = city;
   req.body.state     = state;
   req.body.zip       = zip;
+
+  const phone = validateString(req.body.phone, 30) || null;
+  req.body.phone = phone;
 
   const nursingSpecialty = validateString(req.body.nursingSpecialty, 200) || null;
   const productLikes     = validateString(req.body.productLikes, 500) || null;
@@ -147,6 +147,9 @@ export const placeOrderControl = async (req, res) => {
   req.body.nursingSpecialty = nursingSpecialty;
   req.body.productLikes     = productLikes;
   req.body.productDislikes  = productDislikes;
+
+  const tiktokHandle = validateString(req.body.tiktokHandle, 100) || null;
+  req.body.tiktokHandle = tiktokHandle;
 
   // Clear pending intent from session before order attempt (prevents replay)
   req.session.pendingPaymentIntentId = null;

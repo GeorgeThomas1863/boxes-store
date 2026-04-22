@@ -6,7 +6,7 @@ import { authRateLimit } from "../middleware/rate-limit.js";
 import { displayMain, displayAdmin, displayCart, displayCheckout, displayConfirmOrder, displayAbout, displayContact, display404, display500 } from "../controllers/display-controller.js";
 import { getCartDataControl, getCartStatsControl, addToCartControl, updateCartItemControl, removeFromCartControl, clearCartControl, getStripeConfigControl, createPaymentIntentControl, placeOrderControl, updateCartSpinsControl, contactSubmitControl } from "../controllers/data-controller.js";
 import { authController } from "../controllers/auth-controller.js";
-import { getProductDataControl, addNewProductControl, editProductControl, deleteProductControl, uploadPicControl, deletePicControl } from "../controllers/admin-controller.js";
+import { getProductDataControl, addNewProductControl, editProductControl, deleteProductControl, uploadPicControl, deletePicControl, getGameSettingsControl, saveGameSettingsControl } from "../controllers/admin-controller.js";
 import { upload } from "../src/upload-back.js";
 import { uploadErrorHandler } from "../middleware/upload-error.js";
 
@@ -22,6 +22,9 @@ router.post("/edit-product-route", requireAuth, editProductControl);
 router.post("/delete-product-route", requireAuth, deleteProductControl);
 router.post("/upload-product-pic-route", requireAuth, upload.single("image"), uploadErrorHandler, uploadPicControl);
 router.post("/delete-pic-route", requireAuth, deletePicControl);
+
+router.get("/game-settings-route", getGameSettingsControl);
+router.post("/save-game-settings-route", requireAuth, saveGameSettingsControl);
 
 router.get("/about", displayAbout);
 router.get("/cart", displayCart);

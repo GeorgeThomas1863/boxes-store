@@ -3,7 +3,7 @@ import dbModel from "../models/db-model.js";
 export const storeCustomerData = async (orderData) => {
   if (!orderData) return null;
   const { firstName, lastName, email, phone, address, city, state, zip,
-    nursingSpecialty, productLikes, productDislikes,
+    nursingSpecialty, productLikes, productDislikes, tiktokHandle,
     orderId, orderDate, amountPaid, itemCount } = orderData;
 
   const customerParams = {
@@ -11,6 +11,7 @@ export const storeCustomerData = async (orderData) => {
     nursingSpecialty: nursingSpecialty || null,
     productLikes: productLikes || null,
     productDislikes: productDislikes || null,
+    tiktokHandle: tiktokHandle || null,
     lastOrderId: orderId,
     lastOrderDate: orderDate,
     lastAmountPaid: +amountPaid,
@@ -40,7 +41,7 @@ export const storeCustomerData = async (orderData) => {
 const updateCustomerData = async (inputParams) => {
   if (!inputParams) return null;
   const { firstName, lastName, email, lastOrderId, lastOrderDate, lastAmountPaid, totalPaid, totalItemsPurchased,
-    nursingSpecialty, productLikes, productDislikes } = inputParams;
+    nursingSpecialty, productLikes, productDislikes, tiktokHandle } = inputParams;
 
   const checkParams = {
     keyToLookup1: "firstName", keyToLookup2: "lastName", keyToLookup3: "email",
@@ -61,6 +62,7 @@ const updateCustomerData = async (inputParams) => {
     nursingSpecialty: nursingSpecialty ?? checkData.nursingSpecialty ?? null,
     productLikes:     productLikes     ?? checkData.productLikes     ?? null,
     productDislikes:  productDislikes  ?? checkData.productDislikes  ?? null,
+    tiktokHandle:     tiktokHandle     ?? checkData.tiktokHandle     ?? null,
   };
 
   const updateModel = new dbModel(

@@ -100,6 +100,7 @@ const getCustomerParams = () => ({
   nursingSpecialty: document.getElementById("nursing-specialty")?.value?.trim() || "",
   productLikes: document.getElementById("product-likes")?.value?.trim() || "",
   productDislikes: document.getElementById("product-dislikes")?.value?.trim() || "",
+  tiktokHandle: document.getElementById("tiktok-handle")?.value?.trim() || "",
 });
 
 export const runPlaceOrder = async () => {
@@ -110,7 +111,6 @@ export const runPlaceOrder = async () => {
     { id: "first-name", label: "First Name" },
     { id: "last-name", label: "Last Name" },
     { id: "email", label: "Email" },
-    { id: "phone", label: "Phone" },
     { id: "address", label: "Street Address" },
     { id: "city", label: "City" },
     { id: "state", label: "State" },
@@ -133,7 +133,7 @@ export const runPlaceOrder = async () => {
   }
 
   const phone = document.getElementById("phone")?.value?.trim();
-  if (!/^[+\d()\-\s.]+$/.test(phone) || phone.replace(/\D/g, "").length < 7) {
+  if (phone && (!/^[+\d()\-\s.]+$/.test(phone) || phone.replace(/\D/g, "").length < 7)) {
     await displayPopup("Please enter a valid phone number.", "error");
     return null;
   }

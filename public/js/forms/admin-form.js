@@ -1,6 +1,7 @@
 import { buildCarouselElement } from "./main-form.js";
 import { buildCollapseContainer } from "../util/collapse.js";
 import { buildSpinSelector } from "../util/spin-options.js";
+import { getGameSettings } from "../util/game-settings-cache.js";
 
 export const buildAdminForm = async () => {
   const adminFormWrapper = document.createElement("div");
@@ -26,7 +27,8 @@ export const buildAdminForm = async () => {
   const statsSection = await buildStatsSection();
   statsWrapper.append(statsControls, statsSection);
 
-  adminFormWrapper.append(dashboardHeader, productsSection, statsWrapper);
+  const gameSection = await buildGameSection();
+  adminFormWrapper.append(dashboardHeader, productsSection, gameSection, statsWrapper);
 
   return adminFormWrapper;
 };
@@ -83,6 +85,58 @@ export const buildProductsSection = async () => {
   section.append(collapseContainer);
 
   return section;
+};
+
+export const buildGameSection = async () => {
+  const section = document.createElement("div");
+  section.className = "category-section";
+
+  const title = document.createElement("h2");
+  title.className = "category-title";
+  title.textContent = "🎮 GAME SETTINGS";
+
+  const actionCards = document.createElement("div");
+  actionCards.className = "action-cards";
+
+  const gameCard = await buildGameActionCard();
+
+  actionCards.append(gameCard);
+
+  const collapseContainer = await buildCollapseContainer({
+    titleElement: title,
+    contentElement: actionCards,
+    isExpanded: true,
+    dataAttribute: "game-settings-collapse",
+  });
+
+  section.append(collapseContainer);
+
+  return section;
+};
+
+export const buildGameActionCard = async () => {
+  const card = document.createElement("div");
+  card.className = "action-card";
+  card.setAttribute("data-label", "open-modal-game-settings");
+
+  const icon = document.createElement("div");
+  icon.className = "action-icon";
+  icon.textContent = "🎮";
+  icon.setAttribute("data-label", "open-modal-game-settings");
+
+  const title = document.createElement("div");
+  title.className = "action-title";
+  title.textContent = "Game Settings";
+  title.setAttribute("data-label", "open-modal-game-settings");
+
+  const description = document.createElement("div");
+  description.className = "action-description";
+  description.textContent = "Configure capsule count & spin options";
+  description.setAttribute("data-label", "open-modal-game-settings");
+
+  card.append(icon, title, description);
+
+  return card;
 };
 
 export const buildStatsSection = async () => {
@@ -751,7 +805,9 @@ export const buildProductDetailModal = async (productData, startIndex = 0) => {
     toAppend.push(descEl);
   }
 
-  toAppend.push(buildSpinSelector(productId, 0));
+  const settings = await getGameSettings();
+  const spinSel = buildSpinSelector(productId, 0, null, settings.spinOptions);
+  if (spinSel) toAppend.push(spinSel);
   body.append(...toAppend);
   wrapper.append(body);
   overlay.append(wrapper);

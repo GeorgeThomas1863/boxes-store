@@ -2,6 +2,7 @@ import { TIKTOK_ICON_SVG, CAROUSEL_PREV_SVG, CAROUSEL_NEXT_SVG } from "../util/d
 import { sendToBack } from "../util/api-front.js";
 import { buildSpinSelector } from "../util/spin-options.js";
 import { buildCollapseContainer } from "../util/collapse.js";
+import { getGameSettings } from "../util/game-settings-cache.js";
 
 export const buildMainForm = async () => {
   const container = document.createElement("div");
@@ -32,7 +33,7 @@ export const buildMainForm = async () => {
       cardsGrid.append(banner);
     } else {
       for (let i = 0; i < products.length; i++) {
-        const card = buildCard(products[i]);
+        const card = await buildCard(products[i]);
         if (card) cardsGrid.append(card);
       }
     }
@@ -139,7 +140,7 @@ export const buildNavBar = async () => {
 
 //-------------------------------------------
 
-export const buildCard = (productData) => {
+export const buildCard = async (productData) => {
   if (!productData) return null;
 
   const { productId, name, price, picData, description, discount } = productData;
@@ -213,7 +214,9 @@ export const buildCard = (productData) => {
     toAppend.push(desc);
   }
 
-  toAppend.push(buildSpinSelector(productId, 0));
+  const settings = await getGameSettings();
+  const spinSel = buildSpinSelector(productId, 0, null, settings.spinOptions);
+  if (spinSel) toAppend.push(spinSel);
   card.append(...toAppend);
   return card;
 };
@@ -406,6 +409,7 @@ export const buildBottomDisclaimerBlock = async () => {
 //-------------------------------------------
 
 export const buildLaunchSection = async () => {
+  const settings = await getGameSettings();
   const card = document.createElement("div");
   card.className = "launch-card";
 
@@ -420,7 +424,7 @@ export const buildLaunchSection = async () => {
 
   const subheader = document.createElement("p");
   subheader.className = "launch-subheader";
-  subheader.textContent = "15 pink prize capsules and 1 Spin on the Mystery Wheel";
+  subheader.textContent = `${settings.capsuleCount} pink prize capsules and 1 Spin on the Mystery Wheel`;
 
   const capsulesTitle = document.createElement("span");
   capsulesTitle.textContent = "Pink Prize Capsules";

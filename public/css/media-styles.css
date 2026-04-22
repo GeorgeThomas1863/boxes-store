@@ -162,6 +162,15 @@
     width: calc(100vw - 2rem);
   }
 
+  .add-spin-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .spin-input-spins,
+  .spin-input-cost {
+    width: 100%;
+  }
 }
 
 /* ======================== */

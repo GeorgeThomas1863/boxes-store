@@ -6,6 +6,7 @@ import { runPwToggle } from "./util/collapse.js";
 
 import { runAddToCart, runIncreaseQuantity, runDecreaseQuantity, runRemoveFromCart, runUpdateSpins } from "./run/cart-run.js";
 import { runModalTrigger, runModalClose, updateAdminStats } from "./run/admin-run.js";
+import { runGameSettingsModalTrigger, runSaveGameSettings, runAddSpinOptionRow, runConfirmAddSpinOption, runCancelAddSpinOption, runRemoveSpinOption } from "./run/game-settings-run.js";
 import { runAddNewProduct, runEditProduct, runDeleteProduct, changeAdminProductSelector } from "./run/admin-products.js";
 import { runSlotUploadPic, runSlotUploadClick, runDeleteSlotImage, runAddPicSlot, runRemovePicSlot } from "./run/upload-pic.js";
 import { buildProductDetailModal } from "./forms/admin-form.js";
@@ -110,7 +111,8 @@ export const clickHandler = async (e) => {
   if (clickType === "confirm-yes") await closeConfirmDialog(true);
   if (clickType === "confirm-no") await closeConfirmDialog(false);
 
-  if (clickType?.includes("open-modal-")) await runModalTrigger(clickedElement);
+  if (clickType === "open-modal-game-settings") await runGameSettingsModalTrigger();
+  else if (clickType?.includes("open-modal-")) await runModalTrigger(clickedElement);
   if (clickType?.includes("close-modal-")) await runModalClose(clickedElement);
   if (clickType === "product-card-click") await runOpenProductModal(clickedElement);
   if (clickType === "close-product-modal") runCloseProductModal();
@@ -141,6 +143,11 @@ export const clickHandler = async (e) => {
   if (clickType === "delete-product-submit") await runDeleteProduct();
 
   if (clickType === "refresh-admin-stats") await updateAdminStats();
+  if (clickType === "save-game-settings") await runSaveGameSettings();
+  if (clickType === "add-spin-option") await runAddSpinOptionRow();
+  if (clickType === "confirm-add-spin-option") await runConfirmAddSpinOption();
+  if (clickType === "cancel-add-spin-option") await runCancelAddSpinOption();
+  if (clickType === "remove-spin-option") await runRemoveSpinOption(clickedElement);
 
   if (clickType === "slot-upload-click") await runSlotUploadClick(clickedElement);
   if (clickType === "delete-slot-image") await runDeleteSlotImage(clickedElement);

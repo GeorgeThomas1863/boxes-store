@@ -3,7 +3,9 @@ export const SPIN_OPTIONS = [
   { label: "3 Extra Spins", extraSpins: 3, spinCost: 30 },
 ];
 
-export const buildSpinSelector = (productId, selectedSpins = 0, cartItemId = null) => {
+export const buildSpinSelector = (productId, selectedSpins = 0, cartItemId = null, spinOptions = null) => {
+  if (Array.isArray(spinOptions) && spinOptions.length === 0) return null;
+
   const wrapper = document.createElement("div");
   wrapper.className = "spin-selector-wrapper";
 
@@ -17,8 +19,9 @@ export const buildSpinSelector = (productId, selectedSpins = 0, cartItemId = nul
   select.setAttribute("data-product-id", productId);
   if (cartItemId != null) select.setAttribute("data-cart-item-id", cartItemId);
 
-  for (let i = 0; i < SPIN_OPTIONS.length; i++) {
-    const opt = SPIN_OPTIONS[i];
+  const activeOptions = spinOptions || SPIN_OPTIONS;
+  for (let i = 0; i < activeOptions.length; i++) {
+    const opt = activeOptions[i];
     const option = document.createElement("option");
     option.value = opt.extraSpins;
     option.setAttribute("data-spin-cost", opt.spinCost);

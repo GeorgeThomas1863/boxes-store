@@ -2,6 +2,7 @@ import path from "path";
 import { storeProduct, updateProduct, deleteProduct, getProductData } from "../src/products.js";
 import { deletePic, uploadDir } from "../src/upload-back.js";
 import { whitelistFields, sanitizeFilename } from "../src/sanitize.js";
+import { getGameSettings, saveGameSettings } from "../src/game-settings.js";
 
 export const getProductDataControl = async (req, res) => {
   const data = await getProductData();
@@ -129,5 +130,56 @@ export const deletePicControl = async (req, res) => {
   } catch (error) {
     console.error("Error deleting file:", error);
     return res.status(500).json({ error: "Failed to delete file" });
+  }
+};
+
+export const getGameSettingsControl = async (req, res) => {
+  try {
+    const data = await getGameSettings();
+    return res.json(data);
+  } catch (error) {
+    console.error("Error fetching game settings:", error);
+    return res.status(500).json({ error: "Failed to fetch game settings" });
+  }
+};
+
+export const saveGameSettingsControl = async (req, res) => {
+  const { capsuleCount, spinOptions } = req.body;
+
+  // validate capsuleCount
+  const count = Number(capsuleCount);
+  if (!Number.isFinite(count) || !Number.isInteger(count) || count < 1) {
+    return res.status(400).json({ error: "capsuleCount must be a positive integer" });
+  }
+
+  // validate spinOptions
+  if (!Array.isArray(spinOptions)) {
+    return res.status(400).json({ error: "spinOptions must be an array" });
+  }
+  for (let i = 0; i < spinOptions.length; i++) {
+    const opt = spinOptions[i];
+    const spins = Number(opt.extraSpins);
+    const cost = Number(opt.spinCost);
+    if (!Number.isFinite(spins) || spins < 0 || !Number.isInteger(spins)) {
+      return res.status(400).json({ error: "extraSpins must be a non-negative integer" });
+    }
+    if (!Number.isFinite(cost) || cost < 0) {
+      return res.status(400).json({ error: "spinCost must be a non-negative number" });
+    }
+  }
+
+  // build clean options (no labels — saveGameSettings generates them)
+  const cleanOptions = [];
+  for (let i = 0; i < spinOptions.length; i++) {
+    const opt = spinOptions[i];
+    cleanOptions.push({ extraSpins: Number(opt.extraSpins), spinCost: Number(opt.spinCost) });
+  }
+
+  try {
+    const result = await saveGameSettings({ capsuleCount: count, spinOptions: cleanOptions });
+    return res.json(result);
+  } catch (error) {
+    console.error("Error saving game settings:", error);
+    return res.status(500).json({ error: "Failed to save game settings" });
   }
 };

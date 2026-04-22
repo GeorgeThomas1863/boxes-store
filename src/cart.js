@@ -1,12 +1,16 @@
 import dbModel from "../models/db-model.js";
 import { validatePositiveInt, sanitizeMongoValue } from "./sanitize.js";
+import { getGameSettings } from "./game-settings.js";
 
-const VALID_SPIN_OPTIONS = [
-  { extraSpins: 0, spinCost: 0 },
-  { extraSpins: 3, spinCost: 30 },
-];
-const isValidSpinOption = (extraSpins, spinCost) =>
-  VALID_SPIN_OPTIONS.some(opt => opt.extraSpins === extraSpins && opt.spinCost === spinCost);
+const isValidSpinOption = async (extraSpins, spinCost) => {
+  const settings = await getGameSettings();
+  if (!settings.spinOptions || settings.spinOptions.length === 0) {
+    return extraSpins === 0 && spinCost === 0;
+  }
+  return settings.spinOptions.some(
+    (opt) => opt.extraSpins === extraSpins && opt.spinCost === spinCost
+  );
+};
 
 export const buildCart = async (req) => {
   if (!req.session.cart) {
@@ -24,7 +28,7 @@ export const addCartItem = async (req) => {
   const rawSpinCost = req.body.data?.spinCost;
   const extraSpins = rawExtraSpins !== undefined ? Number(rawExtraSpins) : 0;
   const spinCost = rawSpinCost !== undefined ? Number(rawSpinCost) : 0;
-  if (!isValidSpinOption(extraSpins, spinCost)) {
+  if (!await isValidSpinOption(extraSpins, spinCost)) {
     return { success: false, message: "Invalid spin option" };
   }
 
@@ -161,7 +165,7 @@ export const updateCartSpins = async (req) => {
   const { cartItemId, extraSpins: rawExtraSpins, spinCost: rawSpinCost } = req.body;
   const extraSpins = Number(rawExtraSpins);
   const spinCost = Number(rawSpinCost);
-  if (!isValidSpinOption(extraSpins, spinCost)) {
+  if (!await isValidSpinOption(extraSpins, spinCost)) {
     return { success: false, message: "Invalid spin option" };
   }
   let item = null;
