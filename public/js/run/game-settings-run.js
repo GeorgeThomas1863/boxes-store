@@ -115,7 +115,7 @@ export const runConfirmAddSpinOption = async () => {
 
   let label = "";
   if (extraSpins === 0 && spinCost === 0) {
-    label = "1 Spin (free)";
+    label = "1 Spin (Free!)";
   } else {
     label = `${extraSpins} Extra Spin${extraSpins !== 1 ? "s" : ""}`;
   }
