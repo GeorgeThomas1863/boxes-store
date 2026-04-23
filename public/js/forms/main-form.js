@@ -430,14 +430,17 @@ export const buildLaunchSection = async () => {
   const capsulesTitle = document.createElement("span");
   capsulesTitle.textContent = "Pink Prize Capsules";
 
+  const capsulesContent = document.createElement("div");
+
+  const capsulesPerBoxLabel = document.createElement("ul");
+  capsulesPerBoxLabel.className = "launch-wheel-list";
+  const capsulesPerBoxItem = document.createElement("li");
+  capsulesPerBoxItem.className = "launch-wheel-item";
+  capsulesPerBoxItem.textContent = "1-5 items per capsule";
+  capsulesPerBoxLabel.append(capsulesPerBoxItem);
+
   const pillsWrap = document.createElement("div");
   pillsWrap.className = "launch-pills";
-
-  const capsulesPerBoxLabel = document.createElement("p");
-  capsulesPerBoxLabel.className = "launch-includes-label";
-  capsulesPerBoxLabel.textContent = "- 1-5 items per capsule";
-  pillsWrap.append(capsulesPerBoxLabel);
-
   const items = Array.isArray(settings.capsuleDescriptions) ? settings.capsuleDescriptions : [];
   for (let i = 0; i < items.length; i++) {
     const pill = document.createElement("span");
@@ -446,9 +449,11 @@ export const buildLaunchSection = async () => {
     pillsWrap.append(pill);
   }
 
+  capsulesContent.append(capsulesPerBoxLabel, pillsWrap);
+
   const capsulesCollapse = await buildCollapseContainer({
     titleElement: capsulesTitle,
-    contentElement: pillsWrap,
+    contentElement: capsulesContent,
     isExpanded: false,
     className: "launch-collapsible-item",
   });
