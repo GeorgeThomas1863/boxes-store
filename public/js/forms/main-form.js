@@ -432,6 +432,12 @@ export const buildLaunchSection = async () => {
 
   const pillsWrap = document.createElement("div");
   pillsWrap.className = "launch-pills";
+
+  const capsulesPerBoxLabel = document.createElement("p");
+  capsulesPerBoxLabel.className = "launch-includes-label";
+  capsulesPerBoxLabel.textContent = "- 1-5 items per capsule";
+  pillsWrap.append(capsulesPerBoxLabel);
+
   const items = Array.isArray(settings.capsuleDescriptions) ? settings.capsuleDescriptions : [];
   for (let i = 0; i < items.length; i++) {
     const pill = document.createElement("span");
@@ -477,15 +483,11 @@ export const buildLaunchSection = async () => {
   // includesLabel.textContent = "Each box includes:";
   includesLabel.textContent = "Each box includes:"
 
-  const capsulesPerBoxLabel = document.createElement("p");
-  capsulesPerBoxLabel.className = "launch-includes-label";
-  capsulesPerBoxLabel.textContent = "- 1-5 items per capsule";
-
   const row = document.createElement("div");
   row.className = "launch-collapsibles-row";
   row.append(capsulesCollapse, wheelCollapse);
 
-  card.append(header, subheader, includesLabel, capsulesPerBoxLabel, row);
+  card.append(header, subheader, includesLabel, row);
   return card;
 };
 
