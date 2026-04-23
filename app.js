@@ -1,7 +1,3 @@
-//make auth button work
-
-//remove examples directory 
-
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env" });
