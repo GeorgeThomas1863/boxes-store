@@ -416,7 +416,7 @@ export const buildLaunchSection = async () => {
   const header = document.createElement("p");
   header.className = "launch-header";
   const bold = document.createElement("strong");
-  bold.textContent = "Now Accepting ORDERS For:";
+  bold.textContent = "Now Accepting Orders For:";
   const title = document.createElement("em");
   title.className = "launch-header-title";
   title.textContent = "The Fabulous Nurse Mystery Box";
