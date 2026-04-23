@@ -6,7 +6,7 @@ import { runPwToggle } from "./util/collapse.js";
 
 import { runAddToCart, runIncreaseQuantity, runDecreaseQuantity, runRemoveFromCart, runUpdateSpins } from "./run/cart-run.js";
 import { runModalTrigger, runModalClose, updateAdminStats } from "./run/admin-run.js";
-import { runGameSettingsModalTrigger, runSaveGameSettings, runAddSpinOptionRow, runConfirmAddSpinOption, runCancelAddSpinOption, runRemoveSpinOption, runAddCapsuleDescriptionRow, runConfirmAddCapsuleDescription, runCancelAddCapsuleDescription, runRemoveCapsuleDescription, runToggleReorderLabels } from "./run/game-settings-run.js";
+import { runGameSettingsModalTrigger, runSaveGameSettings, runAddSpinOptionRow, runConfirmAddSpinOption, runCancelAddSpinOption, runRemoveSpinOption, runAddCapsuleDescriptionRow, runConfirmAddCapsuleDescription, runCancelAddCapsuleDescription, runRemoveCapsuleDescription, runToggleReorderLabels, runAddWheelItemRow, runConfirmAddWheelItem, runCancelAddWheelItem, runRemoveWheelItem, runToggleReorderWheelItems } from "./run/game-settings-run.js";
 import { runAddNewProduct, runEditProduct, runDeleteProduct, changeAdminProductSelector } from "./run/admin-products.js";
 import { runSlotUploadPic, runSlotUploadClick, runDeleteSlotImage, runAddPicSlot, runRemovePicSlot } from "./run/upload-pic.js";
 import { buildProductDetailModal } from "./forms/admin-form.js";
@@ -154,6 +154,12 @@ export const clickHandler = async (e) => {
   if (clickType === "cancel-add-capsule-description") await runCancelAddCapsuleDescription();
   if (clickType === "remove-capsule-description") await runRemoveCapsuleDescription(clickedElement);
   if (clickType === "toggle-reorder-labels") runToggleReorderLabels();
+
+  if (clickType === "add-wheel-item") await runAddWheelItemRow();
+  if (clickType === "confirm-add-wheel-item") await runConfirmAddWheelItem();
+  if (clickType === "cancel-add-wheel-item") await runCancelAddWheelItem();
+  if (clickType === "remove-wheel-item") await runRemoveWheelItem(clickedElement);
+  if (clickType === "toggle-reorder-wheel-items") runToggleReorderWheelItems();
 
   if (clickType === "slot-upload-click") await runSlotUploadClick(clickedElement);
   if (clickType === "delete-slot-image") await runDeleteSlotImage(clickedElement);

@@ -11,6 +11,12 @@ const DEFAULT_SETTINGS = {
     "Grab 2 extra picks",
     "Specialty Item Mystery Spins",
   ],
+  wheelItems: [
+    "Each number on the Mystery wheel correlates to a Specialty Item",
+    "Items include planners, chargers, handbags, and other sparkly accessories",
+    "1 FREE spin is included in your purchase",
+    "Extra spins are available for purchase",
+  ],
 };
 
 let settingsPromise = null;

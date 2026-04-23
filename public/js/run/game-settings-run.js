@@ -1,7 +1,7 @@
 import { sendToBack } from "../util/api-front.js";
 import { displayPopup } from "../util/popup.js";
 import { getGameSettings, invalidateGameSettingsCache } from "../util/game-settings-cache.js";
-import { buildGameSettingsModal, buildAddSpinRow, buildSpinOptionRow, buildCapsuleDescriptionRow, buildAddCapsuleDescriptionRow } from "../forms/game-settings-form.js";
+import { buildGameSettingsModal, buildAddSpinRow, buildSpinOptionRow, buildCapsuleDescriptionRow, buildAddCapsuleDescriptionRow, buildWheelItemRow, buildAddWheelItemRow } from "../forms/game-settings-form.js";
 
 //---
 
@@ -17,6 +17,7 @@ export const runGameSettingsModalTrigger = async () => {
   adminElement.append(modal);
   modal.classList.add("visible");
   initCapsuleDescriptionDragSort();
+  initWheelItemDragSort();
 
   return true;
 };
@@ -48,7 +49,14 @@ export const runSaveGameSettings = async () => {
     if (desc !== null) capsuleDescriptions.push(desc);
   }
 
-  const result = await sendToBack({ route: "/save-game-settings-route", capsuleCount, spinOptions, capsuleDescriptions });
+  const wheelItemRows = document.querySelectorAll("#wheel-items-list .wheel-item-row");
+  const wheelItems = [];
+  for (let i = 0; i < wheelItemRows.length; i++) {
+    const item = wheelItemRows[i].getAttribute("data-wheel-item");
+    if (item !== null) wheelItems.push(item);
+  }
+
+  const result = await sendToBack({ route: "/save-game-settings-route", capsuleCount, spinOptions, capsuleDescriptions, wheelItems });
 
   if (result) {
     invalidateGameSettingsCache();
@@ -333,5 +341,177 @@ export const runToggleReorderLabels = () => {
   const isReordering = list.classList.toggle("reordering");
   btn.textContent = isReordering ? "Done" : "Reorder Labels";
   btn.classList.toggle("btn-reorder-desc-active", isReordering);
+  if (addBtn) addBtn.disabled = isReordering;
+};
+
+//---
+
+export const runAddWheelItemRow = async () => {
+  const list = document.getElementById("wheel-items-list");
+  if (!list) return null;
+
+  if (list.querySelector(".add-wheel-item-row")) return null;
+
+  const addBtn = document.getElementById("add-wheel-item-btn");
+  if (addBtn) addBtn.disabled = true;
+
+  const row = await buildAddWheelItemRow();
+  list.append(row);
+
+  return true;
+};
+
+//---
+
+export const runConfirmAddWheelItem = async () => {
+  const addRow = document.querySelector("#wheel-items-list .add-wheel-item-row");
+  if (!addRow) return null;
+
+  const itemInput = document.getElementById("new-wheel-item");
+  const item = itemInput?.value.trim() ?? "";
+
+  const showInlineError = (message) => {
+    let errorSpan = addRow.querySelector(".add-wheel-item-error");
+    if (!errorSpan) {
+      errorSpan = document.createElement("span");
+      errorSpan.className = "add-wheel-item-error";
+      errorSpan.style.color = "#dc2626";
+      errorSpan.style.fontSize = "0.8rem";
+      addRow.append(errorSpan);
+    }
+    errorSpan.textContent = message;
+  };
+
+  if (!item) {
+    showInlineError("Item cannot be empty");
+    return null;
+  }
+
+  if (item.length > 120) {
+    showInlineError("Item must be 120 characters or fewer");
+    return null;
+  }
+
+  const newRow = await buildWheelItemRow(item);
+
+  addRow.remove();
+
+  const addBtn = document.getElementById("add-wheel-item-btn");
+  if (addBtn) addBtn.disabled = false;
+
+  const list = document.getElementById("wheel-items-list");
+  if (list) list.append(newRow);
+
+  return true;
+};
+
+//---
+
+export const runCancelAddWheelItem = async () => {
+  const addRow = document.querySelector("#wheel-items-list .add-wheel-item-row");
+  if (addRow) addRow.remove();
+
+  const addBtn = document.getElementById("add-wheel-item-btn");
+  if (addBtn) addBtn.disabled = false;
+
+  return true;
+};
+
+//---
+
+export const runRemoveWheelItem = async (clickElement) => {
+  const row = clickElement.closest(".wheel-item-row");
+  if (row) row.remove();
+  return true;
+};
+
+//---
+
+export const initWheelItemDragSort = () => {
+  const list = document.getElementById("wheel-items-list");
+  if (!list) return;
+
+  let draggedRow = null;
+
+  list.addEventListener("dragstart", (e) => {
+    if (!list.classList.contains("reordering")) return;
+    if (e.target.closest(".btn-remove-wheel-item")) {
+      e.preventDefault();
+      return;
+    }
+    const row = e.target.closest(".wheel-item-row");
+    if (!row) return;
+    draggedRow = row;
+    e.dataTransfer.effectAllowed = "move";
+    requestAnimationFrame(() => {
+      row.classList.add("dragging");
+    });
+  });
+
+  list.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    const target = e.target.closest(".wheel-item-row");
+    if (!target || !draggedRow || target === draggedRow) return;
+    const rect = target.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    if (e.clientY < midY) {
+      list.insertBefore(draggedRow, target);
+    } else {
+      list.insertBefore(draggedRow, target.nextSibling);
+    }
+  });
+
+  list.addEventListener("dragend", () => {
+    if (draggedRow) {
+      draggedRow.classList.remove("dragging");
+      draggedRow = null;
+    }
+  });
+
+  list.addEventListener("touchstart", (e) => {
+    if (!list.classList.contains("reordering")) return;
+    if (e.target.closest(".btn-remove-wheel-item")) return;
+    const row = e.target.closest(".wheel-item-row");
+    if (!row) return;
+    draggedRow = row;
+    row.classList.add("dragging");
+  }, { passive: true });
+
+  list.addEventListener("touchmove", (e) => {
+    if (!draggedRow) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY)?.closest(".wheel-item-row");
+    if (!target || target === draggedRow) return;
+    const rect = target.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    if (touch.clientY < midY) {
+      list.insertBefore(draggedRow, target);
+    } else {
+      list.insertBefore(draggedRow, target.nextSibling);
+    }
+  }, { passive: false });
+
+  list.addEventListener("touchend", () => {
+    if (draggedRow) {
+      draggedRow.classList.remove("dragging");
+      draggedRow = null;
+    }
+  });
+};
+
+//---
+
+export const runToggleReorderWheelItems = () => {
+  const list = document.getElementById("wheel-items-list");
+  const btn = document.getElementById("reorder-wheel-items-btn");
+  const addBtn = document.getElementById("add-wheel-item-btn");
+  if (!list || !btn) return;
+  if (list.querySelector(".add-wheel-item-row")) return;
+
+  const isReordering = list.classList.toggle("reordering");
+  btn.textContent = isReordering ? "Done" : "Reorder Items";
+  btn.classList.toggle("btn-reorder-wheel-items-active", isReordering);
   if (addBtn) addBtn.disabled = isReordering;
 };

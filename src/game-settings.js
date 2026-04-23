@@ -11,10 +11,18 @@ const DEFAULT_CAPSULE_DESCRIPTIONS = [
   "Specialty Item Mystery Spins",
 ];
 
+const DEFAULT_WHEEL_ITEMS = [
+  "Each number on the Mystery wheel correlates to a Specialty Item",
+  "Items include planners, chargers, handbags, and other sparkly accessories",
+  "1 FREE spin is included in your purchase",
+  "Extra spins are available for purchase",
+];
+
 const DEFAULT_SETTINGS = {
   capsuleCount: 10,
   spinOptions: [{ label: FREE_SPIN_LABEL, extraSpins: 0, spinCost: 0 }],
   capsuleDescriptions: DEFAULT_CAPSULE_DESCRIPTIONS,
+  wheelItems: DEFAULT_WHEEL_ITEMS,
 };
 
 let cachedSettings = null;
@@ -34,7 +42,7 @@ export const getGameSettings = async () => {
   return cachedSettings;
 };
 
-export const saveGameSettings = async ({ capsuleCount, spinOptions, capsuleDescriptions = [] }) => {
+export const saveGameSettings = async ({ capsuleCount, spinOptions, capsuleDescriptions = [], wheelItems = [] }) => {
   if (!Array.isArray(spinOptions)) throw new Error("spinOptions must be an array");
   const spinOptionsWithLabels = spinOptions.map(({ extraSpins, spinCost }) => {
     const label =
@@ -44,7 +52,7 @@ export const saveGameSettings = async ({ capsuleCount, spinOptions, capsuleDescr
     return { label, extraSpins, spinCost };
   });
 
-  const newSettings = { capsuleCount, spinOptions: spinOptionsWithLabels, capsuleDescriptions };
+  const newSettings = { capsuleCount, spinOptions: spinOptionsWithLabels, capsuleDescriptions, wheelItems };
 
   await dbGet()
     .collection("game-settings")

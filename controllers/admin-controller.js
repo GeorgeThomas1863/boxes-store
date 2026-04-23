@@ -144,7 +144,7 @@ export const getGameSettingsControl = async (req, res) => {
 };
 
 export const saveGameSettingsControl = async (req, res) => {
-  const { capsuleCount, spinOptions, capsuleDescriptions = [] } = req.body;
+  const { capsuleCount, spinOptions, capsuleDescriptions = [], wheelItems = [] } = req.body;
 
   // validate capsuleCount
   const count = Number(capsuleCount);
@@ -179,6 +179,17 @@ export const saveGameSettingsControl = async (req, res) => {
     }
   }
 
+  // validate wheelItems
+  if (!Array.isArray(wheelItems)) {
+    return res.status(400).json({ error: "wheelItems must be an array" });
+  }
+  for (let i = 0; i < wheelItems.length; i++) {
+    const trimmed = String(wheelItems[i]).trim();
+    if (!trimmed || trimmed.length > 120) {
+      return res.status(400).json({ error: "Each wheel item must be a non-empty string of 120 characters or fewer" });
+    }
+  }
+
   // build clean options (no labels — saveGameSettings generates them)
   const cleanOptions = [];
   for (let i = 0; i < spinOptions.length; i++) {
@@ -191,8 +202,13 @@ export const saveGameSettingsControl = async (req, res) => {
     cleanDescriptions.push(String(capsuleDescriptions[i]).trim());
   }
 
+  const cleanWheelItems = [];
+  for (let i = 0; i < wheelItems.length; i++) {
+    cleanWheelItems.push(String(wheelItems[i]).trim());
+  }
+
   try {
-    const result = await saveGameSettings({ capsuleCount: count, spinOptions: cleanOptions, capsuleDescriptions: cleanDescriptions });
+    const result = await saveGameSettings({ capsuleCount: count, spinOptions: cleanOptions, capsuleDescriptions: cleanDescriptions, wheelItems: cleanWheelItems });
     return res.json(result);
   } catch (error) {
     console.error("Error saving game settings:", error);

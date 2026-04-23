@@ -58,8 +58,9 @@ export const buildGameSettingsBody = async (settings) => {
   const capsuleSection = await buildCapsuleSection(settings.capsuleCount);
   const capsuleDescriptionsSection = await buildCapsuleDescriptionsSection(settings.capsuleDescriptions);
   const spinOptionsSection = await buildSpinOptionsSection(settings.spinOptions);
+  const wheelItemsSection = await buildWheelItemsSection(settings.wheelItems || []);
 
-  modalBody.append(capsuleSection, capsuleDescriptionsSection, spinOptionsSection);
+  modalBody.append(capsuleSection, capsuleDescriptionsSection, spinOptionsSection, wheelItemsSection);
 
   return modalBody;
 };
@@ -361,6 +362,133 @@ export const buildAddSpinRow = async () => {
   cancelButton.title = "Cancel";
 
   row.append(spinsLabel, spinsInput, costLabel, costInput, confirmButton, cancelButton);
+
+  return row;
+};
+
+//---
+// WHEEL ITEMS SECTION
+//---
+
+export const buildWheelItemsSection = async (wheelItems) => {
+  const items = Array.isArray(wheelItems) ? wheelItems : [];
+
+  const section = document.createElement("div");
+  section.className = "product-section";
+
+  const sectionHeader = document.createElement("div");
+  sectionHeader.className = "section-header";
+
+  const sectionIcon = document.createElement("span");
+  sectionIcon.className = "section-icon";
+  sectionIcon.textContent = "🎡";
+
+  const sectionTitle = document.createElement("h3");
+  sectionTitle.className = "section-title";
+  sectionTitle.textContent = "Wheel Item List";
+
+  sectionHeader.append(sectionIcon, sectionTitle);
+
+  const sublabel = document.createElement("p");
+  sublabel.className = "spin-options-sublabel";
+  sublabel.textContent = "Items shown in the Mystery Wheel Specialty Items section";
+
+  const wheelItemsList = document.createElement("div");
+  wheelItemsList.id = "wheel-items-list";
+  wheelItemsList.className = "wheel-items-list";
+
+  for (let i = 0; i < items.length; i++) {
+    const row = await buildWheelItemRow(items[i]);
+    wheelItemsList.append(row);
+  }
+
+  const addButton = document.createElement("button");
+  addButton.className = "btn-add-wheel-item";
+  addButton.textContent = "+ Add Item";
+  addButton.type = "button";
+  addButton.setAttribute("data-label", "add-wheel-item");
+  addButton.id = "add-wheel-item-btn";
+
+  const reorderButton = document.createElement("button");
+  reorderButton.className = "btn-reorder-wheel-items";
+  reorderButton.textContent = "Reorder Items";
+  reorderButton.type = "button";
+  reorderButton.setAttribute("data-label", "toggle-reorder-wheel-items");
+  reorderButton.id = "reorder-wheel-items-btn";
+
+  const actionsRow = document.createElement("div");
+  actionsRow.className = "desc-actions-row";
+  actionsRow.append(addButton, reorderButton);
+
+  section.append(sectionHeader, sublabel, wheelItemsList, actionsRow);
+
+  return section;
+};
+
+//---
+// WHEEL ITEM ROW
+//---
+
+export const buildWheelItemRow = async (item) => {
+  const row = document.createElement("div");
+  row.className = "wheel-item-row";
+  row.setAttribute("data-wheel-item", item);
+  row.draggable = true;
+
+  const dragHandle = document.createElement("span");
+  dragHandle.className = "wheel-item-drag-handle";
+  dragHandle.textContent = "⠿";
+
+  const label = document.createElement("span");
+  label.className = "wheel-item-label";
+  label.textContent = item;
+
+  const removeButton = document.createElement("button");
+  removeButton.className = "btn-remove-wheel-item";
+  removeButton.textContent = "×";
+  removeButton.type = "button";
+  removeButton.draggable = false;
+  removeButton.setAttribute("data-label", "remove-wheel-item");
+
+  row.append(dragHandle, label, removeButton);
+
+  return row;
+};
+
+//---
+// ADD WHEEL ITEM ROW (inline input row)
+//---
+
+export const buildAddWheelItemRow = async () => {
+  const row = document.createElement("div");
+  row.className = "add-wheel-item-row";
+
+  const itemLabel = document.createElement("label");
+  itemLabel.className = "add-desc-label";
+  itemLabel.textContent = "Item:";
+
+  const itemInput = document.createElement("input");
+  itemInput.className = "wheel-item-input";
+  itemInput.type = "text";
+  itemInput.id = "new-wheel-item";
+  itemInput.placeholder = "e.g. Items include planners...";
+  itemInput.setAttribute("maxlength", "120");
+
+  const confirmButton = document.createElement("button");
+  confirmButton.className = "btn-confirm-wheel-item";
+  confirmButton.textContent = "✓";
+  confirmButton.type = "button";
+  confirmButton.setAttribute("data-label", "confirm-add-wheel-item");
+  confirmButton.title = "Confirm";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.className = "btn-cancel-wheel-item";
+  cancelButton.textContent = "×";
+  cancelButton.type = "button";
+  cancelButton.setAttribute("data-label", "cancel-add-wheel-item");
+  cancelButton.title = "Cancel";
+
+  row.append(itemLabel, itemInput, confirmButton, cancelButton);
 
   return row;
 };

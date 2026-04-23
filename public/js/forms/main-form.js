@@ -471,12 +471,7 @@ export const buildLaunchSection = async () => {
 
   const wheelList = document.createElement("ul");
   wheelList.className = "launch-wheel-list";
-  const wheelItems = [
-    "Each number on the Mystery wheel correlates to a Specialty Item",
-    "Items include planners, chargers, handbags, and other sparkly accessories",
-    "1 FREE spin is included in your purchase",
-    "Extra spins are available for purchase",
-  ];
+  const wheelItems = Array.isArray(settings.wheelItems) ? settings.wheelItems : [];
   for (let i = 0; i < wheelItems.length; i++) {
     const li = document.createElement("li");
     li.className = "launch-wheel-item";
