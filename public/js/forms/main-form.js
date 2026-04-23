@@ -475,7 +475,7 @@ export const buildLaunchSection = async () => {
   const includesLabel = document.createElement("p");
   includesLabel.className = "launch-includes-label";
   // includesLabel.textContent = "Each box includes:";
-  includesLabel.textContent = `Each box includes:
+  includesLabel.textContent = `Each box includes:\n
 - 1-5 items per capsule`;
 
   const row = document.createElement("div");
