@@ -33,7 +33,8 @@
       "Skill(firecrawl:firecrawl)",
       "Bash(git rm *)",
       "Bash(grep -E \"\\\\.\\(js|ts\\)$\")",
-      "Bash(start *)"
+      "Bash(start *)",
+      "Bash(git *)"
     ]
   }
 }
