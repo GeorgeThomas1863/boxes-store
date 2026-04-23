@@ -1003,6 +1003,7 @@ h4 {
 }
 
 .launch-pills {
+  margin-bottom: 0.4rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -1040,4 +1041,36 @@ h4 {
   position: absolute;
   left: 0;
   color: #e91e8c;
+}
+
+.launch-capsule-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  padding: 0.1rem 0;
+}
+
+.launch-capsule-ribbon-line {
+  flex: 1;
+  height: 1px;
+  margin-top: 0.4rem;
+  background: linear-gradient(90deg, transparent, rgba(233, 30, 140, 0.4));
+}
+
+.launch-capsule-ribbon-line.right {
+  background: linear-gradient(90deg, rgba(233, 30, 140, 0.4), transparent);
+}
+
+.launch-capsule-ribbon-text {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  background: linear-gradient(90deg, #e91e8c, #9c27b0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

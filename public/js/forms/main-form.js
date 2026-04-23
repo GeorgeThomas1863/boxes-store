@@ -432,12 +432,20 @@ export const buildLaunchSection = async () => {
 
   const capsulesContent = document.createElement("div");
 
-  const capsulesPerBoxLabel = document.createElement("ul");
-  capsulesPerBoxLabel.className = "launch-wheel-list";
-  const capsulesPerBoxItem = document.createElement("li");
-  capsulesPerBoxItem.className = "launch-wheel-item";
-  capsulesPerBoxItem.textContent = "1-5 items per capsule";
-  capsulesPerBoxLabel.append(capsulesPerBoxItem);
+  const capsulesPerBoxLabel = document.createElement("div");
+  capsulesPerBoxLabel.className = "launch-capsule-ribbon";
+
+  const ribbonLineLeft = document.createElement("span");
+  ribbonLineLeft.className = "launch-capsule-ribbon-line";
+
+  const ribbonText = document.createElement("span");
+  ribbonText.className = "launch-capsule-ribbon-text";
+  ribbonText.textContent = "1–5 items per capsule ✨";
+
+  const ribbonLineRight = document.createElement("span");
+  ribbonLineRight.className = "launch-capsule-ribbon-line right";
+
+  capsulesPerBoxLabel.append(ribbonLineLeft, ribbonText, ribbonLineRight);
 
   const pillsWrap = document.createElement("div");
   pillsWrap.className = "launch-pills";
