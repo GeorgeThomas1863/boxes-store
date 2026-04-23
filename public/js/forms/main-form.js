@@ -475,14 +475,17 @@ export const buildLaunchSection = async () => {
   const includesLabel = document.createElement("p");
   includesLabel.className = "launch-includes-label";
   // includesLabel.textContent = "Each box includes:";
-  includesLabel.textContent = `Each box includes:\n
-- 1-5 items per capsule`;
+  includesLabel.textContent = "Each box includes:"
+
+  const capsulesPerBoxLabel = document.createElement("p");
+  capsulesPerBoxLabel.className = "launch-includes-label";
+  capsulesPerBoxLabel.textContent = "- 1-5 items per capsule";
 
   const row = document.createElement("div");
   row.className = "launch-collapsibles-row";
   row.append(capsulesCollapse, wheelCollapse);
 
-  card.append(header, subheader, includesLabel, row);
+  card.append(header, subheader, includesLabel, capsulesPerBoxLabel, row);
   return card;
 };
 
