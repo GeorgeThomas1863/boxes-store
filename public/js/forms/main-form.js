@@ -424,8 +424,7 @@ export const buildLaunchSection = async () => {
 
   const subheader = document.createElement("p");
   subheader.className = "launch-subheader";
-  subheader.textContent = `${settings.capsuleCount} pink prize capsules and 1 Spin on the Mystery Wheel
-  - 1-5 items per capsule`;
+  subheader.textContent = `${settings.capsuleCount} pink prize capsules and 1 Spin on the Mystery Wheel`;
   // subheader.textContent = `${settings.capsuleCount} pink prize capsules and 1 Spin on the Mystery Wheel`;
 
   const capsulesTitle = document.createElement("span");
@@ -475,7 +474,9 @@ export const buildLaunchSection = async () => {
 
   const includesLabel = document.createElement("p");
   includesLabel.className = "launch-includes-label";
-  includesLabel.textContent = "Each box includes:";
+  // includesLabel.textContent = "Each box includes:";
+  includesLabel.textContent = `Each box includes:
+- 1-5 items per capsule`;
 
   const row = document.createElement("div");
   row.className = "launch-collapsibles-row";
@@ -501,11 +502,13 @@ export const buildOutOfStockBanner = async () => {
 
   const bodyOne = document.createElement("p");
   bodyOne.className = "out-of-stock-body";
-  bodyOne.textContent = "Thank you so much for your incredible support! Every box has found its home, we\u2019re not accepting new orders at this time. We will restock soon!";
+  bodyOne.textContent =
+    "Thank you so much for your incredible support! Every box has found its home, we\u2019re not accepting new orders at this time. We will restock soon!";
 
   const bodyTwo = document.createElement("p");
   bodyTwo.className = "out-of-stock-body";
-  bodyTwo.textContent = "If you\u2019d like to be the first to know when new orders are available, send us a message and we\u2019ll be in touch. \uD83D\uDC97\uD83C\uDF38";
+  bodyTwo.textContent =
+    "If you\u2019d like to be the first to know when new orders are available, send us a message and we\u2019ll be in touch. \uD83D\uDC97\uD83C\uDF38";
 
   const link = document.createElement("a");
   link.className = "out-of-stock-link";
