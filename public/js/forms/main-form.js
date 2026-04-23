@@ -416,7 +416,7 @@ export const buildLaunchSection = async () => {
   const header = document.createElement("p");
   header.className = "launch-header";
   const bold = document.createElement("strong");
-  bold.textContent = "Now Accepting PRE-ORDERS For:";
+  bold.textContent = "Now Accepting ORDERS For:";
   const title = document.createElement("em");
   title.className = "launch-header-title";
   title.textContent = "The Fabulous Nurse Mystery Box";
@@ -424,7 +424,9 @@ export const buildLaunchSection = async () => {
 
   const subheader = document.createElement("p");
   subheader.className = "launch-subheader";
-  subheader.textContent = `${settings.capsuleCount} pink prize capsules and 1 Spin on the Mystery Wheel`;
+  subheader.textContent = `${settings.capsuleCount} pink prize capsules and 1 Spin on the Mystery Wheel
+  - 1-5 items per capsule`;
+  // subheader.textContent = `${settings.capsuleCount} pink prize capsules and 1 Spin on the Mystery Wheel`;
 
   const capsulesTitle = document.createElement("span");
   capsulesTitle.textContent = "Pink Prize Capsules";
