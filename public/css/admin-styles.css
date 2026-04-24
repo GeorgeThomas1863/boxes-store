@@ -1890,15 +1890,18 @@ a.btn {
 }
 
 /* Collapse containers inside game settings modal */
-#game-settings-modal .collapse-container {
+#game-settings-modal .collapse-container,
+#game-labels-modal .collapse-container {
   border-bottom: 2px solid #f0f0f0;
 }
 
-#game-settings-modal .collapse-container:last-child {
+#game-settings-modal .collapse-container:last-child,
+#game-labels-modal .collapse-container:last-child {
   border-bottom: none;
 }
 
-#game-settings-modal .collapse-header {
+#game-settings-modal .collapse-header,
+#game-labels-modal .collapse-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -1907,15 +1910,18 @@ a.btn {
   user-select: none;
 }
 
-#game-settings-modal .collapse-header:hover .section-title {
+#game-settings-modal .collapse-header:hover .section-title,
+#game-labels-modal .collapse-header:hover .section-title {
   opacity: 0.7;
 }
 
-#game-settings-modal .collapse-header .section-title {
+#game-settings-modal .collapse-header .section-title,
+#game-labels-modal .collapse-header .section-title {
   margin: 0;
 }
 
-#game-settings-modal .collapse-arrow {
+#game-settings-modal .collapse-arrow,
+#game-labels-modal .collapse-arrow {
   width: 0;
   height: 0;
   border-left: 5px solid transparent;
@@ -1926,14 +1932,17 @@ a.btn {
   flex-shrink: 0;
 }
 
-#game-settings-modal .collapse-arrow.expanded {
+#game-settings-modal .collapse-arrow.expanded,
+#game-labels-modal .collapse-arrow.expanded {
   transform: rotate(0deg);
 }
 
-#game-settings-modal .collapse-content {
+#game-settings-modal .collapse-content,
+#game-labels-modal .collapse-content {
   padding-bottom: 1.5rem;
 }
 
-#game-settings-modal .collapse-content.hidden {
+#game-settings-modal .collapse-content.hidden,
+#game-labels-modal .collapse-content.hidden {
   padding: 0;
 }

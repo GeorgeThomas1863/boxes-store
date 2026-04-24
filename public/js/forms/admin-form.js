@@ -99,8 +99,8 @@ export const buildGameSection = async () => {
   actionCards.className = "action-cards";
 
   const gameCard = await buildGameActionCard();
-
-  actionCards.append(gameCard);
+  const gameLabelsCard = await buildGameLabelsCard();
+  actionCards.append(gameCard, gameLabelsCard);
 
   const collapseContainer = await buildCollapseContainer({
     titleElement: title,
@@ -133,6 +133,31 @@ export const buildGameActionCard = async () => {
   description.className = "action-description";
   description.textContent = "Configure capsule count & spin options";
   description.setAttribute("data-label", "open-modal-game-settings");
+
+  card.append(icon, title, description);
+
+  return card;
+};
+
+export const buildGameLabelsCard = async () => {
+  const card = document.createElement("div");
+  card.className = "action-card";
+  card.setAttribute("data-label", "open-modal-game-labels");
+
+  const icon = document.createElement("div");
+  icon.className = "action-icon";
+  icon.textContent = "🏷️";
+  icon.setAttribute("data-label", "open-modal-game-labels");
+
+  const title = document.createElement("div");
+  title.className = "action-title";
+  title.textContent = "Game Labels";
+  title.setAttribute("data-label", "open-modal-game-labels");
+
+  const description = document.createElement("div");
+  description.className = "action-description";
+  description.textContent = "Manage capsule pill labels & wheel items";
+  description.setAttribute("data-label", "open-modal-game-labels");
 
   card.append(icon, title, description);
 

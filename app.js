@@ -1,3 +1,5 @@
+//move game collection name to e 
+
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env" });

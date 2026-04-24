@@ -6,7 +6,8 @@ import { runPwToggle } from "./util/collapse.js";
 
 import { runAddToCart, runIncreaseQuantity, runDecreaseQuantity, runRemoveFromCart, runUpdateSpins } from "./run/cart-run.js";
 import { runModalTrigger, runModalClose, updateAdminStats } from "./run/admin-run.js";
-import { runGameSettingsModalTrigger, runSaveGameSettings, runAddSpinOptionRow, runConfirmAddSpinOption, runCancelAddSpinOption, runRemoveSpinOption, runAddCapsuleDescriptionRow, runConfirmAddCapsuleDescription, runCancelAddCapsuleDescription, runRemoveCapsuleDescription, runToggleReorderLabels, runAddWheelItemRow, runConfirmAddWheelItem, runCancelAddWheelItem, runRemoveWheelItem, runToggleReorderWheelItems } from "./run/game-settings-run.js";
+import { runGameSettingsModalTrigger, runSaveGameSettings, runAddSpinOptionRow, runConfirmAddSpinOption, runCancelAddSpinOption, runRemoveSpinOption } from "./run/game-settings-run.js";
+import { runGameLabelsModalTrigger, runSaveGameLabels, runAddCapsuleDescriptionRow, runConfirmAddCapsuleDescription, runCancelAddCapsuleDescription, runRemoveCapsuleDescription, runToggleReorderLabels, runAddWheelItemRow, runConfirmAddWheelItem, runCancelAddWheelItem, runRemoveWheelItem, runToggleReorderWheelItems } from "./run/game-labels-run.js";
 import { runAddNewProduct, runEditProduct, runDeleteProduct, changeAdminProductSelector } from "./run/admin-products.js";
 import { runSlotUploadPic, runSlotUploadClick, runDeleteSlotImage, runAddPicSlot, runRemovePicSlot } from "./run/upload-pic.js";
 import { buildProductDetailModal } from "./forms/admin-form.js";
@@ -112,6 +113,7 @@ export const clickHandler = async (e) => {
   if (clickType === "confirm-no") await closeConfirmDialog(false);
 
   if (clickType === "open-modal-game-settings") await runGameSettingsModalTrigger();
+  else if (clickType === "open-modal-game-labels") await runGameLabelsModalTrigger();
   else if (clickType?.includes("open-modal-")) await runModalTrigger(clickedElement);
   if (clickType?.includes("close-modal-")) await runModalClose(clickedElement);
   if (clickType === "product-card-click") await runOpenProductModal(clickedElement);
@@ -144,6 +146,7 @@ export const clickHandler = async (e) => {
 
   if (clickType === "refresh-admin-stats") await updateAdminStats();
   if (clickType === "save-game-settings") await runSaveGameSettings();
+  if (clickType === "save-game-labels") await runSaveGameLabels();
   if (clickType === "add-spin-option") await runAddSpinOptionRow();
   if (clickType === "confirm-add-spin-option") await runConfirmAddSpinOption();
   if (clickType === "cancel-add-spin-option") await runCancelAddSpinOption();
