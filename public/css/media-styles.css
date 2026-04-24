@@ -22,12 +22,11 @@
   }
 
   .info-row {
-    grid-template-columns: 180px 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 220px 1fr;
   }
 
   .info-label {
-    padding-top: 0.7rem;
+    padding-top: 0.9rem;
   }
 
   .modal-overlay {
