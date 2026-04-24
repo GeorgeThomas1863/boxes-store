@@ -2,6 +2,8 @@
 // GAME SETTINGS MODAL BUILDERS
 //---
 
+import { buildCollapseContainer } from "../util/collapse.js";
+
 export const buildGameSettingsModal = async (settings) => {
   const modalOverlay = document.createElement("div");
   modalOverlay.className = "modal-overlay";
@@ -56,11 +58,11 @@ export const buildGameSettingsBody = async (settings) => {
   modalBody.className = "modal-body";
 
   const capsuleSection = await buildCapsuleSection(settings.capsuleCount);
-  const capsuleDescriptionsSection = await buildCapsuleDescriptionsSection(settings.capsuleDescriptions);
   const spinOptionsSection = await buildSpinOptionsSection(settings.spinOptions);
+  const capsuleDescriptionsSection = await buildCapsuleDescriptionsSection(settings.capsuleDescriptions);
   const wheelItemsSection = await buildWheelItemsSection(settings.wheelItems || []);
 
-  modalBody.append(capsuleSection, capsuleDescriptionsSection, spinOptionsSection, wheelItemsSection);
+  modalBody.append(capsuleSection, spinOptionsSection, capsuleDescriptionsSection, wheelItemsSection);
 
   return modalBody;
 };
@@ -70,21 +72,9 @@ export const buildGameSettingsBody = async (settings) => {
 //---
 
 export const buildCapsuleSection = async (capsuleCount) => {
-  const section = document.createElement("div");
-  section.className = "product-section";
-
-  const sectionHeader = document.createElement("div");
-  sectionHeader.className = "section-header";
-
-  const sectionIcon = document.createElement("span");
-  sectionIcon.className = "section-icon";
-  sectionIcon.textContent = "💊";
-
-  const sectionTitle = document.createElement("h3");
-  sectionTitle.className = "section-title";
-  sectionTitle.textContent = "Pink Prize Capsules";
-
-  sectionHeader.append(sectionIcon, sectionTitle);
+  const titleElement = document.createElement("h3");
+  titleElement.className = "section-title";
+  titleElement.textContent = "💊 Pink Prize Capsules";
 
   const infoRow = document.createElement("div");
   infoRow.className = "info-row";
@@ -107,9 +97,15 @@ export const buildCapsuleSection = async (capsuleCount) => {
   infoContentWrapper.append(capsuleInput);
   infoRow.append(infoLabel, infoContentWrapper);
 
-  section.append(sectionHeader, infoRow);
+  const contentWrapper = document.createElement("div");
+  contentWrapper.append(infoRow);
 
-  return section;
+  return buildCollapseContainer({
+    titleElement,
+    contentElement: contentWrapper,
+    isExpanded: true,
+    dataAttribute: "game-capsule-collapse",
+  });
 };
 
 //---
@@ -119,21 +115,9 @@ export const buildCapsuleSection = async (capsuleCount) => {
 export const buildCapsuleDescriptionsSection = async (capsuleDescriptions) => {
   const descriptions = Array.isArray(capsuleDescriptions) ? capsuleDescriptions : [];
 
-  const section = document.createElement("div");
-  section.className = "product-section";
-
-  const sectionHeader = document.createElement("div");
-  sectionHeader.className = "section-header";
-
-  const sectionIcon = document.createElement("span");
-  sectionIcon.className = "section-icon";
-  sectionIcon.textContent = "🏷️";
-
-  const sectionTitle = document.createElement("h3");
-  sectionTitle.className = "section-title";
-  sectionTitle.textContent = "Capsule Pill Labels";
-
-  sectionHeader.append(sectionIcon, sectionTitle);
+  const titleElement = document.createElement("h3");
+  titleElement.className = "section-title";
+  titleElement.textContent = "🏷️ Capsule Pill Labels";
 
   const sublabel = document.createElement("p");
   sublabel.className = "spin-options-sublabel";
@@ -166,9 +150,15 @@ export const buildCapsuleDescriptionsSection = async (capsuleDescriptions) => {
   descActions.className = "desc-actions-row";
   descActions.append(addButton, reorderButton);
 
-  section.append(sectionHeader, sublabel, descriptionsList, descActions);
+  const contentWrapper = document.createElement("div");
+  contentWrapper.append(sublabel, descriptionsList, descActions);
 
-  return section;
+  return buildCollapseContainer({
+    titleElement,
+    contentElement: contentWrapper,
+    isExpanded: true,
+    dataAttribute: "game-capsule-descs-collapse",
+  });
 };
 
 //---
@@ -244,21 +234,9 @@ export const buildAddCapsuleDescriptionRow = async () => {
 //---
 
 export const buildSpinOptionsSection = async (spinOptions) => {
-  const section = document.createElement("div");
-  section.className = "product-section";
-
-  const sectionHeader = document.createElement("div");
-  sectionHeader.className = "section-header";
-
-  const sectionIcon = document.createElement("span");
-  sectionIcon.className = "section-icon";
-  sectionIcon.textContent = "🎰";
-
-  const sectionTitle = document.createElement("h3");
-  sectionTitle.className = "section-title";
-  sectionTitle.textContent = "Spin Options";
-
-  sectionHeader.append(sectionIcon, sectionTitle);
+  const titleElement = document.createElement("h3");
+  titleElement.className = "section-title";
+  titleElement.textContent = "🎰 Spin Options";
 
   const sublabel = document.createElement("p");
   sublabel.className = "spin-options-sublabel";
@@ -280,9 +258,15 @@ export const buildSpinOptionsSection = async (spinOptions) => {
   addButton.setAttribute("data-label", "add-spin-option");
   addButton.id = "add-spin-option-btn";
 
-  section.append(sectionHeader, sublabel, spinOptionsList, addButton);
+  const contentWrapper = document.createElement("div");
+  contentWrapper.append(sublabel, spinOptionsList, addButton);
 
-  return section;
+  return buildCollapseContainer({
+    titleElement,
+    contentElement: contentWrapper,
+    isExpanded: true,
+    dataAttribute: "game-spin-options-collapse",
+  });
 };
 
 //---
@@ -373,21 +357,9 @@ export const buildAddSpinRow = async () => {
 export const buildWheelItemsSection = async (wheelItems) => {
   const items = Array.isArray(wheelItems) ? wheelItems : [];
 
-  const section = document.createElement("div");
-  section.className = "product-section";
-
-  const sectionHeader = document.createElement("div");
-  sectionHeader.className = "section-header";
-
-  const sectionIcon = document.createElement("span");
-  sectionIcon.className = "section-icon";
-  sectionIcon.textContent = "🎡";
-
-  const sectionTitle = document.createElement("h3");
-  sectionTitle.className = "section-title";
-  sectionTitle.textContent = "Wheel Item List";
-
-  sectionHeader.append(sectionIcon, sectionTitle);
+  const titleElement = document.createElement("h3");
+  titleElement.className = "section-title";
+  titleElement.textContent = "🎡 Wheel Item List";
 
   const sublabel = document.createElement("p");
   sublabel.className = "spin-options-sublabel";
@@ -420,9 +392,15 @@ export const buildWheelItemsSection = async (wheelItems) => {
   actionsRow.className = "desc-actions-row";
   actionsRow.append(addButton, reorderButton);
 
-  section.append(sectionHeader, sublabel, wheelItemsList, actionsRow);
+  const contentWrapper = document.createElement("div");
+  contentWrapper.append(sublabel, wheelItemsList, actionsRow);
 
-  return section;
+  return buildCollapseContainer({
+    titleElement,
+    contentElement: contentWrapper,
+    isExpanded: true,
+    dataAttribute: "game-wheel-items-collapse",
+  });
 };
 
 //---
