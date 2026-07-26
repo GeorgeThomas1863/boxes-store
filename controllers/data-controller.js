@@ -1,6 +1,6 @@
 import { buildCart, getCartStats, addCartItem, updateCartItem, removeCartItem, updateCartSpins } from "../src/cart.js";
 import { validatePositiveInt, validateEmail, validateZip, validateString } from "../src/sanitize.js";
-import { placeNewOrder } from "../src/orders.js";
+import { placeNewOrder, storePendingOrder, updateOrderStatus } from "../src/orders.js";
 import { createPaymentIntent, refundPayment } from "../src/payments.js";
 import { updateProduct } from "../src/products.js";
 import { submitContact } from "../src/contact.js";
@@ -100,6 +100,14 @@ export const createPaymentIntentControl = async (req, res) => {
     return res.status(500).json({ error: result?.message || "Failed to create payment intent" });
   }
 
+  // Record the intent before handing the client secret over. Nothing has been
+  // charged yet, so failing here is safe — and far better than charging a card
+  // we have no record of.
+  const pendingData = await storePendingOrder(result.paymentIntentId, totalInCents, req.session.cart);
+  if (!pendingData) {
+    return res.status(500).json({ error: "Unable to start checkout. Please try again." });
+  }
+
   req.session.pendingPaymentIntentId = result.paymentIntentId;
 
   return res.json({ clientSecret: result.clientSecret });
@@ -159,7 +167,9 @@ export const placeOrderControl = async (req, res) => {
   if (!data.success) {
     // Payment was already captured — attempt a refund so customer is not charged
     console.error("ORDER PLACEMENT FAILED after payment captured — attempting refund. PaymentIntentId:", req.body.paymentIntentId);
-    refundPayment(req.body.paymentIntentId).catch((e) => console.error("REFUND FAILED:", e));
+    refundPayment(req.body.paymentIntentId)
+      .then((refund) => updateOrderStatus(req.body.paymentIntentId, refund?.success ? "refunded" : "refund-failed"))
+      .catch((e) => console.error("REFUND FAILED:", e));
     return res.status(500).json({ success: false, message: data.message || "Order failed. A refund has been initiated. Please contact support." });
   }
 

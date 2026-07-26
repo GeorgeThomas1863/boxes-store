@@ -95,6 +95,8 @@ describe("placeNewOrder — success", () => {
     storeCustomerData.mockResolvedValue({ email: "john@example.com" });
     dbModel.mockImplementation(function () {
       this.storeAny = vi.fn().mockResolvedValue({ insertedId: "mock_id" });
+      this.getUniqueItem = vi.fn().mockResolvedValue({ _id: "pending_id", paymentId: "pi_test123", orderStatus: "pending" });
+      this.updateObjItem = vi.fn().mockResolvedValue({ matchedCount: 1 });
     });
   });
 
@@ -139,19 +141,37 @@ describe("storeOrderData", () => {
     expect(await storeOrderData(null)).toBeNull();
   });
 
-  it("returns null when storeAny has no insertedId", async () => {
-    dbModel.mockImplementation(function () {
-      this.storeAny = vi.fn().mockResolvedValue({});
-    });
+  it("returns null when paymentId is missing", async () => {
     expect(await storeOrderData({ firstName: "Test" })).toBeNull();
   });
 
-  it("attaches orderId and orderNumber", async () => {
+  it("returns null when no pending order matches the paymentId", async () => {
     dbModel.mockImplementation(function () {
-      this.storeAny = vi.fn().mockResolvedValue({ insertedId: "abc123" });
+      this.getUniqueItem = vi.fn().mockResolvedValue(null);
+      this.updateObjItem = vi.fn();
     });
-    const result = await storeOrderData({ items: [] });
+    expect(await storeOrderData({ items: [], paymentId: "pi_missing" })).toBeNull();
+  });
+
+  it("returns null when the update matches no document", async () => {
+    dbModel.mockImplementation(function () {
+      this.getUniqueItem = vi.fn().mockResolvedValue({ _id: "abc123" });
+      this.updateObjItem = vi.fn().mockResolvedValue({ matchedCount: 0 });
+    });
+    expect(await storeOrderData({ items: [], paymentId: "pi_test123" })).toBeNull();
+  });
+
+  it("completes the pending record in place, keeping its id as the orderId", async () => {
+    const updateObjItem = vi.fn().mockResolvedValue({ matchedCount: 1 });
+    dbModel.mockImplementation(function () {
+      this.getUniqueItem = vi.fn().mockResolvedValue({ _id: "abc123", orderStatus: "pending" });
+      this.updateObjItem = updateObjItem;
+    });
+    const result = await storeOrderData({ items: [], paymentId: "pi_test123" });
+
     expect(result.orderId).toBe("abc123");
     expect(result.orderNumber).toBe(1001);
+    expect(result.orderStatus).toBe("completed");
+    expect(updateObjItem).toHaveBeenCalledTimes(1);
   });
 });

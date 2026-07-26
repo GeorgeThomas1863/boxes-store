@@ -14,8 +14,12 @@ config/
 .env.local
 .env.*
 
+# local agent working dirs
 .claude/pics/
+.claude/.pics/
+.claude/.tmp/
 .claude/settings.local.json
+.remember/
 
 docs/
 

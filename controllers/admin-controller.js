@@ -6,7 +6,16 @@ import { getGameSettings, saveGameSettings } from "../src/game-settings.js";
 
 export const getProductDataControl = async (req, res) => {
   const data = await getProductData();
-  return res.json(data);
+  if (req.session.authenticated) return res.json(data);
+
+  // Public callers only see products the admin has marked visible
+  const visibleData = [];
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].display === "no") continue;
+    visibleData.push(data[i]);
+  }
+
+  return res.json(visibleData);
 };
 
 export const addNewProductControl = async (req, res) => {

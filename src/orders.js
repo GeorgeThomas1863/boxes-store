@@ -83,19 +83,29 @@ export const placeNewOrder = async (req) => {
   }
 };
 
+// Completes the record opened by storePendingOrder rather than inserting a new
+// one, so a paid order is a single document that moved from pending to done.
 export const storeOrderData = async (orderObj) => {
-  if (!orderObj) return null;
+  if (!orderObj || !orderObj.paymentId) return null;
+
+  const pendingModel = new dbModel({ keyToLookup: "paymentId", itemValue: orderObj.paymentId }, process.env.ORDERS_COLLECTION);
+  const pendingData = await pendingModel.getUniqueItem();
+  if (!pendingData) return null;
 
   const orderNumber = await getOrderNumber();
   if (!orderNumber) return null;
 
   orderObj.orderNumber = orderNumber;
+  orderObj.orderStatus = "completed";
 
-  const orderModel = new dbModel(orderObj, process.env.ORDERS_COLLECTION);
-  const result = await orderModel.storeAny();
-  if (!result || !result.insertedId) return null;
+  const updateModel = new dbModel(
+    { keyToLookup: "paymentId", itemValue: orderObj.paymentId, updateObj: orderObj },
+    process.env.ORDERS_COLLECTION
+  );
+  const result = await updateModel.updateObjItem();
+  if (!result || !result.matchedCount) return null;
 
-  orderObj.orderId = result.insertedId.toString();
+  orderObj.orderId = pendingData._id.toString();
   return orderObj;
 };
 
@@ -106,6 +116,55 @@ export const getOrderNumber = async () => {
     { upsert: true, returnDocument: "after" }
   );
   return result?.seq || null;
+};
+
+//----------
+
+// The card is charged in the browser before the order request reaches us, so a
+// dropped connection would otherwise leave a charge with no trace on our side.
+// Opening the order record up front makes those orphans findable and refundable:
+// an order still marked pending whose intent succeeded in Stripe is money owed back.
+export const storePendingOrder = async (paymentId, amountInCents, cartItems) => {
+  if (!paymentId) return null;
+
+  const pendingObj = {
+    paymentId,
+    amountInCents,
+    items: cartItems,
+    orderStatus: "pending",
+    createdAt: new Date().toISOString(),
+  };
+
+  try {
+    const pendingModel = new dbModel(pendingObj, process.env.ORDERS_COLLECTION);
+    const result = await pendingModel.storeAny();
+    if (!result || !result.insertedId) return null;
+
+    return pendingObj;
+  } catch (e) {
+    console.error("STORE PENDING ORDER ERROR:", e);
+    return null;
+  }
+};
+
+export const updateOrderStatus = async (paymentId, orderStatus) => {
+  if (!paymentId || !orderStatus) return null;
+
+  const updateObj = { orderStatus, resolvedAt: new Date().toISOString() };
+
+  try {
+    const updateModel = new dbModel(
+      { keyToLookup: "paymentId", itemValue: paymentId, updateObj },
+      process.env.ORDERS_COLLECTION
+    );
+    const result = await updateModel.updateObjItem();
+    if (!result || !result.matchedCount) return null;
+
+    return updateObj;
+  } catch (e) {
+    console.error("UPDATE ORDER STATUS ERROR:", e);
+    return null;
+  }
 };
 
 //----------

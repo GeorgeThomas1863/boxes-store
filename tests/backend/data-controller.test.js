@@ -25,7 +25,11 @@ vi.mock("dotenv", () => ({
 }));
 
 // Mock DB-touching modules not under test (prevent top-level dbConnect from firing)
-vi.mock("../../src/orders.js", () => ({ placeNewOrder: vi.fn() }));
+vi.mock("../../src/orders.js", () => ({
+  placeNewOrder: vi.fn(),
+  storePendingOrder: vi.fn(),
+  updateOrderStatus: vi.fn(),
+}));
 vi.mock("../../src/payments.js", () => ({ createPaymentIntent: vi.fn(), refundPayment: vi.fn() }));
 vi.mock("../../src/products.js", () => ({ updateProduct: vi.fn() }));
 vi.mock("../../src/contact.js", () => ({ submitContact: vi.fn() }));
@@ -53,6 +57,7 @@ import {
 
 import { validatePositiveInt } from "../../src/sanitize.js";
 import { createPaymentIntent } from "../../src/payments.js";
+import { storePendingOrder } from "../../src/orders.js";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -84,6 +89,9 @@ function mockReq(overrides = {}) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  // Checkout only proceeds once the intent is recorded; default to success so
+  // individual tests opt in to the failure path.
+  storePendingOrder.mockResolvedValue({ paymentIntentId: "pi_pending", status: "pending" });
 });
 
 // ---------------------------------------------------------------------------
@@ -543,6 +551,32 @@ describe("createPaymentIntentControl", () => {
     expect(res._status).toBe(200);
     expect(res._body).toEqual({ clientSecret: "pi_secret_xyz" });
     expect(req.session.pendingPaymentIntentId).toBe("pi_abc");
+  });
+
+  it("fails closed without exposing a clientSecret when the pending order cannot be recorded", async () => {
+    getCartStats.mockResolvedValue({ success: true, total: 50, itemCount: 1 });
+    createPaymentIntent.mockResolvedValue({ success: true, clientSecret: "pi_secret_xyz", paymentIntentId: "pi_abc" });
+    storePendingOrder.mockResolvedValue(null);
+    const req = mockReq();
+    const res = mockRes();
+
+    await createPaymentIntentControl(req, res);
+
+    expect(res._status).toBe(500);
+    expect(res._body.clientSecret).toBeUndefined();
+    expect(req.session.pendingPaymentIntentId).toBeUndefined();
+  });
+
+  it("records the pending order with the intent id, amount in cents, and cart snapshot", async () => {
+    const cart = [{ productId: "p1", quantity: 2 }];
+    getCartStats.mockResolvedValue({ success: true, total: 50, itemCount: 2 });
+    createPaymentIntent.mockResolvedValue({ success: true, clientSecret: "s", paymentIntentId: "pi_abc" });
+    const req = mockReq({ session: { cart } });
+    const res = mockRes();
+
+    await createPaymentIntentControl(req, res);
+
+    expect(storePendingOrder).toHaveBeenCalledWith("pi_abc", 5000, cart);
   });
 
   it("calls createPaymentIntent with totalInCents derived from cart total", async () => {
