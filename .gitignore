@@ -18,10 +18,10 @@ config/
 .claude/settings.local.json
 
 docs/
-tests/
-vitest.config.js
+
 
 .EXAMPLE-CODE/*
+.EXAMPLE-CODE/
 
 .playwright-mcp/
 
@@ -40,7 +40,6 @@ build/Release
 
 # Dependency directories
 node_modules/
-package-lock.json
 
 
 # Optional npm cache directory
