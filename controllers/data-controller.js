@@ -4,6 +4,13 @@ import { placeNewOrder, storePendingOrder, updateOrderStatus } from "../src/orde
 import { createPaymentIntent, refundPayment } from "../src/payments.js";
 import { updateProduct } from "../src/products.js";
 import { submitContact } from "../src/contact.js";
+import {
+  getShippingFromSession,
+  fetchShippingRates,
+  updateSelectedRate,
+  clearShippingFromSession,
+  getSelectedShippingCost,
+} from "../src/shipping.js";
 
 export const getCartDataControl = async (req, res) => {
   await buildCart(req);
@@ -61,6 +68,36 @@ export const updateCartSpinsControl = async (req, res) => {
   return res.json(result);
 };
 
+//-----------------
+
+export const getShippingControl = async (req, res) => {
+  const data = getShippingFromSession(req);
+  if (!data || !data.success) return res.json({ success: false, shipping: null });
+  return res.json(data);
+};
+
+export const calculateShippingControl = async (req, res) => {
+  if (!req || !req.body || !req.body.zip) return res.status(400).json({ error: "No input parameters" });
+  if (!validateZip(req.body.zip)) return res.status(400).json({ error: "Invalid ZIP code" });
+
+  const data = await fetchShippingRates(req);
+  if (!data || !data.success) return res.status(500).json({ error: data?.message || "Failed to calculate shipping rate" });
+  return res.json(data);
+};
+
+export const updateSelectedRateControl = async (req, res) => {
+  if (!req || !req.body || !req.body.selectedRate) return res.status(400).json({ error: "No input parameters" });
+
+  const data = updateSelectedRate(req);
+  if (!data || !data.success) return res.status(500).json({ error: data?.message || "Failed to update shipping rate" });
+  return res.json(data);
+};
+
+export const clearShippingControl = async (req, res) => {
+  const data = clearShippingFromSession(req);
+  return res.json(data);
+};
+
 const markProductsSold = async (cartItems) => {
   if (!cartItems || !cartItems.length) return;
   for (let i = 0; i < cartItems.length; i++) {
@@ -89,10 +126,14 @@ export const createPaymentIntentControl = async (req, res) => {
   }
 
   const subtotal = Math.round(cartStats.total * 100) / 100;
+  const shippingCost = getSelectedShippingCost(req);
+  if (shippingCost === null) {
+    return res.status(400).json({ error: "Please calculate shipping before checking out" });
+  }
   // const taxRate = parseFloat(process.env.TAX_RATE) || 0; // TAX DISABLED
   // const tax = Math.round(subtotal * taxRate * 100) / 100; // TAX DISABLED
   // const totalCost = Math.round((subtotal + tax) * 100) / 100; // TAX DISABLED
-  const totalCost = subtotal; // TAX DISABLED
+  const totalCost = Math.round((subtotal + shippingCost) * 100) / 100; // TAX DISABLED
   const totalInCents = Math.round(totalCost * 100);
 
   const result = await createPaymentIntent(totalInCents);

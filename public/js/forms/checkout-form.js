@@ -44,11 +44,25 @@ export const buildCheckoutFormSection = async () => {
 
   const preferencesCard = await buildCustomerPreferencesCard();
   const customerInfoCard = await buildCustomerInfoCard();
+  const shippingMethodCard = buildShippingMethodCard();
   const paymentCard = await buildPaymentCard();
 
-  formSection.append(preferencesCard, customerInfoCard, paymentCard);
+  formSection.append(preferencesCard, customerInfoCard, shippingMethodCard, paymentCard);
 
   return formSection;
+};
+
+const buildShippingMethodCard = () => {
+  const card = document.createElement("div");
+  card.className = "checkout-card checkout-shipping-section";
+  const title = document.createElement("h2");
+  title.className = "checkout-card-title checkout-shipping-title";
+  title.textContent = "Shipping Method";
+  const container = document.createElement("div");
+  container.className = "checkout-shipping-container";
+  container.id = "checkout-shipping-container";
+  card.append(title, container);
+  return card;
 };
 
 export const buildCustomerInfoCard = async () => {
@@ -96,6 +110,9 @@ export const buildCustomerInfoCard = async () => {
   const cityField = await buildFormField("City", "text", "city", "city", true);
   const stateField = await buildStateField();
   const zipField = await buildFormField("ZIP Code", "text", "zip", "zip", true);
+  const zipInput = zipField.querySelector("input");
+  zipInput.inputMode = "numeric";
+  zipInput.maxLength = 5;
 
   locationRow.append(cityField, stateField, zipField);
 
@@ -197,7 +214,7 @@ export const buildCheckoutSummarySection = async () => {
   const spinRow = await buildSummaryRow("Extra Spins:", "$0.00", "checkout-spin-total");
   spinRow.id = "checkout-spin-row";
   spinRow.style.display = "none";
-  const shippingRow = await buildSummaryRow("Shipping:", "FREE", "checkout-shipping");
+  const shippingRow = await buildSummaryRow("Shipping:", "[Enter ZIP]", "checkout-shipping");
 
   const totalRow = document.createElement("div");
   totalRow.className = "checkout-summary-row checkout-summary-total";
@@ -234,92 +251,61 @@ export const buildCheckoutSummarySection = async () => {
   return summarySection;
 };
 
-// NEW: Build individual shipping option for checkout
-export const buildCheckoutShippingOption = async (rateData) => {
+export const buildCheckoutShippingOption = (rateData) => {
+  const label = "checkout-shipping-option-select";
   const optionDiv = document.createElement("div");
   optionDiv.className = "checkout-shipping-option";
-  optionDiv.setAttribute("data-rate", JSON.stringify(rateData));
-  optionDiv.setAttribute("data-label", "checkout-shipping-option-select");
+  optionDiv.dataset.rateId = rateData.rateId;
+  optionDiv.dataset.label = label;
 
   const radioInput = document.createElement("input");
   radioInput.type = "radio";
   radioInput.name = "checkout-shipping-option";
   radioInput.className = "checkout-shipping-option-radio";
-  radioInput.value = rateData.shipping_amount.amount;
-  if (rateData.carrier_friendly_name === "Pickup") {
-    radioInput.id = "checkout-shipping-local-pickup";
-    radioInput.setAttribute("data-is-local-pickup", "true");
-  } else {
-    radioInput.id = `checkout-shipping-${rateData.rateId}`;
-  }
+  radioInput.value = Number(rateData.shipping_amount.amount);
+  radioInput.id = `checkout-shipping-${rateData.rateId}`;
+  radioInput.dataset.label = label;
 
   const contentDiv = document.createElement("div");
   contentDiv.className = "checkout-shipping-option-content";
-  contentDiv.setAttribute("data-label", "checkout-shipping-option-select");
+  contentDiv.dataset.label = label;
 
   const headerDiv = document.createElement("div");
   headerDiv.className = "checkout-shipping-option-header";
-  headerDiv.setAttribute("data-label", "checkout-shipping-option-select");
+  headerDiv.dataset.label = label;
 
   const nameSpan = document.createElement("span");
   nameSpan.className = "checkout-shipping-option-name";
-  let label;
-  if (rateData.carrier_friendly_name === "Pickup") {
-    label = rateData.service_type;
-  } else {
-    label = `${rateData.carrier_friendly_name} - ${rateData.service_type}`;
-    if (rateData.package_type && rateData.package_type !== "package") {
-      label += ` (${rateData.package_type.replace(/_/g, " ")})`;
-    }
-  }
-  nameSpan.textContent = label;
-  nameSpan.setAttribute("data-label", "checkout-shipping-option-select");
+  nameSpan.textContent = `${rateData.carrier_friendly_name} - ${rateData.service_type}`;
+  nameSpan.dataset.label = label;
 
   const priceSpan = document.createElement("span");
   priceSpan.className = "checkout-shipping-option-price";
-  priceSpan.textContent = `$${rateData.shipping_amount.amount.toFixed(2)}`;
-  priceSpan.setAttribute("data-label", "checkout-shipping-option-select");
+  priceSpan.textContent = `$${Number(rateData.shipping_amount.amount).toFixed(2)}`;
+  priceSpan.dataset.label = label;
 
   headerDiv.append(nameSpan, priceSpan);
 
   const detailsDiv = document.createElement("div");
   detailsDiv.className = "checkout-shipping-option-details";
-  detailsDiv.setAttribute("data-label", "checkout-shipping-option-select");
+  detailsDiv.dataset.label = label;
 
   if (rateData.delivery_days) {
     const deliverySpan = document.createElement("span");
     deliverySpan.textContent = `${rateData.delivery_days} business days`;
-    deliverySpan.setAttribute("data-label", "checkout-shipping-option-select");
+    deliverySpan.dataset.label = label;
     detailsDiv.appendChild(deliverySpan);
   }
 
   if (rateData.estimated_delivery_date) {
     const dateSpan = document.createElement("span");
-    const deliveryDate = new Date(rateData.estimated_delivery_date);
-    dateSpan.textContent = `Est. delivery: ${deliveryDate.toLocaleDateString()}`;
-    dateSpan.setAttribute("data-label", "checkout-shipping-option-select");
+    dateSpan.textContent = `Estimated delivery: ${rateData.estimated_delivery_date}`;
+    dateSpan.dataset.label = label;
     detailsDiv.appendChild(dateSpan);
   }
 
-  // if (rateData.rate_attributes && rateData.rate_attributes.length > 0) {
-  //   const badgesDiv = document.createElement("div");
-  //   badgesDiv.className = "checkout-shipping-option-badges";
-  //   badgesDiv.setAttribute("data-label", "checkout-shipping-option-select");
-
-  //   for (const attribute of rateData.rate_attributes) {
-  //     if (attribute.includes("best_value")) continue;
-
-  //     const badge = document.createElement("span");
-  //     badge.className = `checkout-shipping-badge checkout-shipping-badge-${attribute}`;
-  //     badge.textContent = attribute.replace("_", " ");
-  //     badge.setAttribute("data-label", "checkout-shipping-option-select");
-  //     badgesDiv.appendChild(badge);
-  //   }
-
-  //   detailsDiv.appendChild(badgesDiv);
-  // }
-
-  contentDiv.append(headerDiv, detailsDiv);
+  contentDiv.append(headerDiv);
+  if (detailsDiv.childElementCount) contentDiv.append(detailsDiv);
   optionDiv.append(radioInput, contentDiv);
 
   return optionDiv;

@@ -220,7 +220,9 @@ describe("updateCartSummary", () => {
   });
 
   it("sets #cart-summary-item-count to itemCount from API", async () => {
-    sendToBack.mockResolvedValue({ success: true, itemCount: 4, total: 20.0 });
+    sendToBack
+      .mockResolvedValueOnce({ success: true, itemCount: 4, total: 20.0 })
+      .mockResolvedValueOnce({ success: false, shipping: null });
     const els = buildSummaryDOM();
 
     await updateCartSummary();
@@ -229,12 +231,41 @@ describe("updateCartSummary", () => {
   });
 
   it("sets #cart-summary-subtotal to $X.XX format", async () => {
-    sendToBack.mockResolvedValue({ success: true, itemCount: 2, total: 19.99 });
+    sendToBack
+      .mockResolvedValueOnce({ success: true, itemCount: 2, total: 19.99 })
+      .mockResolvedValueOnce({ success: false, shipping: null });
     const els = buildSummaryDOM();
 
     await updateCartSummary();
 
     expect(els["cart-summary-subtotal"].textContent).toBe("$19.99");
+  });
+
+  it("adds the selected shipping rate to the displayed total", async () => {
+    sendToBack
+      .mockResolvedValueOnce({ success: true, itemCount: 2, total: 19.99 })
+      .mockResolvedValueOnce({
+        success: true,
+        shipping: { selectedRate: { shipping_amount: { amount: 9.45 } } },
+      });
+    const els = buildSummaryDOM();
+
+    await updateCartSummary();
+
+    expect(els["cart-summary-shipping"].textContent).toBe("$9.45");
+    expect(els["cart-summary-total"].textContent).toBe("$29.44");
+  });
+
+  it("prompts for a ZIP and leaves the total unchanged without a selected rate", async () => {
+    sendToBack
+      .mockResolvedValueOnce({ success: true, itemCount: 2, total: 19.99 })
+      .mockResolvedValueOnce({ success: false, shipping: null });
+    const els = buildSummaryDOM();
+
+    await updateCartSummary();
+
+    expect(els["cart-summary-shipping"].textContent).toBe("[Enter ZIP]");
+    expect(els["cart-summary-total"].textContent).toBe("$19.99");
   });
 
 });

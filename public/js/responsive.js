@@ -11,6 +11,13 @@ import { runGameLabelsModalTrigger, runSaveGameLabels, runAddCapsuleDescriptionR
 import { runAddNewProduct, runEditProduct, runDeleteProduct, changeAdminProductSelector } from "./run/admin-products.js";
 import { runSlotUploadPic, runSlotUploadClick, runDeleteSlotImage, runAddPicSlot, runRemovePicSlot } from "./run/upload-pic.js";
 import { buildProductDetailModal } from "./forms/admin-form.js";
+import debounce from "./util/debounce.js";
+import {
+  runCalculateShipping,
+  runShippingOptionSelect,
+  runCalculateShippingCheckout,
+  runCheckoutShippingOptionSelect,
+} from "./run/shipping-run.js";
 
 let touchStartX = null;
 let swipeHandled = false;
@@ -25,6 +32,8 @@ const confirmElement = document.getElementById("confirm-element");
 const authElement = document.getElementById("auth-element");
 const adminElement = document.getElementById("admin-element");
 const contactElement = document.getElementById("contact-element");
+const debouncedCartZipShipping = debounce(runCalculateShipping);
+const debouncedCheckoutZipShipping = debounce(runCalculateShippingCheckout);
 
 const generateSlug = (name) => {
   return (name || "")
@@ -105,6 +114,10 @@ export const clickHandler = async (e) => {
   if (clickType === "increase-quantity") await runIncreaseQuantity(clickedElement);
   if (clickType === "decrease-quantity") await runDecreaseQuantity(clickedElement);
   if (clickType === "remove-from-cart") await runRemoveFromCart(clickedElement);
+  if (clickType === "shipping-option-select") await runShippingOptionSelect(clickedElement);
+  if (clickType === "checkout-shipping-option-select") {
+    await runCheckoutShippingOptionSelect(clickedElement);
+  }
   if (clickType === "checkout-btn") window.location.href = "/checkout";
   if (clickType === "place-order") await runPlaceOrder();
 
@@ -201,8 +214,11 @@ export const keyHandler = async (e) => {
 
 export const inputHandler = async (e) => {
   const inputElement = e.target;
+  const inputId = inputElement.id;
   const label = inputElement.getAttribute("data-label");
 
+  if (inputId === "cart-shipping-zip-input") await debouncedCartZipShipping();
+  if (inputId === "zip") await debouncedCheckoutZipShipping();
   if (label === "admin-product-name-input") {
     const slugInput = document.getElementById("url-name");
     if (slugInput) slugInput.value = generateSlug(inputElement.value);
@@ -258,6 +274,7 @@ if (displayElement) {
 }
 if (cartElement) cartElement.addEventListener("click", clickHandler);
 if (cartElement) cartElement.addEventListener("change", changeHandler);
+if (cartElement) cartElement.addEventListener("input", inputHandler);
 if (authElement) {
   authElement.addEventListener("click", clickHandler);
   authElement.addEventListener("keypress", keyHandler);

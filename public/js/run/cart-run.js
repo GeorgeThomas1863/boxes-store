@@ -242,11 +242,15 @@ export const displayCart = async (cartItems) => {
 export const updateCartSummary = async () => {
   const itemCountElement = document.getElementById("cart-summary-item-count");
   const subtotalElement = document.getElementById("cart-summary-subtotal");
+  const shippingElement = document.getElementById("cart-summary-shipping");
   const totalElement = document.getElementById("cart-summary-total");
 
-  if (!itemCountElement || !subtotalElement || !totalElement) return null;
+  if (!itemCountElement || !subtotalElement || !shippingElement || !totalElement) return null;
 
-  const cartData = await sendToBack({ route: "/cart/stats" }, "GET");
+  const [cartData, shippingData] = await Promise.all([
+    sendToBack({ route: "/cart/stats" }, "GET"),
+    sendToBack({ route: "/shipping/data" }, "GET"),
+  ]);
 
   if (!cartData) {
     console.error("Failed to get cart summary");
@@ -255,10 +259,13 @@ export const updateCartSummary = async () => {
 
   const { itemCount, total } = cartData;
   const spinTotal = cartData.spinTotal || 0;
+  const shippingAmount = Number(shippingData?.shipping?.selectedRate?.shipping_amount?.amount);
+  const hasShipping = Number.isFinite(shippingAmount);
 
   itemCountElement.textContent = itemCount;
   subtotalElement.textContent = `$${(total - spinTotal).toFixed(2)}`;
-  totalElement.textContent = `$${total.toFixed(2)}`;
+  shippingElement.textContent = hasShipping ? `$${shippingAmount.toFixed(2)}` : "[Enter ZIP]";
+  totalElement.textContent = `$${(total + (hasShipping ? shippingAmount : 0)).toFixed(2)}`;
 
   const spinRow = document.getElementById("cart-summary-spin-row");
   const spinEl = document.getElementById("cart-summary-spin-total");

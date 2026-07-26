@@ -37,7 +37,19 @@ process.env.ORDERS_COLLECTION = "orders";
 // process.env.TAX_RATE = "0.08"; // TAX DISABLED
 
 const makeReq = (cartItems = [], bodyOverride = {}) => ({
-  session: { cart: cartItems },
+  session: {
+    cart: cartItems,
+    shipping: {
+      zip: "90210",
+      selectedRate: {
+        carrier_friendly_name: "USPS",
+        service_type: "Ground Advantage",
+        shipping_amount: { amount: 7 },
+        delivery_days: 5,
+        estimated_delivery_date: "2026-08-01",
+      },
+    },
+  },
   body: {
     paymentIntentId: "pi_test123",
     firstName: "John", lastName: "Doe",
@@ -90,7 +102,7 @@ describe("placeNewOrder — success", () => {
     getCartStats.mockResolvedValue({ success: true, total: 100, itemCount: 2 });
     verifyPaymentIntent.mockResolvedValue({
       success: true,
-      intent: { id: "pi_test123", status: "succeeded", amount: 10000 },
+      intent: { id: "pi_test123", status: "succeeded", amount: 10700 },
     });
     storeCustomerData.mockResolvedValue({ email: "john@example.com" });
     dbModel.mockImplementation(function () {
@@ -112,10 +124,9 @@ describe("placeNewOrder — success", () => {
     expect(req.session.cart).toEqual([]);
   });
 
-  // TAX DISABLED: amount no longer includes tax (was 100 subtotal * 1.08 = 10800)
-  it("calls verifyPaymentIntent with correct amount in cents (subtotal only, no tax)", async () => {
+  it("calls verifyPaymentIntent with subtotal and session shipping in cents", async () => {
     await placeNewOrder(makeReq([makeCartItem("p1", 100, 1)]));
-    expect(verifyPaymentIntent).toHaveBeenCalledWith("pi_test123", 10000);
+    expect(verifyPaymentIntent).toHaveBeenCalledWith("pi_test123", 10700);
   });
 
   it("returns orderNumber from counter sequence", async () => {

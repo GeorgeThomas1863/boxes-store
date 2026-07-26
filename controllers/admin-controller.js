@@ -4,6 +4,24 @@ import { deletePic, uploadDir } from "../src/upload-back.js";
 import { whitelistFields, sanitizeFilename } from "../src/sanitize.js";
 import { getGameSettings, saveGameSettings } from "../src/game-settings.js";
 
+const validateShippingFields = (safeParams) => {
+  if (!safeParams) return null;
+
+  const fields = ["weight", "length", "width", "height"];
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i];
+    if (!(field in safeParams)) continue;
+
+    const value = parseFloat(safeParams[field]);
+    if (!Number.isFinite(value) || value < 0) {
+      const label = field.charAt(0).toUpperCase() + field.slice(1);
+      return `${label} must be a non-negative number`;
+    }
+    safeParams[field] = value;
+  }
+  return null;
+};
+
 export const getProductDataControl = async (req, res) => {
   const data = await getProductData();
   if (req.session.authenticated) return res.json(data);
@@ -32,6 +50,10 @@ export const addNewProductControl = async (req, res) => {
     "dateCreated",
     "discount",
     "display",
+    "weight",
+    "length",
+    "width",
+    "height",
   ]);
 
   if ('price' in safeParams) {
@@ -41,6 +63,9 @@ export const addNewProductControl = async (req, res) => {
     }
     safeParams.price = p;
   }
+
+  const shippingError = validateShippingFields(safeParams);
+  if (shippingError) return res.status(400).json({ error: shippingError });
 
   if ('discount' in safeParams) {
     const d = Number(safeParams.discount);
@@ -68,6 +93,10 @@ export const editProductControl = async (req, res) => {
     "productId",
     "discount",
     "display",
+    "weight",
+    "length",
+    "width",
+    "height",
   ]);
 
   if ('price' in safeParams) {
@@ -77,6 +106,9 @@ export const editProductControl = async (req, res) => {
     }
     safeParams.price = p;
   }
+
+  const shippingError = validateShippingFields(safeParams);
+  if (shippingError) return res.status(400).json({ error: shippingError });
 
   if ('discount' in safeParams) {
     const d = Number(safeParams.discount);

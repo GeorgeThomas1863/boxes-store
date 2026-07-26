@@ -3,6 +3,7 @@ import { buildCheckoutItem } from "../forms/checkout-form.js";
 import { initStripePayment, confirmStripePayment } from "../util/stripe-payment.js";
 import { showLoadStatus, hideLoadStatus } from "../util/loading.js";
 import { displayPopup } from "../util/popup.js";
+import { loadCheckoutShippingOptions } from "./shipping-run.js";
 
 export const populateCheckout = async () => {
   const [cartData, config] = await Promise.all([
@@ -16,6 +17,9 @@ export const populateCheckout = async () => {
   }
 
   await displayCheckoutItems(cartData.cart);
+  const shipping = await loadCheckoutShippingOptions();
+  const zipInput = document.getElementById("zip");
+  if (zipInput && shipping?.zip) zipInput.value = shipping.zip;
   await updateCheckoutSummary(config?.taxRate || 0);
 
   if (!config?.publishableKey) {
@@ -57,7 +61,10 @@ export const updateCheckoutSummary = async (taxRate = 0) => { // TAX DISABLED: t
 
   if (!subtotalElement || !shippingElement || !totalElement) return null;
 
-  const cartData = await sendToBack({ route: "/cart/stats" }, "GET");
+  const [cartData, shippingData] = await Promise.all([
+    sendToBack({ route: "/cart/stats" }, "GET"),
+    sendToBack({ route: "/shipping/data" }, "GET"),
+  ]);
   if (!cartData) {
     console.error("Failed to get cart summary");
     return null;
@@ -65,13 +72,15 @@ export const updateCheckoutSummary = async (taxRate = 0) => { // TAX DISABLED: t
 
   const spinTotal = cartData.spinTotal || 0;
   const subtotal = cartData.total - spinTotal;
+  const shippingAmount = Number(shippingData?.shipping?.selectedRate?.shipping_amount?.amount);
+  const hasShipping = Number.isFinite(shippingAmount);
   // const tax = Math.round(subtotal * parseFloat(taxRate) * 100) / 100; // TAX DISABLED
   // const total = subtotal + tax; // TAX DISABLED
-  const total = cartData.total; // TAX DISABLED
+  const total = cartData.total + (hasShipping ? shippingAmount : 0); // TAX DISABLED
 
   subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
   // if (taxElement) taxElement.textContent = `$${tax.toFixed(2)}`; // TAX DISABLED
-  shippingElement.textContent = "FREE";
+  shippingElement.textContent = hasShipping ? `$${shippingAmount.toFixed(2)}` : "[Enter ZIP]";
   totalElement.textContent = `$${total.toFixed(2)}`;
 
   const spinRow = document.getElementById("checkout-spin-row");
@@ -117,9 +126,12 @@ export const runPlaceOrder = async () => {
     { id: "zip", label: "ZIP Code" },
   ];
 
-  const missing = fieldMap
-    .filter(({ id }) => !document.getElementById(id)?.value?.trim())
-    .map(({ label }) => label);
+  const missing = [];
+  for (let i = 0; i < fieldMap.length; i++) {
+    if (!document.getElementById(fieldMap[i].id)?.value?.trim()) {
+      missing.push(fieldMap[i].label);
+    }
+  }
 
   if (missing.length > 0) {
     await displayPopup(`Please fill in the following: ${missing.join(", ")}`, "error");
@@ -141,6 +153,12 @@ export const runPlaceOrder = async () => {
   const email = document.getElementById("email")?.value?.trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     await displayPopup("Please enter a valid email address.", "error");
+    return null;
+  }
+
+  const shippingData = await sendToBack({ route: "/shipping/data" }, "GET");
+  if (!shippingData?.shipping?.selectedRate) {
+    await displayPopup("Please calculate shipping before placing your order", "error");
     return null;
   }
 

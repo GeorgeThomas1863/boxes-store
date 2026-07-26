@@ -58,3 +58,13 @@ node_modules/
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 .vscode/
+.idea/
+
+# Test coverage output
+coverage/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini

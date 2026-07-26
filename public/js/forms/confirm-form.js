@@ -262,6 +262,7 @@ const populateOrderDetails = (data) => {
     subtotal,
     tax,
     shippingCost,
+    shippingDetails,
     totalCost,
   } = data;
 
@@ -281,7 +282,10 @@ const populateOrderDetails = (data) => {
   set("confirm-customer-email", email);
   set("confirm-subtotal", `$${Number(subtotal).toFixed(2)}`);
   // set("confirm-tax", `$${Number(tax).toFixed(2)}`); // TAX DISABLED
-  set("confirm-shipping", "FREE");
+  const shippingLabel = shippingDetails
+    ? `$${Number(shippingCost).toFixed(2)} (${shippingDetails.carrier} - ${shippingDetails.service})`
+    : `$${Number(shippingCost).toFixed(2)}`;
+  set("confirm-shipping", shippingLabel);
   set("confirm-total", `$${Number(totalCost).toFixed(2)}`);
 
   const paymentStatusEl = document.getElementById("confirm-payment-status");
@@ -299,10 +303,11 @@ const populateOrderDetails = (data) => {
   const shippingAddressEl = document.getElementById("confirm-shipping-address");
   if (shippingAddressEl) {
     shippingAddressEl.replaceChildren();
-    [`${firstName} ${lastName}`, address, `${city}, ${state} ${zip}`].forEach((line, i) => {
+    const addressLines = [`${firstName} ${lastName}`, address, `${city}, ${state} ${zip}`];
+    for (let i = 0; i < addressLines.length; i++) {
       if (i > 0) shippingAddressEl.appendChild(document.createElement("br"));
-      shippingAddressEl.appendChild(document.createTextNode(line));
-    });
+      shippingAddressEl.appendChild(document.createTextNode(addressLines[i]));
+    }
   }
 
   return true;

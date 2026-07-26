@@ -4,7 +4,7 @@ import requireAuth from "../middleware/auth-config.js";
 import { authRateLimit } from "../middleware/rate-limit.js";
 
 import { displayMain, displayAdmin, displayCart, displayCheckout, displayConfirmOrder, displayAbout, displayContact, display404, display500 } from "../controllers/display-controller.js";
-import { getCartDataControl, getCartStatsControl, addToCartControl, updateCartItemControl, removeFromCartControl, clearCartControl, getStripeConfigControl, createPaymentIntentControl, placeOrderControl, updateCartSpinsControl, contactSubmitControl } from "../controllers/data-controller.js";
+import { getCartDataControl, getCartStatsControl, addToCartControl, updateCartItemControl, removeFromCartControl, clearCartControl, getShippingControl, calculateShippingControl, updateSelectedRateControl, clearShippingControl, getStripeConfigControl, createPaymentIntentControl, placeOrderControl, updateCartSpinsControl, contactSubmitControl } from "../controllers/data-controller.js";
 import { authController } from "../controllers/auth-controller.js";
 import { getProductDataControl, addNewProductControl, editProductControl, deleteProductControl, uploadPicControl, deletePicControl, getGameSettingsControl, saveGameSettingsControl } from "../controllers/admin-controller.js";
 import { upload } from "../src/upload-back.js";
@@ -37,6 +37,11 @@ router.post("/cart/update", updateCartItemControl);
 router.post("/cart/update-spins", updateCartSpinsControl);
 router.post("/cart/remove", removeFromCartControl);
 router.post("/cart/clear", clearCartControl);
+
+router.get("/shipping/data", getShippingControl);
+router.post("/shipping/calculate", calculateShippingControl);
+router.post("/shipping/select", updateSelectedRateControl);
+router.post("/shipping/clear", clearShippingControl);
 
 router.get("/confirm-order", displayConfirmOrder);
 router.get("/config/stripe", getStripeConfigControl);

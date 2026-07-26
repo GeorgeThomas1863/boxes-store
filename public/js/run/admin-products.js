@@ -10,6 +10,7 @@ import { buildPicSlot } from "../forms/admin-form.js";
 
 export const runAddNewProduct = async () => {
   const newProductParams = await buildNewProductParams();
+  addShippingParams(newProductParams, "add");
   if (!newProductParams || !newProductParams.name || !newProductParams.price) {
     await displayPopup("Please fill in the product name and price before submitting", "error");
     return null;
@@ -47,6 +48,7 @@ export const runEditProduct = async () => {
   }
 
   const editProductParams = await getEditProductParams();
+  addShippingParams(editProductParams, "edit");
   if (!editProductParams || !editProductParams.name || !editProductParams.price) {
     await displayPopup("Please fill in all product fields before submitting", "error");
     return null;
@@ -128,6 +130,7 @@ export const changeAdminProductSelector = async (changeElement) => {
   if (!changeElement) return null;
 
   await clearAdminEditFields();
+  clearShippingFields();
 
   // Reset pic slots to a single empty disabled slot
   const container = document.querySelector(".pic-slots-container");
@@ -153,6 +156,7 @@ export const changeAdminProductSelector = async (changeElement) => {
   if (!productObj) return null;
 
   await enableAdminEditFields();
+  enableShippingFields();
   await populateEditFormProducts(productObj);
 };
 
@@ -210,7 +214,7 @@ export const populateAdminProductSelector = async (inputArray) => {
 export const populateEditFormProducts = async (inputObj) => {
   if (!inputObj) return null;
 
-  const { itemId, name, urlName, price, description, discount, display } = inputObj;
+  const { itemId, name, urlName, price, description, discount, display, weight, length, width, height } = inputObj;
 
   const adminEditMapArray = [
     { id: "edit-item-id", value: itemId },
@@ -219,12 +223,16 @@ export const populateEditFormProducts = async (inputObj) => {
     { id: "edit-price", value: price },
     { id: "edit-description", value: description },
     { id: "edit-discount", value: discount ?? 0 },
+    { id: "edit-weight", value: weight ?? 0 },
+    { id: "edit-length", value: length ?? 0 },
+    { id: "edit-width", value: width ?? 0 },
+    { id: "edit-height", value: height ?? 0 },
   ];
 
   for (let i = 0; i < adminEditMapArray.length; i++) {
     const field = document.getElementById(adminEditMapArray[i].id);
     if (field) {
-      field.value = adminEditMapArray[i].value || "";
+      field.value = adminEditMapArray[i].value ?? "";
     }
   }
 
@@ -299,4 +307,32 @@ export const populateEditFormProducts = async (inputObj) => {
   if (addBtn) addBtn.disabled = false;
 
   return true;
+};
+
+const addShippingParams = (params, mode) => {
+  if (!params) return null;
+
+  const prefix = mode === "edit" ? "edit-" : "";
+  const fields = ["weight", "length", "width", "height"];
+  for (let i = 0; i < fields.length; i++) {
+    const value = document.getElementById(`${prefix}${fields[i]}`)?.value;
+    params[fields[i]] = value === "" || value == null ? 0 : Number(value);
+  }
+  return params;
+};
+
+const clearShippingFields = () => {
+  const fields = ["edit-weight", "edit-length", "edit-width", "edit-height"];
+  for (let i = 0; i < fields.length; i++) {
+    const field = document.getElementById(fields[i]);
+    if (field) field.value = "";
+  }
+};
+
+const enableShippingFields = () => {
+  const fields = ["edit-weight", "edit-length", "edit-width", "edit-height"];
+  for (let i = 0; i < fields.length; i++) {
+    const field = document.getElementById(fields[i]);
+    if (field) field.disabled = false;
+  }
 };

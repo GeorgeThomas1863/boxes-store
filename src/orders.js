@@ -5,6 +5,7 @@ import { verifyPaymentIntent } from "./payments.js";
 import { storeCustomerData } from "./customer.js";
 import { sendMail } from "./mailer.js";
 import { escapeHtml, sanitizeEmailHeader } from "./sanitize.js";
+import { getSelectedShippingCost } from "./shipping.js";
 
 export const placeNewOrder = async (req) => {
   if (!req || !req.body) return { success: false, message: "No input parameters" };
@@ -16,11 +17,21 @@ export const placeNewOrder = async (req) => {
   const cartStats = await getCartStats(req);
   if (!cartStats || !cartStats.success) return { success: false, message: "Failed to get cart data" };
 
+  const shippingCost = getSelectedShippingCost(req);
+  if (shippingCost === null) return { success: false, message: "No shipping rate selected" };
+  const selectedRate = req.session.shipping.selectedRate;
+  const shippingDetails = {
+    carrier: selectedRate.carrier_friendly_name,
+    service: selectedRate.service_type,
+    cost: shippingCost,
+    deliveryDays: selectedRate.delivery_days,
+    estimatedDelivery: selectedRate.estimated_delivery_date,
+    zip: req.session.shipping.zip,
+  };
   const subtotal = Math.round(cartStats.total * 100) / 100;
   // const taxRate = parseFloat(process.env.TAX_RATE) || 0; // TAX DISABLED
   // const tax = Math.round(subtotal * taxRate * 100) / 100; // TAX DISABLED
   const tax = 0; // TAX DISABLED
-  const shippingCost = 0;
   const totalCost = Math.round((subtotal + tax + shippingCost) * 100) / 100;
   const totalInCents = Math.round(totalCost * 100);
 
@@ -37,7 +48,7 @@ export const placeNewOrder = async (req) => {
       nursingSpecialty, productLikes, productDislikes, tiktokHandle,
       items: req.session.cart,
       itemCount: cartStats.itemCount,
-      subtotal, tax, shippingCost, totalCost,
+      subtotal, tax, shippingCost, shippingDetails, totalCost,
       amountPaid: totalCost,
       paymentId: intent.id,
       paymentStatus: intent.status,
@@ -59,6 +70,7 @@ export const placeNewOrder = async (req) => {
     }
 
     req.session.cart = [];
+    req.session.shipping = null;
 
     return {
       success: true,
@@ -71,6 +83,7 @@ export const placeNewOrder = async (req) => {
         subtotal: orderData.subtotal,
         tax: orderData.tax,
         shippingCost: orderData.shippingCost,
+        shippingDetails: orderData.shippingDetails,
         totalCost: orderData.totalCost,
         firstName, lastName, email, phone, address, city, state, zip,
         nursingSpecialty, productLikes, productDislikes, tiktokHandle,
@@ -217,7 +230,7 @@ const buildEmailHtml = (orderData, type) => {
     firstName, lastName, email,
     address, city, state, zip,
     nursingSpecialty, productLikes, productDislikes, tiktokHandle,
-    items, subtotal, tax, totalCost,
+    items, subtotal, tax, shippingCost, shippingDetails, totalCost,
     amountPaid, paymentId, paymentStatus,
     orderDate, orderNumber,
   } = orderData;
@@ -286,6 +299,10 @@ const buildEmailHtml = (orderData, type) => {
        </table>`
     : "";
 
+  const shippingService = shippingDetails
+    ? ` (${escapeHtml(String(shippingDetails.carrier || ""))} &mdash; ${escapeHtml(String(shippingDetails.service || ""))})`
+    : "";
+
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       ${header}
@@ -308,6 +325,7 @@ const buildEmailHtml = (orderData, type) => {
         <p><strong>Subtotal:</strong> $${escapeHtml(Number(subtotal).toFixed(2))}</p>
         <!-- <p><strong>Tax:</strong> $${escapeHtml(Number(tax).toFixed(2))}</p> --> <!-- TAX DISABLED -->
         ${spinTotal > 0 ? `<p><strong>Extra Spins:</strong> +$${escapeHtml(spinTotal.toFixed(2))}</p>` : ""}
+        <p><strong>Shipping:</strong> $${escapeHtml(Number(shippingCost).toFixed(2))}${shippingService}</p>
         <p style="font-size: 18px;"><strong>Total:</strong> $${escapeHtml(Number(totalCost).toFixed(2))}</p>
       </div>
 

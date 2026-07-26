@@ -33,6 +33,13 @@ vi.mock("../../src/orders.js", () => ({
 vi.mock("../../src/payments.js", () => ({ createPaymentIntent: vi.fn(), refundPayment: vi.fn() }));
 vi.mock("../../src/products.js", () => ({ updateProduct: vi.fn() }));
 vi.mock("../../src/contact.js", () => ({ submitContact: vi.fn() }));
+vi.mock("../../src/shipping.js", () => ({
+  getShippingFromSession: vi.fn(),
+  fetchShippingRates: vi.fn(),
+  updateSelectedRate: vi.fn(),
+  clearShippingFromSession: vi.fn(),
+  getSelectedShippingCost: vi.fn(),
+}));
 
 import {
   getCartDataControl,
@@ -58,6 +65,7 @@ import {
 import { validatePositiveInt } from "../../src/sanitize.js";
 import { createPaymentIntent } from "../../src/payments.js";
 import { storePendingOrder } from "../../src/orders.js";
+import { getSelectedShippingCost } from "../../src/shipping.js";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -92,6 +100,7 @@ beforeEach(() => {
   // Checkout only proceeds once the intent is recorded; default to success so
   // individual tests opt in to the failure path.
   storePendingOrder.mockResolvedValue({ paymentIntentId: "pi_pending", status: "pending" });
+  getSelectedShippingCost.mockReturnValue(5);
 });
 
 // ---------------------------------------------------------------------------
@@ -576,7 +585,7 @@ describe("createPaymentIntentControl", () => {
 
     await createPaymentIntentControl(req, res);
 
-    expect(storePendingOrder).toHaveBeenCalledWith("pi_abc", 5000, cart);
+    expect(storePendingOrder).toHaveBeenCalledWith("pi_abc", 5500, cart);
   });
 
   it("calls createPaymentIntent with totalInCents derived from cart total", async () => {
@@ -587,6 +596,6 @@ describe("createPaymentIntentControl", () => {
 
     await createPaymentIntentControl(req, res);
 
-    expect(createPaymentIntent).toHaveBeenCalledWith(4999);
+    expect(createPaymentIntent).toHaveBeenCalledWith(5499);
   });
 });

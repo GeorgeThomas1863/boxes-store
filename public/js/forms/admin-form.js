@@ -458,10 +458,11 @@ export const buildProductDetailsSection = async (mode) => {
 
   const priceRow = await buildInfoRowPrice(mode, "price", "Price");
   const discountRow = await buildInfoRowDiscount(mode, "discount", "Discount (%)");
+  const shippingRows = await buildShippingRows(mode);
   const displayToggleRow = await buildInfoRowDisplayToggle(mode);
   const descRow = await buildInfoRowTextarea(mode, "description", "Description");
 
-  section.append(header, itemIdRow, nameRow, priceRow, discountRow, displayToggleRow, descRow, slugRow);
+  section.append(header, itemIdRow, nameRow, priceRow, discountRow, ...shippingRows, displayToggleRow, descRow, slugRow);
 
   return section;
 };
@@ -549,6 +550,68 @@ export const buildInfoRowPrice = async (mode, fieldName, labelText) => {
   contentWrapper.append(input);
   row.append(label, contentWrapper);
 
+  return row;
+};
+
+export const buildShippingRows = async (mode) => {
+  if (mode !== "add" && mode !== "edit") return [];
+
+  const fields = [
+    ["weight", "Weight (lb)"],
+    ["length", "Length (in)"],
+    ["width", "Width (in)"],
+    ["height", "Height (in)"],
+  ];
+  const rows = [await buildShippingHeader()];
+
+  for (let i = 0; i < fields.length; i++) {
+    rows.push(await buildInfoRowShipping(mode, fields[i][0], fields[i][1]));
+  }
+
+  return rows;
+};
+
+const buildShippingHeader = async () => {
+  const header = document.createElement("div");
+  header.className = "section-header shipping-section-header";
+
+  const icon = document.createElement("span");
+  icon.className = "section-icon";
+  icon.textContent = "🚚";
+
+  const title = document.createElement("h3");
+  title.className = "section-title";
+  title.textContent = "Shipping";
+
+  header.append(icon, title);
+  return header;
+};
+
+export const buildInfoRowShipping = async (mode, fieldName, labelText) => {
+  if (!fieldName || !labelText) return null;
+
+  const row = document.createElement("div");
+  row.className = "info-row";
+
+  const label = document.createElement("div");
+  label.className = "info-label";
+  label.textContent = labelText;
+
+  const contentWrapper = document.createElement("div");
+  contentWrapper.className = "info-content-wrapper";
+
+  const input = document.createElement("input");
+  input.className = "info-content info-input";
+  input.type = "number";
+  input.min = "0";
+  input.step = "0.01";
+  input.placeholder = "0.00";
+  input.id = mode === "add" ? fieldName : `edit-${fieldName}`;
+  input.name = input.id;
+  if (mode === "edit") input.disabled = true;
+
+  contentWrapper.append(input);
+  row.append(label, contentWrapper);
   return row;
 };
 

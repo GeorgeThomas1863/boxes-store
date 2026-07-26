@@ -78,7 +78,7 @@ export const buildCartSummarySection = async () => {
   const spinRow = await buildSummaryRow("Extra Spins:", "$0.00", "cart-summary-spin-total");
   spinRow.id = "cart-summary-spin-row";
   spinRow.style.display = "none";
-  const shippingRow = await buildSummaryRow("Shipping:", "FREE", "cart-summary-shipping");
+  const shippingRow = await buildSummaryRow("Shipping:", "[Enter ZIP]", "cart-summary-shipping");
 
   const totalRow = document.createElement("div");
   totalRow.className = "cart-summary-row cart-summary-total";
@@ -108,10 +108,98 @@ export const buildCartSummarySection = async () => {
   continueShoppingLink.href = "/";
   continueShoppingLink.textContent = "Continue Shopping";
 
-  summaryCard.append(summaryTitle, summaryDetails, checkoutBtn, continueShoppingLink);
+  const shippingCalculator = buildShippingCalculator();
+
+  summaryCard.append(summaryTitle, shippingCalculator, summaryDetails, checkoutBtn, continueShoppingLink);
   summarySection.append(summaryCard);
 
   return summarySection;
+};
+
+const buildShippingCalculator = () => {
+  const card = document.createElement("div");
+  card.className = "shipping-calculator-card";
+
+  const title = document.createElement("h3");
+  title.className = "shipping-calculator-title";
+  title.textContent = "Calculate Shipping";
+
+  const input = document.createElement("input");
+  input.className = "shipping-calculator-input";
+  input.id = "cart-shipping-zip-input";
+  input.type = "text";
+  input.inputMode = "numeric";
+  input.maxLength = 5;
+  input.placeholder = "Enter 5-digit ZIP";
+
+  const helper = document.createElement("p");
+  helper.className = "shipping-calculator-helper";
+  helper.textContent = "Rates update automatically as you type.";
+
+  const result = document.createElement("div");
+  result.className = "shipping-calculator-result hidden";
+  result.id = "shipping-calculator-result";
+
+  card.append(title, input, helper, result);
+  return card;
+};
+
+export const buildShippingOption = (rateData) => {
+  const label = "shipping-option-select";
+  const option = document.createElement("div");
+  option.className = "shipping-option";
+  option.dataset.rateId = rateData.rateId;
+  option.dataset.label = label;
+
+  const radio = document.createElement("input");
+  radio.className = "shipping-option-radio";
+  radio.type = "radio";
+  radio.name = "shipping-option";
+  radio.id = `shipping-${rateData.rateId}`;
+  radio.value = Number(rateData.shipping_amount.amount);
+  radio.dataset.label = label;
+
+  const content = document.createElement("div");
+  content.className = "shipping-option-content";
+  content.dataset.label = label;
+  const header = document.createElement("div");
+  header.className = "shipping-option-header";
+  header.dataset.label = label;
+  const name = document.createElement("span");
+  name.className = "shipping-option-name";
+  name.textContent = `${rateData.carrier_friendly_name} - ${rateData.service_type}`;
+  name.dataset.label = label;
+  const price = document.createElement("span");
+  price.className = "shipping-option-price";
+  price.textContent = `$${Number(rateData.shipping_amount.amount).toFixed(2)}`;
+  price.dataset.label = label;
+  header.append(name, price);
+  content.append(header);
+
+  const details = buildShippingOptionDetails(rateData, "shipping-option-details", label);
+  if (details) content.append(details);
+  option.append(radio, content);
+  return option;
+};
+
+const buildShippingOptionDetails = (rateData, className, label) => {
+  if (!rateData.delivery_days && !rateData.estimated_delivery_date) return null;
+  const details = document.createElement("div");
+  details.className = className;
+  details.dataset.label = label;
+  if (rateData.delivery_days) {
+    const days = document.createElement("span");
+    days.textContent = `${rateData.delivery_days} business days`;
+    days.dataset.label = label;
+    details.append(days);
+  }
+  if (rateData.estimated_delivery_date) {
+    const date = document.createElement("span");
+    date.textContent = `Estimated delivery: ${rateData.estimated_delivery_date}`;
+    date.dataset.label = label;
+    details.append(date);
+  }
+  return details;
 };
 
 export const buildSummaryRow = async (label, value, valueId) => {

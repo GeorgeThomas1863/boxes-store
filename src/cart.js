@@ -12,6 +12,10 @@ const isValidSpinOption = async (extraSpins, spinCost) => {
   );
 };
 
+const clearStaleShipping = (req) => {
+  req.session.shipping = null;
+};
+
 export const buildCart = async (req) => {
   if (!req.session.cart) {
     req.session.cart = [];
@@ -84,6 +88,7 @@ export const addCartItem = async (req) => {
     itemCount += req.session.cart[i].quantity;
   }
 
+  clearStaleShipping(req);
   return { success: true, cart: req.session.cart, itemCount: itemCount };
 };
 
@@ -141,6 +146,7 @@ export const updateCartItem = async (req) => {
     item.quantity = safeQuantity;
   }
 
+  clearStaleShipping(req);
   return { success: true, cart: req.session.cart };
 };
 
@@ -157,6 +163,7 @@ export const removeCartItem = async (req) => {
   }
   req.session.cart = newCart;
 
+  clearStaleShipping(req);
   return { success: true, cart: req.session.cart };
 };
 
@@ -197,5 +204,6 @@ export const updateCartSpins = async (req) => {
     item.spinCost = spinCost;
     item.cartItemId = newCartItemId;
   }
+  clearStaleShipping(req);
   return { success: true, cart: req.session.cart };
 };
