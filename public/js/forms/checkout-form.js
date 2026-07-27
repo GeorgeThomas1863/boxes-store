@@ -1,5 +1,5 @@
 import { STATES_ARRAY } from "../util/define-things.js";
-import { buildDeliveryDateSpan } from "../util/shipping-details.js";
+import { buildShippingOptionDetails } from "../util/shipping-details.js";
 
 export const buildCheckoutForm = async () => {
   const checkoutContainer = document.createElement("div");
@@ -287,22 +287,9 @@ export const buildCheckoutShippingOption = (rateData) => {
 
   headerDiv.append(nameSpan, priceSpan);
 
-  const detailsDiv = document.createElement("div");
-  detailsDiv.className = "checkout-shipping-option-details";
-  detailsDiv.dataset.label = label;
-
-  if (rateData.delivery_days) {
-    const deliverySpan = document.createElement("span");
-    deliverySpan.textContent = `${rateData.delivery_days} business days`;
-    deliverySpan.dataset.label = label;
-    detailsDiv.appendChild(deliverySpan);
-  }
-
-  const dateSpan = buildDeliveryDateSpan(rateData, label);
-  if (dateSpan) detailsDiv.appendChild(dateSpan);
-
   contentDiv.append(headerDiv);
-  if (detailsDiv.childElementCount) contentDiv.append(detailsDiv);
+  const detailsDiv = buildShippingOptionDetails(rateData, "checkout-shipping-option-details", label);
+  if (detailsDiv) contentDiv.append(detailsDiv);
   optionDiv.append(radioInput, contentDiv);
 
   return optionDiv;

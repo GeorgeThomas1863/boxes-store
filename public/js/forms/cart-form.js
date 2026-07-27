@@ -1,7 +1,7 @@
 // forms/cart-form.js
 import { buildSpinSelector } from "../util/spin-options.js";
 import { getGameSettings } from "../util/game-settings-cache.js";
-import { buildDeliveryDateSpan } from "../util/shipping-details.js";
+import { buildShippingOptionDetails } from "../util/shipping-details.js";
 export const buildCartForm = async () => {
   const cartContainer = document.createElement("div");
   cartContainer.className = "cart-container";
@@ -173,22 +173,6 @@ export const buildShippingOption = (rateData) => {
   if (details) content.append(details);
   option.append(radio, content);
   return option;
-};
-
-const buildShippingOptionDetails = (rateData, className, label) => {
-  if (!rateData.delivery_days && !rateData.estimated_delivery_date) return null;
-  const details = document.createElement("div");
-  details.className = className;
-  details.dataset.label = label;
-  if (rateData.delivery_days) {
-    const days = document.createElement("span");
-    days.textContent = `${rateData.delivery_days} business days`;
-    days.dataset.label = label;
-    details.append(days);
-  }
-  const dateSpan = buildDeliveryDateSpan(rateData, label);
-  if (dateSpan) details.append(dateSpan);
-  return details;
 };
 
 export const buildSummaryRow = async (label, value, valueId) => {
