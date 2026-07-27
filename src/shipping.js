@@ -152,7 +152,11 @@ export const applyShippingAdjustments = (rateArray) => {
       // API may return full ISO timestamps — keep only the calendar date
       const datePart = String(rate.estimated_delivery_date).slice(0, 10);
       const deliveryDate = new Date(`${datePart}T00:00:00.000Z`);
-      if (Number.isNaN(deliveryDate.getTime())) continue;
+      if (Number.isNaN(deliveryDate.getTime())) {
+        // Unparseable date: drop it so the UI falls back to delivery_days
+        delete rate.estimated_delivery_date;
+        continue;
+      }
       deliveryDate.setUTCDate(deliveryDate.getUTCDate() + 2);
       rate.estimated_delivery_date = deliveryDate.toISOString().slice(0, 10);
     }

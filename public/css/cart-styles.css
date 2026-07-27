@@ -52,12 +52,6 @@
   background: #fafafa;
 }
 
-.cart-right-column {
-  display: flex;
-  flex-direction: column;
-  position: static;
-}
-
 .cart-item-image-container {
   flex-shrink: 0;
   display: flex;

@@ -1,6 +1,7 @@
 // forms/cart-form.js
 import { buildSpinSelector } from "../util/spin-options.js";
 import { getGameSettings } from "../util/game-settings-cache.js";
+import { buildDeliveryDateSpan } from "../util/shipping-details.js";
 export const buildCartForm = async () => {
   const cartContainer = document.createElement("div");
   cartContainer.className = "cart-container";
@@ -30,17 +31,9 @@ export const buildCartContent = async () => {
   const cartContent = document.createElement("div");
   cartContent.className = "cart-content";
 
-  // Create a wrapper for the right column
-  const rightColumnWrapper = document.createElement("div");
-  rightColumnWrapper.className = "cart-right-column";
-
   const cartItemsSection = await buildCartItemsSection();
   const cartSummarySection = await buildCartSummarySection();
 
-
-  // rightColumnWrapper.append(cartSummarySection);
-
-  // cartContent.append(cartItemsSection, rightColumnWrapper);
   cartContent.append(cartItemsSection, cartSummarySection);
 
   return cartContent;
@@ -193,17 +186,8 @@ const buildShippingOptionDetails = (rateData, className, label) => {
     days.dataset.label = label;
     details.append(days);
   }
-  if (rateData.estimated_delivery_date) {
-    const date = document.createElement("span");
-    date.append("Estimated delivery: ");
-    const dateValue = document.createElement("span");
-    dateValue.className = "shipping-detail-date";
-    dateValue.textContent = rateData.estimated_delivery_date;
-    dateValue.dataset.label = label;
-    date.append(dateValue);
-    date.dataset.label = label;
-    details.append(date);
-  }
+  const dateSpan = buildDeliveryDateSpan(rateData, label);
+  if (dateSpan) details.append(dateSpan);
   return details;
 };
 
