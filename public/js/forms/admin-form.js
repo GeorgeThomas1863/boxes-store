@@ -171,7 +171,6 @@ export const buildStatsSection = async () => {
   const stats = [
     { icon: "📦", value: "0", label: "Products", id: "total-products-stat" },
     { icon: "👁️", value: "0", label: "Displayed", id: "displayed-products-stat" },
-    { icon: "✅", value: "0", label: "Sold", id: "sold-products-stat" },
   ];
 
   for (let i = 0; i < stats.length; i++) {

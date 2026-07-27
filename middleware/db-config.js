@@ -1,5 +1,4 @@
-import dotenv from "dotenv";
-dotenv.config({ path: ".env" });
+import "./env-config.js";
 
 import { MongoClient } from "mongodb";
 

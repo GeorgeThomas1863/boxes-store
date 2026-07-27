@@ -2,7 +2,6 @@ import { buildCart, getCartStats, addCartItem, updateCartItem, removeCartItem, u
 import { validatePositiveInt, validateEmail, validateZip, validateString } from "../src/sanitize.js";
 import { placeNewOrder, storePendingOrder, updateOrderStatus } from "../src/orders.js";
 import { createPaymentIntent, refundPayment } from "../src/payments.js";
-import { updateProduct } from "../src/products.js";
 import { submitContact } from "../src/contact.js";
 import {
   getShippingFromSession,
@@ -96,18 +95,6 @@ export const updateSelectedRateControl = async (req, res) => {
 export const clearShippingControl = async (req, res) => {
   const data = clearShippingFromSession(req);
   return res.json(data);
-};
-
-const markProductsSold = async (cartItems) => {
-  if (!cartItems || !cartItems.length) return;
-  for (let i = 0; i < cartItems.length; i++) {
-    const item = cartItems[i];
-    if (item.productId) {
-      await updateProduct({ productId: item.productId, sold: true }).catch((e) =>
-        console.error("MARK PRODUCT SOLD ERROR:", e)
-      );
-    }
-  }
 };
 
 export const getStripeConfigControl = (req, res) => {
@@ -212,10 +199,6 @@ export const placeOrderControl = async (req, res) => {
       .then((refund) => updateOrderStatus(req.body.paymentIntentId, refund?.success ? "refunded" : "refund-failed"))
       .catch((e) => console.error("REFUND FAILED:", e));
     return res.status(500).json({ success: false, message: data.message || "Order failed. A refund has been initiated. Please contact support." });
-  }
-
-  if (data.data && data.data.cartData) {
-    markProductsSold(data.data.cartData).catch((e) => console.error("MARK SOLD ERROR:", e));
   }
 
   return res.json(data);

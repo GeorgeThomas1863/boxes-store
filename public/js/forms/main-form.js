@@ -26,7 +26,7 @@ export const buildMainForm = async () => {
     cardsGrid.append(msg);
   } else {
     const products = productData
-      .filter((p) => p.display !== "no" && p.sold !== "yes")
+      .filter((p) => p.display !== "no")
       .sort((a, b) => new Date(b.dateCreated || 0) - new Date(a.dateCreated || 0));
     if (products.length === 0) {
       const banner = await buildOutOfStockBanner();

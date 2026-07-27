@@ -1,5 +1,4 @@
-import dotenv from "dotenv";
-dotenv.config({ path: ".env" });
+import "../middleware/env-config.js";
 
 import path from "path";
 import fs from "fs";

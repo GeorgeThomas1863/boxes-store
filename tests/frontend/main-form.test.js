@@ -183,17 +183,6 @@ describe("buildMainForm", () => {
     expect(document.querySelector(".out-of-stock-banner")).not.toBeNull();
   });
 
-  it("renders 0 .product-card elements and shows out-of-stock banner when all products have sold:'yes'", async () => {
-    sendToBack.mockResolvedValue([
-      { productId: "c", name: "C", price: 5, sold: "yes" },
-      { productId: "d", name: "D", price: 5, sold: "yes" },
-    ]);
-    const form = await buildMainForm();
-    document.body.appendChild(form);
-    expect(document.querySelectorAll(".product-card").length).toBe(0);
-    expect(document.querySelector(".out-of-stock-banner")).not.toBeNull();
-  });
-
   it("excludes display:'no' products while including others", async () => {
     sendToBack.mockResolvedValue([
       { productId: "visible1", name: "Visible", price: 5 },
@@ -206,16 +195,14 @@ describe("buildMainForm", () => {
     expect(cards[0].getAttribute("data-product-id")).toBe("visible1");
   });
 
-  it("excludes sold:'yes' products while including others", async () => {
+  it("renders a card for each visible product, ignoring any sold flag", async () => {
     sendToBack.mockResolvedValue([
       { productId: "visible2", name: "Visible", price: 5 },
       { productId: "sold1", name: "Sold", price: 5, sold: "yes" },
     ]);
     const form = await buildMainForm();
     document.body.appendChild(form);
-    const cards = document.querySelectorAll(".product-card");
-    expect(cards.length).toBe(1);
-    expect(cards[0].getAttribute("data-product-id")).toBe("visible2");
+    expect(document.querySelectorAll(".product-card").length).toBe(2);
   });
 
   it("renders a card for each visible product", async () => {

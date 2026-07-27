@@ -137,15 +137,12 @@ export const updateProductStats = async (productData) => {
 
   const totalProducts = productData.length;
   const displayedProducts = productData.filter((p) => p.display === "yes").length;
-  const soldProducts = productData.filter((p) => p.sold === "yes").length;
 
   const totalStat = document.getElementById("total-products-stat");
   const displayedStat = document.getElementById("displayed-products-stat");
-  const soldStat = document.getElementById("sold-products-stat");
 
   if (totalStat) totalStat.textContent = totalProducts;
   if (displayedStat) displayedStat.textContent = displayedProducts;
-  if (soldStat) soldStat.textContent = soldProducts;
 
   return true;
 };

@@ -1,8 +1,6 @@
 //move game collection name to e 
 
-import dotenv from "dotenv";
-
-dotenv.config({ path: ".env" });
+import "./middleware/env-config.js";
 
 import express from "express";
 import session from "express-session";
