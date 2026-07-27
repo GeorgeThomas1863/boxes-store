@@ -51,6 +51,7 @@ import {
   updateCartSpinsControl,
   getStripeConfigControl,
   createPaymentIntentControl,
+  calculateShippingControl,
 } from "../../controllers/data-controller.js";
 
 import {
@@ -62,10 +63,10 @@ import {
   updateCartSpins,
 } from "../../src/cart.js";
 
-import { validatePositiveInt } from "../../src/sanitize.js";
+import { validatePositiveInt, validateZip } from "../../src/sanitize.js";
 import { createPaymentIntent } from "../../src/payments.js";
 import { storePendingOrder } from "../../src/orders.js";
-import { getSelectedShippingCost } from "../../src/shipping.js";
+import { getSelectedShippingCost, fetchShippingRates } from "../../src/shipping.js";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -597,5 +598,69 @@ describe("createPaymentIntentControl", () => {
     await createPaymentIntentControl(req, res);
 
     expect(createPaymentIntent).toHaveBeenCalledWith(5499);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// calculateShippingControl
+// ---------------------------------------------------------------------------
+
+describe("calculateShippingControl", () => {
+  it("returns the failure message as JSON so the frontend can display it", async () => {
+    validateZip.mockReturnValue("90210");
+    fetchShippingRates.mockResolvedValue({ success: false, message: "No shippable items in cart" });
+    const req = mockReq({ body: { zip: "90210", productArray: [] } });
+    const res = mockRes();
+
+    await calculateShippingControl(req, res);
+
+    expect(res._status).toBe(200);
+    expect(res._body).toEqual({ success: false, message: "No shippable items in cart" });
+  });
+
+  it("falls back to a generic message when the failure has none", async () => {
+    validateZip.mockReturnValue("90210");
+    fetchShippingRates.mockResolvedValue(null);
+    const req = mockReq({ body: { zip: "90210", productArray: [] } });
+    const res = mockRes();
+
+    await calculateShippingControl(req, res);
+
+    expect(res._status).toBe(200);
+    expect(res._body).toEqual({ success: false, message: "Failed to calculate shipping rate" });
+  });
+
+  it("passes successful rate data through unchanged", async () => {
+    validateZip.mockReturnValue("90210");
+    const data = { success: true, message: "Shipping rate calculated successfully", rateData: [{ rateId: 0 }] };
+    fetchShippingRates.mockResolvedValue(data);
+    const req = mockReq({ body: { zip: "90210", productArray: [] } });
+    const res = mockRes();
+
+    await calculateShippingControl(req, res);
+
+    expect(res._status).toBe(200);
+    expect(res._body).toEqual(data);
+  });
+
+  it("rejects a missing zip with a 400", async () => {
+    const req = mockReq({ body: {} });
+    const res = mockRes();
+
+    await calculateShippingControl(req, res);
+
+    expect(res._status).toBe(400);
+    expect(fetchShippingRates).not.toHaveBeenCalled();
+  });
+
+  it("rejects an invalid zip with a 400", async () => {
+    validateZip.mockReturnValue(null);
+    const req = mockReq({ body: { zip: "abc" } });
+    const res = mockRes();
+
+    await calculateShippingControl(req, res);
+
+    expect(res._status).toBe(400);
+    expect(fetchShippingRates).not.toHaveBeenCalled();
   });
 });

@@ -1,6 +1,10 @@
 import dbModel from "../models/db-model.js";
 import { sanitizeMongoValue, validatePositiveInt, validateZip } from "./sanitize.js";
 
+// Fallback for products saved without shipping fields — a small box, so
+// missing data never blocks checkout. Real dimensions still win when set.
+const DEFAULT_PACKAGE = { weight: 1, length: 8, width: 6, height: 4 };
+
 const ENVELOPE_PACKAGE_TYPES = new Set([
   "letter",
   "thick_envelope",
@@ -64,10 +68,10 @@ const aggregatePackageDimensions = async (productArray) => {
     const productData = await productModel.getUniqueItem();
     if (!productData) continue;
 
-    packageData.totalWeight += (productData.weight || 0) * safeQuantity;
-    packageData.maxLength = Math.max(packageData.maxLength, productData.length || 0);
-    packageData.maxWidth = Math.max(packageData.maxWidth, productData.width || 0);
-    packageData.maxHeight = Math.max(packageData.maxHeight, productData.height || 0);
+    packageData.totalWeight += (productData.weight || DEFAULT_PACKAGE.weight) * safeQuantity;
+    packageData.maxLength = Math.max(packageData.maxLength, productData.length || DEFAULT_PACKAGE.length);
+    packageData.maxWidth = Math.max(packageData.maxWidth, productData.width || DEFAULT_PACKAGE.width);
+    packageData.maxHeight = Math.max(packageData.maxHeight, productData.height || DEFAULT_PACKAGE.height);
   }
 
   return packageData;

@@ -154,6 +154,34 @@ describe("shipping package calculation", () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
+  it("falls back to the default package size for a product with no shipping fields", async () => {
+    installDbProducts({
+      p1: { productId: "p1", name: "No dims", price: 10 },
+    });
+    mockShippingFetch();
+    const result = await fetchShippingRates(shippingReq([{ productId: "p1", quantity: 2 }]));
+
+    expect(result.success).toBe(true);
+    expect(estimateBody()).toMatchObject({
+      weight: { value: 2, unit: "pound" },
+      dimensions: { length: 8, width: 6, height: 4, unit: "inch" },
+    });
+  });
+
+  it("fills only the missing fields with defaults when a product has partial shipping data", async () => {
+    installDbProducts({
+      p1: { productId: "p1", name: "Partial", price: 10, weight: 3, length: 20 },
+    });
+    mockShippingFetch();
+    const result = await fetchShippingRates(shippingReq([{ productId: "p1", quantity: 1 }]));
+
+    expect(result.success).toBe(true);
+    expect(estimateBody()).toMatchObject({
+      weight: { value: 3 },
+      dimensions: { length: 20, width: 6, height: 4 },
+    });
+  });
+
   it("rejects a malformed ZIP before any network call", async () => {
     const result = await fetchShippingRates(shippingReq(undefined, "12-345"));
 

@@ -80,7 +80,9 @@ export const calculateShippingControl = async (req, res) => {
   if (!validateZip(req.body.zip)) return res.status(400).json({ error: "Invalid ZIP code" });
 
   const data = await fetchShippingRates(req);
-  if (!data || !data.success) return res.status(500).json({ error: data?.message || "Failed to calculate shipping rate" });
+  // Business failures go back as JSON — the frontend drops non-2xx bodies,
+  // so a 500 here would hide the reason behind a generic popup message
+  if (!data || !data.success) return res.json({ success: false, message: data?.message || "Failed to calculate shipping rate" });
   return res.json(data);
 };
 
