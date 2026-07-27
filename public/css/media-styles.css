@@ -104,19 +104,63 @@
     letter-spacing: 3px;
   }
 
+  /* summary sits beside the items only when both fit at full width;
+     otherwise it wraps below — no fixed-width overflow at tablet sizes */
   .cart-content {
-    grid-template-columns: 1fr 400px;
-    gap: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .cart-items-section {
+    flex: 1 1 680px;
+  }
+
+  .cart-summary-section {
+    flex: 1 1 360px;
+    max-width: 400px;
   }
 
   .cart-item-image-container {
     flex: 0 0 250px;
     margin-right: 2rem;
   }
+}
 
-  .cart-right-column {
-    position: sticky;
-    top: 100px;
+/* ======================== */
+/* Shipping Options         */
+/* ======================== */
+
+@media (min-width: 480px) {
+  /* header is a row at this width — name wraps, price stays intact on the right */
+  .shipping-option-name,
+  .checkout-shipping-option-name {
+    flex: 1;
+  }
+
+  .shipping-option-price,
+  .checkout-shipping-option-price {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 540px) {
+  .shipping-option-details,
+  .checkout-shipping-option-details {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 1rem;
+    row-gap: 0.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  /* shorter rate list keeps the totals and checkout button in view */
+  .shipping-calculator-result {
+    max-height: 320px;
   }
 }
 
@@ -134,21 +178,32 @@
     letter-spacing: 3px;
   }
 
+  /* same wrap behavior as the cart — summary drops below the form
+     when a 400px side column no longer fits */
   .checkout-content {
-    grid-template-columns: 1fr 400px;
-    gap: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .checkout-form-section {
+    flex: 1 1 480px;
+    min-width: 0;
   }
 
   .checkout-form-row {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 1.5rem;
   }
 
   .checkout-form-row-location {
-    grid-template-columns: 3fr 1fr 0.75fr;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr) minmax(0, 0.75fr);
   }
 
   .checkout-summary-section {
+    flex: 1 1 360px;
+    max-width: 400px;
     position: sticky;
     top: 100px;
   }

@@ -504,6 +504,8 @@
 
 .shipping-option {
   display: flex;
+  /* parent is a max-height flex column — options must never compress */
+  flex-shrink: 0;
   gap: 1rem;
   padding: 1rem;
   border: 2px solid #e0e0e0;

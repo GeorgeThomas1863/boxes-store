@@ -299,7 +299,12 @@ export const buildCheckoutShippingOption = (rateData) => {
 
   if (rateData.estimated_delivery_date) {
     const dateSpan = document.createElement("span");
-    dateSpan.textContent = `Estimated delivery: ${rateData.estimated_delivery_date}`;
+    dateSpan.append("Estimated delivery: ");
+    const dateValue = document.createElement("span");
+    dateValue.className = "shipping-detail-date";
+    dateValue.textContent = rateData.estimated_delivery_date;
+    dateValue.dataset.label = label;
+    dateSpan.append(dateValue);
     dateSpan.dataset.label = label;
     detailsDiv.appendChild(dateSpan);
   }

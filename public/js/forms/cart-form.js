@@ -195,7 +195,12 @@ const buildShippingOptionDetails = (rateData, className, label) => {
   }
   if (rateData.estimated_delivery_date) {
     const date = document.createElement("span");
-    date.textContent = `Estimated delivery: ${rateData.estimated_delivery_date}`;
+    date.append("Estimated delivery: ");
+    const dateValue = document.createElement("span");
+    dateValue.className = "shipping-detail-date";
+    dateValue.textContent = rateData.estimated_delivery_date;
+    dateValue.dataset.label = label;
+    date.append(dateValue);
     date.dataset.label = label;
     details.append(date);
   }
