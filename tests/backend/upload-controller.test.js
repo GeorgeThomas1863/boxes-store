@@ -14,6 +14,10 @@ vi.mock("../../src/upload-back.js", () => ({
   upload: { single: vi.fn() },
 }));
 
+vi.mock("../../src/orders.js", () => ({
+  getSoldUnitCount: vi.fn(),
+}));
+
 vi.mock("dotenv", () => ({
   default: { config: vi.fn() },
 }));

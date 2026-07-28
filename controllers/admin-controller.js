@@ -3,6 +3,7 @@ import { storeProduct, updateProduct, deleteProduct, getProductData } from "../s
 import { deletePic, uploadDir } from "../src/upload-back.js";
 import { whitelistFields, sanitizeFilename } from "../src/sanitize.js";
 import { getGameSettings, saveGameSettings } from "../src/game-settings.js";
+import { getSoldUnitCount } from "../src/orders.js";
 
 const validateShippingFields = (safeParams) => {
   if (!safeParams) return null;
@@ -34,6 +35,11 @@ export const getProductDataControl = async (req, res) => {
   }
 
   return res.json(visibleData);
+};
+
+export const getOrderStatsControl = async (req, res) => {
+  const soldUnits = await getSoldUnitCount();
+  return res.json({ soldUnits });
 };
 
 export const addNewProductControl = async (req, res) => {

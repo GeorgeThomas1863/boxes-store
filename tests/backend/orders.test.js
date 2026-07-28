@@ -31,7 +31,7 @@ import { dbGet } from "../../middleware/db-config.js";
 import { getCartStats } from "../../src/cart.js";
 import { verifyPaymentIntent } from "../../src/payments.js";
 import { storeCustomerData } from "../../src/customer.js";
-import { placeNewOrder, storeOrderData, getOrderNumber } from "../../src/orders.js";
+import { placeNewOrder, storeOrderData, getOrderNumber, getSoldUnitCount } from "../../src/orders.js";
 
 process.env.ORDERS_COLLECTION = "orders";
 // process.env.TAX_RATE = "0.08"; // TAX DISABLED
@@ -184,5 +184,43 @@ describe("storeOrderData", () => {
     expect(result.orderNumber).toBe(1001);
     expect(result.orderStatus).toBe("completed");
     expect(updateObjItem).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("getSoldUnitCount", () => {
+  const mockAggregate = (resultArray) => {
+    const aggregate = vi.fn().mockReturnValue({ toArray: vi.fn().mockResolvedValue(resultArray) });
+    dbGet.mockReturnValue({ collection: vi.fn().mockReturnValue({ aggregate }) });
+    return aggregate;
+  };
+
+  it("returns the summed itemCount from the aggregation result", async () => {
+    mockAggregate([{ _id: null, soldUnits: 14 }]);
+    expect(await getSoldUnitCount()).toBe(14);
+  });
+
+  it("aggregates only completed orders, summing itemCount", async () => {
+    const aggregate = mockAggregate([]);
+    await getSoldUnitCount();
+
+    const pipeline = aggregate.mock.calls[0][0];
+    expect(pipeline[0]).toEqual({ $match: { orderStatus: "completed" } });
+    expect(pipeline[1]).toEqual({ $group: { _id: null, soldUnits: { $sum: "$itemCount" } } });
+  });
+
+  it("returns 0 when there are no completed orders", async () => {
+    mockAggregate([]);
+    expect(await getSoldUnitCount()).toBe(0);
+  });
+
+  it("returns null when the aggregation throws", async () => {
+    dbGet.mockReturnValue({
+      collection: vi.fn().mockReturnValue({
+        aggregate: vi.fn(() => {
+          throw new Error("db down");
+        }),
+      }),
+    });
+    expect(await getSoldUnitCount()).toBeNull();
   });
 });

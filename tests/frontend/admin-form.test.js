@@ -7,7 +7,7 @@ vi.mock("../../public/js/util/collapse.js", () => ({
   buildCollapseContainer: vi.fn(),
 }));
 
-import { buildProductDetailModal, buildInfoRowDisplayToggle } from "../../public/js/forms/admin-form.js";
+import { buildProductDetailModal, buildInfoRowDisplayToggle, buildStatsSection } from "../../public/js/forms/admin-form.js";
 
 const baseProduct = {
   productId: "prod-1",
@@ -174,5 +174,19 @@ describe("buildInfoRowDisplayToggle", () => {
     checkbox.checked = true;
     checkbox.dispatchEvent(new Event("change"));
     expect(text.textContent).toBe("Visible");
+  });
+});
+
+describe("buildStatsSection", () => {
+  it("renders three stat tiles", async () => {
+    const section = await buildStatsSection();
+    expect(section.querySelectorAll(".stat-item").length).toBe(3);
+  });
+
+  it("renders the sold tile with id sold-products-stat starting at 0", async () => {
+    const section = await buildStatsSection();
+    const soldStat = section.querySelector("#sold-products-stat");
+    expect(soldStat).not.toBeNull();
+    expect(soldStat.textContent).toBe("0");
   });
 });

@@ -182,6 +182,25 @@ export const updateOrderStatus = async (paymentId, orderStatus) => {
 
 //----------
 
+export const getSoldUnitCount = async () => {
+  try {
+    const resultArray = await dbGet()
+      .collection(process.env.ORDERS_COLLECTION)
+      .aggregate([
+        { $match: { orderStatus: "completed" } },
+        { $group: { _id: null, soldUnits: { $sum: "$itemCount" } } },
+      ])
+      .toArray();
+
+    return resultArray[0]?.soldUnits ?? 0;
+  } catch (e) {
+    console.error("GET SOLD UNIT COUNT ERROR:", e);
+    return null;
+  }
+};
+
+//----------
+
 export const sendOrderConfirmationEmails = async (orderData) => {
   if (!orderData) return { buyerSent: false, adminSent: false };
 

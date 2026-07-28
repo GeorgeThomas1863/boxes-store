@@ -129,6 +129,10 @@ export const clearAdminEditFields = async () => {
 export const updateAdminStats = async () => {
   const productData = await sendToBack({ route: "/get-product-data-route" }, "GET");
   if (productData) await updateProductStats(productData);
+
+  const orderStats = await sendToBack({ route: "/get-order-stats-route" }, "GET");
+  if (orderStats) await updateSoldStat(orderStats);
+
   return true;
 };
 
@@ -143,6 +147,15 @@ export const updateProductStats = async (productData) => {
 
   if (totalStat) totalStat.textContent = totalProducts;
   if (displayedStat) displayedStat.textContent = displayedProducts;
+
+  return true;
+};
+
+export const updateSoldStat = async (orderStats) => {
+  if (!orderStats || typeof orderStats.soldUnits !== "number") return null;
+
+  const soldStat = document.getElementById("sold-products-stat");
+  if (soldStat) soldStat.textContent = orderStats.soldUnits;
 
   return true;
 };
