@@ -127,10 +127,12 @@ export const clearAdminEditFields = async () => {
 // =============================
 
 export const updateAdminStats = async () => {
-  const productData = await sendToBack({ route: "/get-product-data-route" }, "GET");
-  if (productData) await updateProductStats(productData);
+  const [productData, orderStats] = await Promise.all([
+    sendToBack({ route: "/get-product-data-route" }, "GET"),
+    sendToBack({ route: "/get-order-stats-route" }, "GET"),
+  ]);
 
-  const orderStats = await sendToBack({ route: "/get-order-stats-route" }, "GET");
+  if (productData) await updateProductStats(productData);
   if (orderStats) await updateSoldStat(orderStats);
 
   return true;
