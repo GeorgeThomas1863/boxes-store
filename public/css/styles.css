@@ -668,7 +668,7 @@ h4 {
   padding: 0.5rem 2.25rem 0.5rem 0.75rem;
   border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 1rem; /* ≥16px stops iOS Safari's focus auto-zoom, which leaves the page pannable sideways */
   font-family: inherit;
   color: #1a1a1a;
   background-color: #fff;
