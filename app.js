@@ -11,6 +11,9 @@ import { dbConnect } from "./middleware/db-config.js";
 
 const app = express();
 
+// Behind nginx: trust its X-Forwarded-Proto so secure session cookies are issued over HTTPS
+app.set("trust proxy", 1);
+
 app.use(session(buildSessionConfig()));
 
 //standard public path
