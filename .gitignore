@@ -22,12 +22,8 @@ config/
 .remember/
 
 docs/
-
-
-.EXAMPLE-CODE/*
-.EXAMPLE-CODE/
-
 .playwright-mcp/
+todo.txt
 
 #pics
 public/images/products/*
