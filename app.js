@@ -2,12 +2,16 @@
 
 import "./middleware/env-config.js";
 
+import path from "path";
+import { fileURLToPath } from "url";
 import express from "express";
 import session from "express-session";
 import routes from "./routes/router.js";
 
 import { buildSessionConfig } from "./middleware/session-config.js";
 import { dbConnect } from "./middleware/db-config.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
@@ -17,7 +21,7 @@ app.set("trust proxy", 1);
 app.use(session(buildSessionConfig()));
 
 //standard public path
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -26,4 +30,4 @@ app.use(express.json());
 app.use(routes);
 
 await dbConnect();
-app.listen(process.env.PORT, "127.0.0.1")
+app.listen(process.env.PORT, process.env.HOST || "127.0.0.1");

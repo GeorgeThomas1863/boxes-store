@@ -27,6 +27,7 @@ todo.txt
 
 #pics
 public/images/products/*
+!public/images/products/.gitkeep
 
 # logs
 logs

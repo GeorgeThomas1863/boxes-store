@@ -51,6 +51,7 @@ export const STATES_ARRAY = [
   { value: "CO", text: "Colorado" },
   { value: "CT", text: "Connecticut" },
   { value: "DE", text: "Delaware" },
+  { value: "DC", text: "District of Columbia" },
   { value: "FL", text: "Florida" },
   { value: "GA", text: "Georgia" },
   { value: "HI", text: "Hawaii" },

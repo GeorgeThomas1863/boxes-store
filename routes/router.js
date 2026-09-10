@@ -3,7 +3,7 @@ import express from "express";
 import requireAuth from "../middleware/auth-config.js";
 import { authRateLimit } from "../middleware/rate-limit.js";
 
-import { displayMain, displayAdmin, displayCart, displayCheckout, displayConfirmOrder, displayAbout, displayContact, display404, display500 } from "../controllers/display-controller.js";
+import { displayMain, displayAdmin, displayCart, displayCheckout, displayConfirmOrder, displayAbout, displayContact, display401, display404, display500 } from "../controllers/display-controller.js";
 import { getCartDataControl, getCartStatsControl, addToCartControl, updateCartItemControl, removeFromCartControl, clearCartControl, getShippingControl, calculateShippingControl, updateSelectedRateControl, clearShippingControl, getStripeConfigControl, createPaymentIntentControl, placeOrderControl, updateCartSpinsControl, contactSubmitControl } from "../controllers/data-controller.js";
 import { authController } from "../controllers/auth-controller.js";
 import { getProductDataControl, getOrderStatsControl, addNewProductControl, editProductControl, deleteProductControl, uploadPicControl, deletePicControl, getGameSettingsControl, saveGameSettingsControl } from "../controllers/admin-controller.js";
@@ -51,6 +51,8 @@ router.post("/checkout/create-payment-intent", createPaymentIntentControl);
 router.post("/checkout/place-order", placeOrderControl);
 
 router.get("/contact", displayContact);
+
+router.get("/401", display401);
 router.post("/contact/submit", contactSubmitControl);
 
 router.get("/", displayMain);

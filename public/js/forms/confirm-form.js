@@ -43,6 +43,7 @@ const buildDetailsCard = () => {
   const grid = document.createElement("div");
   grid.className = "confirm-details-grid";
   grid.append(
+    buildDetailRow("Order Number", "confirm-order-number"),
     buildDetailRow("Order Date", "confirm-order-date"),
     buildDetailRow("Payment Status", "confirm-payment-status"),
     buildDetailRow("Email", "confirm-customer-email"),
@@ -247,6 +248,7 @@ const populateOrderDetails = (data) => {
   if (!data) return null;
 
   const {
+    orderNumber,
     orderDate,
     email,
     firstName,
@@ -271,6 +273,7 @@ const populateOrderDetails = (data) => {
     if (el) el.textContent = text;
   };
 
+  set("confirm-order-number", orderNumber ? `#${orderNumber}` : "—");
   set(
     "confirm-order-date",
     new Date(orderDate).toLocaleDateString("en-US", {

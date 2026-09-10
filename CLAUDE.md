@@ -56,16 +56,53 @@ Entry point: `app.js` -- wires middleware in order: session, static files, body 
 
 ## Environment Variables
 
-Required in `.env`:
+Loaded by `middleware/env-config.js` via dotenv from `[".env.test", ".env"]` (cwd-relative). If `.env.test` exists on disk it overrides `.env` for local runs (first file wins).
 
-| Variable         | Purpose                             |
-| ---------------- | ----------------------------------- |
-| `PORT`           | Express server port                 |
-| `SESSION_SECRET` | Session signing secret              |
-| `NODE_ENV`       | "production" enables secure cookies |
-| `MONGO_URI`      | MongoDB connection string           |
-| `DB_NAME`        | MongoDB database name               |
-| `ADMIN_PW`       | Admin password for simple auth      |
+| Variable                 | Purpose                                                     |
+| ------------------------ | ----------------------------------------------------------- |
+| `PORT`                   | Express server port (also interpolated by docker compose)   |
+| `HOST`                   | Optional bind address (default `127.0.0.1`; compose sets `0.0.0.0`) |
+| `NODE_ENV`               | "production" enables secure cookies                         |
+| `SESSION_SECRET`         | Session signing secret                                      |
+| `MONGO_URI`              | MongoDB connection string (compose overrides to `mongodb://mongo:27017`) |
+| `DB_NAME`                | MongoDB database name                                       |
+| `ADMIN_PW`               | Admin password for simple auth                              |
+| `STRIPE_SECRET_KEY`      | Stripe server-side key                                      |
+| `STRIPE_PUBLISHABLE_KEY` | Stripe browser key                                          |
+| `UPLOAD_SIZE_LIMIT_MB`   | Optional upload size limit (default 10)                     |
+| `PRODUCTS_COLLECTION`    | Mongo collection name for products                          |
+| `ORDERS_COLLECTION`      | Mongo collection name for orders                            |
+| `CUSTOMERS_COLLECTION`   | Mongo collection name for customers                         |
+| `CONTACTS_COLLECTION`    | Mongo collection name for contact submissions               |
+| `RESEND_API_KEY`         | Resend email API key                                        |
+| `EMAIL_USER`             | Sender email address                                        |
+| `EMAIL_FROM_NAME`        | Sender display name                                         |
+| `EMAIL_RECIPIENT_1`      | Notification recipient                                      |
+| `EMAIL_RECIPIENT_2`      | Notification recipient                                      |
+| `SHIP_STATION_BASE_URL`  | ShipStation API base URL                                    |
+| `SHIP_STATION_API_KEY`   | ShipStation API key                                         |
+| `SHIPPING_ZIP`           | Origin ZIP for shipping rates                               |
+
+## Docker
+
+```
+docker compose up -d --build     # build image and start app + mongo
+docker compose logs -f app       # tail app logs
+docker compose down              # stop containers (data is kept)
+```
+
+**Never run `docker compose down -v`** - it deletes the named volumes (uploaded images and the database).
+
+| Volume             | Mounted at                    | Holds                     |
+| ------------------ | ----------------------------- | ------------------------- |
+| `uploads-products` | `/app/public/images/products` | Admin-uploaded product images |
+| `mongo-data`       | `/data/db`                    | MongoDB data              |
+
+Notes:
+- Compose reads `.env` (required) and `.env.local` (optional). `.env*` files are excluded from the image by `.dockerignore`, so inside the container dotenv finds nothing and compose's `env_file` supplies the vars.
+- Compose forces `HOST=0.0.0.0` and `MONGO_URI=mongodb://mongo:27017`, overriding whatever `.env` says.
+- `PORT` must be set in `.env` because compose interpolates it for the port mapping (`127.0.0.1:${PORT}:${PORT}`).
+- `public/images/products/.gitkeep` keeps the directory in the image owned by `node` so Docker seeds the volume with correct ownership.
 
 ## Conventions
 
