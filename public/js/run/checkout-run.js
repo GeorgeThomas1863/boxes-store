@@ -177,11 +177,11 @@ export const runPlaceOrder = async () => {
   await showLoadStatus();
 
   try {
-    const intentData = await sendToBack({ route: "/checkout/create-payment-intent" });
+    const intentData = await sendToBack({ route: "/checkout/create-payment-intent", zip: getCustomerParams().zip });
 
     if (!intentData || !intentData.clientSecret) {
       await hideLoadStatus();
-      showPaymentError(errorContainer, "Failed to initialize payment. Please try again.");
+      showPaymentError(errorContainer, intentData?.message || "Failed to initialize payment. Please try again.");
       resetPlaceOrderBtn(placeOrderBtn);
       return null;
     }

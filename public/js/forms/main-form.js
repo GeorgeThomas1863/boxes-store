@@ -42,8 +42,10 @@ export const buildMainForm = async () => {
   const bottomText = await buildBottomText();
 
   const bottomSection = await buildBottomSection();
-  const launchSection = await buildLaunchSection();
-  container.append(navBar, topImage, launchSection, cardsGrid, bottomText, bottomSection);
+  // Launch card ("Now Accepting Orders For" through "Mystery Wheel Specialty Items") hidden for now
+  // const launchSection = await buildLaunchSection();
+  // container.append(navBar, topImage, launchSection, cardsGrid, bottomText, bottomSection);
+  container.append(navBar, topImage, cardsGrid, bottomText, bottomSection);
 
   return container;
 };

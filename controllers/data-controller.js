@@ -106,6 +106,21 @@ export const getStripeConfigControl = (req, res) => {
   });
 };
 
+const ZIP_MISMATCH_MESSAGE = "Shipping was calculated for a different ZIP code. Please recalculate shipping.";
+const ZIP_CHANGED_MESSAGE = "Your ZIP code changed after payment, so your payment is being refunded. Please check out again.";
+
+const getZipPrefix = (zip) => {
+  if (typeof zip !== "string") return null;
+  const match = zip.trim().match(/^(\d{5})(-\d{4})?$/);
+  return match ? match[1] : null;
+};
+
+const deliveryZipMatchesShipping = (req) => {
+  const deliveryZip = getZipPrefix(req.body?.zip);
+  const pricedZip = getZipPrefix(req.session?.shipping?.zip);
+  return !!deliveryZip && !!pricedZip && deliveryZip === pricedZip;
+};
+
 export const createPaymentIntentControl = async (req, res) => {
   if (!req || !req.session) return res.status(500).json({ error: "No session" });
 
@@ -119,6 +134,10 @@ export const createPaymentIntentControl = async (req, res) => {
   if (shippingCost === null) {
     return res.status(400).json({ error: "Please calculate shipping before checking out" });
   }
+
+  // Must run before the intent exists: once the card is charged it is too late to reject
+  if (!deliveryZipMatchesShipping(req)) return res.json({ success: false, message: ZIP_MISMATCH_MESSAGE });
+
   // const taxRate = parseFloat(process.env.TAX_RATE) || 0; // TAX DISABLED
   // const tax = Math.round(subtotal * taxRate * 100) / 100; // TAX DISABLED
   // const totalCost = Math.round((subtotal + tax) * 100) / 100; // TAX DISABLED
@@ -139,6 +158,7 @@ export const createPaymentIntentControl = async (req, res) => {
   }
 
   req.session.pendingPaymentIntentId = result.paymentIntentId;
+  req.session.pendingZip = getZipPrefix(req.body.zip);
 
   return res.json({ clientSecret: result.clientSecret });
 };
@@ -166,6 +186,7 @@ export const placeOrderControl = async (req, res) => {
   if (!city)     return res.status(400).json({ error: "Invalid city" });
   if (!state)    return res.status(400).json({ error: "Invalid state" });
   if (!zip)      return res.status(400).json({ error: "Invalid ZIP code" });
+  if (getZipPrefix(zip) !== req.session.pendingZip) return refundZipMismatch(req, res);
 
   req.body.firstName = firstName;
   req.body.lastName  = lastName;
@@ -197,13 +218,26 @@ export const placeOrderControl = async (req, res) => {
   if (!data.success) {
     // Payment was already captured — attempt a refund so customer is not charged
     console.error("ORDER PLACEMENT FAILED after payment captured — attempting refund. PaymentIntentId:", req.body.paymentIntentId);
-    refundPayment(req.body.paymentIntentId)
-      .then((refund) => updateOrderStatus(req.body.paymentIntentId, refund?.success ? "refunded" : "refund-failed"))
-      .catch((e) => console.error("REFUND FAILED:", e));
+    startRefund(req.body.paymentIntentId);
     return res.status(500).json({ success: false, message: data.message || "Order failed. A refund has been initiated. Please contact support." });
   }
 
   return res.json(data);
+};
+
+// The card is already charged by the time place-order runs, so a ZIP that differs
+// from the one shipping was priced for must be refunded, not just rejected
+const refundZipMismatch = (req, res) => {
+  console.error("ZIP CHANGED after payment — refunding. PaymentIntentId:", req.body.paymentIntentId);
+  req.session.pendingPaymentIntentId = null;
+  startRefund(req.body.paymentIntentId);
+  return res.status(400).json({ success: false, message: ZIP_CHANGED_MESSAGE });
+};
+
+const startRefund = (paymentIntentId) => {
+  refundPayment(paymentIntentId)
+    .then((refund) => updateOrderStatus(paymentIntentId, refund?.success ? "refunded" : "refund-failed"))
+    .catch((e) => console.error("REFUND FAILED:", e));
 };
 
 export const contactSubmitControl = async (req, res) => {

@@ -15,14 +15,15 @@ const ENVELOPE_PACKAGE_TYPES = new Set([
 ]);
 
 export const fetchShippingRates = async (req) => {
-  if (!req || !req.body || !req.body.zip || !req.body.productArray) {
+  const cart = req?.session?.cart;
+  if (!req || !req.body || !req.body.zip || !Array.isArray(cart) || !cart.length) {
     return { success: false, message: "No input parameters" };
   }
 
   const zip = validateZip(req.body.zip);
   if (!zip) return { success: false, message: "Invalid ZIP code" };
 
-  const packageData = await aggregatePackageDimensions(req.body.productArray);
+  const packageData = await aggregatePackageDimensions(cart);
   if (!packageData.totalWeight && !packageData.maxLength && !packageData.maxWidth && !packageData.maxHeight) {
     return { success: false, message: "No shippable items in cart" };
   }

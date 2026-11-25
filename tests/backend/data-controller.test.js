@@ -51,6 +51,7 @@ import {
   updateCartSpinsControl,
   getStripeConfigControl,
   createPaymentIntentControl,
+  placeOrderControl,
   calculateShippingControl,
 } from "../../controllers/data-controller.js";
 
@@ -63,9 +64,9 @@ import {
   updateCartSpins,
 } from "../../src/cart.js";
 
-import { validatePositiveInt, validateZip } from "../../src/sanitize.js";
-import { createPaymentIntent } from "../../src/payments.js";
-import { storePendingOrder } from "../../src/orders.js";
+import { validatePositiveInt, validateZip, validateEmail, validateString } from "../../src/sanitize.js";
+import { createPaymentIntent, refundPayment } from "../../src/payments.js";
+import { storePendingOrder, placeNewOrder, updateOrderStatus } from "../../src/orders.js";
 import { getSelectedShippingCost, fetchShippingRates } from "../../src/shipping.js";
 
 // ---------------------------------------------------------------------------
@@ -541,7 +542,7 @@ describe("createPaymentIntentControl", () => {
   it("returns 500 when createPaymentIntent returns { success: false }", async () => {
     getCartStats.mockResolvedValue({ success: true, total: 50, itemCount: 1 });
     createPaymentIntent.mockResolvedValue({ success: false, message: "Stripe error" });
-    const req = mockReq();
+    const req = mockReq({ body: { zip: "10001" }, session: { cart: [], shipping: { zip: "10001" } } });
     const res = mockRes();
 
     await createPaymentIntentControl(req, res);
@@ -553,7 +554,7 @@ describe("createPaymentIntentControl", () => {
   it("returns clientSecret and stores pendingPaymentIntentId in session on success", async () => {
     getCartStats.mockResolvedValue({ success: true, total: 50, itemCount: 1 });
     createPaymentIntent.mockResolvedValue({ success: true, clientSecret: "pi_secret_xyz", paymentIntentId: "pi_abc" });
-    const req = mockReq();
+    const req = mockReq({ body: { zip: "10001" }, session: { cart: [], shipping: { zip: "10001" } } });
     const res = mockRes();
 
     await createPaymentIntentControl(req, res);
@@ -567,7 +568,7 @@ describe("createPaymentIntentControl", () => {
     getCartStats.mockResolvedValue({ success: true, total: 50, itemCount: 1 });
     createPaymentIntent.mockResolvedValue({ success: true, clientSecret: "pi_secret_xyz", paymentIntentId: "pi_abc" });
     storePendingOrder.mockResolvedValue(null);
-    const req = mockReq();
+    const req = mockReq({ body: { zip: "10001" }, session: { cart: [], shipping: { zip: "10001" } } });
     const res = mockRes();
 
     await createPaymentIntentControl(req, res);
@@ -581,7 +582,7 @@ describe("createPaymentIntentControl", () => {
     const cart = [{ productId: "p1", quantity: 2 }];
     getCartStats.mockResolvedValue({ success: true, total: 50, itemCount: 2 });
     createPaymentIntent.mockResolvedValue({ success: true, clientSecret: "s", paymentIntentId: "pi_abc" });
-    const req = mockReq({ session: { cart } });
+    const req = mockReq({ body: { zip: "10001" }, session: { cart, shipping: { zip: "10001" } } });
     const res = mockRes();
 
     await createPaymentIntentControl(req, res);
@@ -592,12 +593,62 @@ describe("createPaymentIntentControl", () => {
   it("calls createPaymentIntent with totalInCents derived from cart total", async () => {
     getCartStats.mockResolvedValue({ success: true, total: 49.99, itemCount: 1 });
     createPaymentIntent.mockResolvedValue({ success: true, clientSecret: "s", paymentIntentId: "pi_x" });
-    const req = mockReq();
+    const req = mockReq({ body: { zip: "10001" }, session: { cart: [], shipping: { zip: "10001" } } });
     const res = mockRes();
 
     await createPaymentIntentControl(req, res);
 
     expect(createPaymentIntent).toHaveBeenCalledWith(5499);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// placeOrderControl — delivery ZIP must match the ZIP the payment was priced for
+// ---------------------------------------------------------------------------
+
+describe("placeOrderControl ZIP check", () => {
+  const placeOrderReq = (zip) =>
+    mockReq({
+      body: { paymentIntentId: "pi_abc", firstName: "A", lastName: "B", email: "a@b.co", address: "1 St", city: "C", state: "NY", zip },
+      session: { cart: [], pendingPaymentIntentId: "pi_abc", pendingZip: "10001" },
+    });
+
+  beforeEach(() => {
+    validateString.mockImplementation((val) => val || null);
+    validateEmail.mockImplementation((val) => val);
+    validateZip.mockImplementation((val) => val);
+    refundPayment.mockResolvedValue({ success: true });
+  });
+
+  it("stores the priced ZIP in the session when the payment intent is created", async () => {
+    getCartStats.mockResolvedValue({ success: true, total: 50 });
+    createPaymentIntent.mockResolvedValue({ success: true, clientSecret: "cs", paymentIntentId: "pi_abc" });
+    const req = mockReq({ body: { zip: "10001-1234" }, session: { cart: [], shipping: { zip: "10001" } } });
+    await createPaymentIntentControl(req, mockRes());
+    expect(req.session.pendingZip).toBe("10001");
+  });
+
+  it("places the order when the ZIP matches the priced ZIP", async () => {
+    placeNewOrder.mockResolvedValue({ success: true });
+    const res = mockRes();
+    await placeOrderControl(placeOrderReq("10001-5678"), res);
+    expect(placeNewOrder).toHaveBeenCalled();
+    expect(refundPayment).not.toHaveBeenCalled();
+    expect(res._body).toEqual({ success: true });
+  });
+
+  it("refunds and rejects when the ZIP differs from the priced ZIP", async () => {
+    const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const req = placeOrderReq("90210");
+    const res = mockRes();
+    await placeOrderControl(req, res);
+    await vi.waitFor(() => expect(updateOrderStatus).toHaveBeenCalledWith("pi_abc", "refunded"));
+    expect(placeNewOrder).not.toHaveBeenCalled();
+    expect(refundPayment).toHaveBeenCalledWith("pi_abc");
+    expect(req.session.pendingPaymentIntentId).toBeNull();
+    expect(res._status).toBe(400);
+    expect(res._body.success).toBe(false);
+    errSpy.mockRestore();
   });
 });
 
@@ -609,7 +660,7 @@ describe("calculateShippingControl", () => {
   it("returns the failure message as JSON so the frontend can display it", async () => {
     validateZip.mockReturnValue("90210");
     fetchShippingRates.mockResolvedValue({ success: false, message: "No shippable items in cart" });
-    const req = mockReq({ body: { zip: "90210", productArray: [] } });
+    const req = mockReq({ body: { zip: "90210" }, session: { cart: [{ productId: "p1", quantity: 1 }] } });
     const res = mockRes();
 
     await calculateShippingControl(req, res);
@@ -621,7 +672,7 @@ describe("calculateShippingControl", () => {
   it("falls back to a generic message when the failure has none", async () => {
     validateZip.mockReturnValue("90210");
     fetchShippingRates.mockResolvedValue(null);
-    const req = mockReq({ body: { zip: "90210", productArray: [] } });
+    const req = mockReq({ body: { zip: "90210" }, session: { cart: [{ productId: "p1", quantity: 1 }] } });
     const res = mockRes();
 
     await calculateShippingControl(req, res);
@@ -634,7 +685,7 @@ describe("calculateShippingControl", () => {
     validateZip.mockReturnValue("90210");
     const data = { success: true, message: "Shipping rate calculated successfully", rateData: [{ rateId: 0 }] };
     fetchShippingRates.mockResolvedValue(data);
-    const req = mockReq({ body: { zip: "90210", productArray: [] } });
+    const req = mockReq({ body: { zip: "90210" }, session: { cart: [{ productId: "p1", quantity: 1 }] } });
     const res = mockRes();
 
     await calculateShippingControl(req, res);

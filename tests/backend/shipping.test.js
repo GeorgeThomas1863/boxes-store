@@ -75,8 +75,8 @@ function mockShippingFetch(rates = [rate(8)]) {
     .mockResolvedValueOnce(okJson(rates));
 }
 
-function shippingReq(productArray = [{ productId: "p1", quantity: 1 }], zip = "12345") {
-  return { body: { zip, productArray }, session: {} };
+function shippingReq(cart = [{ productId: "p1", quantity: 1 }], zip = "12345") {
+  return { body: { zip }, session: { cart } };
 }
 
 function estimateBody() {
@@ -180,6 +180,28 @@ describe("shipping package calculation", () => {
       weight: { value: 3 },
       dimensions: { length: 20, width: 6, height: 4 },
     });
+  });
+
+  it("ignores a client-supplied productArray and prices the session cart", async () => {
+    mockShippingFetch();
+    const req = shippingReq([{ productId: "p1", quantity: 2 }]);
+    req.body.productArray = [{ productId: "p2", quantity: 1 }];
+    await fetchShippingRates(req);
+
+    expect(estimateBody()).toMatchObject({
+      weight: { value: 4 },
+      dimensions: { length: 8, width: 4, height: 3 },
+    });
+  });
+
+  it("rejects a missing or empty session cart without calling either endpoint", async () => {
+    const emptyResult = await fetchShippingRates(shippingReq([]));
+    const missingReq = { body: { zip: "12345", productArray: [{ productId: "p1", quantity: 1 }] }, session: {} };
+    const missingResult = await fetchShippingRates(missingReq);
+
+    expect(emptyResult).toEqual({ success: false, message: "No input parameters" });
+    expect(missingResult).toEqual({ success: false, message: "No input parameters" });
+    expect(fetch).not.toHaveBeenCalled();
   });
 
   it("rejects a malformed ZIP before any network call", async () => {
@@ -315,7 +337,8 @@ describe("shipping money path", () => {
     });
     const cart = [{ productId: "p1", price: 19.99, quantity: 1 }];
     const req = {
-      session: { cart, shipping: { selectedRate: { shipping_amount: { amount: 6.25 } } } },
+      body: { zip: "10001" },
+      session: { cart, shipping: { zip: "10001", selectedRate: { shipping_amount: { amount: 6.25 } } } },
     };
     await createPaymentIntentControl(req, mockRes());
 
